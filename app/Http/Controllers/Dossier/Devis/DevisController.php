@@ -97,6 +97,7 @@ class DevisController extends Controller
             Devis::createDevis($dossier, $date, $montant, $devis_signe, $praticien, $observation);
             return redirect()->to($dossier.'/liste-devis')->with('success', 'Le devis a été ajouté avec succès.');
         } catch (\Exception $e) {
+            // print($e->getMessage());
             return back()->with('error', 'Une erreur est survenue lors de la modification du devis : ' . $e->getMessage());
         }
     }

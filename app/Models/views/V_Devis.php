@@ -10,6 +10,10 @@ class V_Devis extends Model
 {
     use HasFactory;
     protected $table = 'v_devis';
+
+
+    // Getters & Setters
+
     public function getDate(){
         return Carbon::parse($this->date)->format('d F Y');
     }

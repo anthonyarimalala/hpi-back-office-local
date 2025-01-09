@@ -24,13 +24,16 @@ Route::middleware('auth')->group(function() {
     Route::get('/',function () { return view('test-view'); });
 });
 Route::middleware(['auth', 'role:user'])->group(function () {
+    // Recherche
+    Route::get('/search', [\App\Http\Controllers\GlobalController::class, 'search'])->name('search');
+
 
     // section: patients
     Route::get('ajouter-patient', [\App\Http\Controllers\Patient\PatientController::class, 'showInsertPatient']);
     Route::post('ajouter-patient', [\App\Http\Controllers\Patient\PatientController::class, 'insertPatient'])->name('ajouter.patient');
 
     // section: dossiers
-    Route::get('dossiers', [\App\Http\Controllers\Dossier\DossierController::class, 'showDossiers']);
+    Route::get('dossiers', [\App\Http\Controllers\Dossier\DossierController::class, 'showDossiers'])->name('dossiers');
     Route::get('modifier-dossier/{dossier}', [\App\Http\Controllers\Dossier\DossierController::class, 'showModifierDossier']);
     Route::post('modifier-dossier', [\App\Http\Controllers\Dossier\DossierController::class, 'modifierDossier'])->name('modifier.dossier');
     Route::get('supprimer-mutuelle/{dossier}/{mutuelle}', [\App\Http\Controllers\Dossier\DossierController::class, 'supprimerMutuelle'])->name('supprimer.mutuelle');

@@ -61,7 +61,6 @@
                                     <tr>
                                         <th>Envoi PEC</th>
                                         <th>Fin validité PEC</th>
-                                        <th>Progress</th>
                                         <th>Part mutuelle</th>
                                         <th>Part RAC</th>
                                     </tr>
@@ -74,11 +73,7 @@
                                         <td>
                                             <p>{{ $v_devis->getDate_fin_validite_pec() }}</p>
                                         </td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </td>
+
                                         <td>
                                             <p>{{ $v_devis->getPart_mutuelle() }}</p>
                                         </td>

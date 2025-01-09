@@ -34,7 +34,7 @@
                                     @foreach($deviss as $devis)
                                         <tr>
                                             <td onclick="window.location.href='{{ $devis->dossier }}/devis-prothese-chq/{{ $devis->id_devis }}';" style="cursor:pointer;"><strong>{{ $devis->dossier }}</strong></td>
-                                            <td onclick="" style="cursor:pointer;"> {{ $devis->nom }}</td>
+                                            <td onclick="window.location.href='{{ $devis->dossier }}/devis-prothese-chq/{{ $devis->id_devis }}';" style="cursor:pointer;"> {{ $devis->nom }}</td>
                                             <td onclick="window.location.href='{{ $devis->dossier }}/devis-prothese-chq/{{ $devis->id_devis }}';" style="cursor:pointer;">{{ $devis->getDate() }}</td>
                                             <td onclick="window.location.href='{{ $devis->dossier }}/devis-prothese-chq/{{ $devis->id_devis }}';" style="cursor:pointer;">{{ $devis->montant }}</td>
                                             <td onclick="window.location.href='{{ $devis->dossier }}/devis-prothese-chq/{{ $devis->id_devis }}';" style="cursor:pointer;">

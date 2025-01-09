@@ -14,6 +14,48 @@
     <link rel="stylesheet" href="{{ asset('star-admin2/vendors/mdi/css/materialdesignicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('star-admin2/css/vertical-layout-light/style.css') }}">
     <link rel="stylesheet" href="{{ asset('star-admin2-global/template.css') }}">
+    <style>
+        #search-results {
+            max-height: 300px; /* Limite la hauteur */
+            overflow-y: auto; /* Ajoute un défilement si nécessaire */
+            background-color: #fff; /* Fond blanc */
+            border: 1px solid #ddd; /* Bordure légère */
+            border-radius: 8px; /* Coins arrondis */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+            margin-top: 5px; /* Espacement au-dessus */
+            z-index: 1000; /* S'assurer qu'il est au-dessus des autres éléments */
+            list-style: none; /* Supprime les puces */
+            padding: 0; /* Supprime les marges/paddings internes */
+        }
+
+        #search-results .list-group-item {
+            padding: 10px 15px; /* Ajoute un espacement */
+            border-bottom: 1px solid #eee; /* Séparateurs entre les éléments */
+            cursor: pointer; /* Curseur interactif */
+            transition: background-color 0.2s, transform 0.1s; /* Animation fluide */
+        }
+
+        #search-results .list-group-item:last-child {
+            border-bottom: none; /* Supprime la bordure du dernier élément */
+        }
+
+        #search-results .list-group-item:hover {
+            background-color: #f8f9fa; /* Fond gris clair au survol */
+            transform: scale(1.02); /* Légère mise en avant */
+        }
+
+        #search-results .list-group-item a {
+            text-decoration: none; /* Supprime le soulignement des liens */
+            color: #333; /* Couleur du texte */
+            font-weight: 500; /* Texte légèrement en gras */
+        }
+
+        #search-results .list-group-item a:hover {
+            color: #007bff; /* Couleur bleue au survol */
+        }
+
+
+    </style>
 
 
 
@@ -48,12 +90,56 @@
 
             <!-- Ajout du champ de recherche -->
             <ul class="navbar-nav mx-auto">
-                <li class="nav-item">
+                <li class="nav-item position-relative">
                     <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Rechercher..." aria-label="Search" name="q">
+                        <input
+                            id="search-input"
+                            class="form-control me-2"
+                            type="search"
+                            placeholder="Rechercher..."
+                            aria-label="Search"
+                            name="q">
                     </form>
+                    <ul id="search-results" class="list-group position-absolute w-100" style="display: none;">
+                        <!-- Exemples de résultats -->
+                        <li class="list-group-item">
+                            <a href="/123/liste-devis">Jean Dupont - 1990-01-01</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="/124/liste-devis">Marie Curie - 1992-05-15</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="/125/liste-devis">Paul Martin - 1985-10-22</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
+
+
+            <script>
+                document.getElementById('search-input').addEventListener('input', function () {
+                    const query = this.value.trim();
+                    const resultsContainer = document.getElementById('search-results');
+
+                    if (query.length > 0) {
+                        fetch(`/search?q=${encodeURIComponent(query)}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                resultsContainer.innerHTML = ''; // Clear previous results
+                                data.forEach(result => {
+                                    const li = document.createElement('li');
+                                    li.classList.add('list-group-item');
+                                    li.innerHTML = `<a href="/${result.dossier}/liste-devis">${result.dossier}: ${result.nom} - ${result.date_naissance}</a>`;
+                                    resultsContainer.appendChild(li);
+                                });
+                                resultsContainer.style.display = 'block';
+                            })
+                            .catch(error => console.error('Erreur:', error));
+                    } else {
+                        resultsContainer.style.display = 'none';
+                    }
+                });
+            </script>
 
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
@@ -116,7 +202,7 @@
                     </li>
 
 
-
+<!--
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#entree" aria-expanded="false" aria-controls="ui-basic">
                             <i class="menu-icon mdi mdi-cart-arrow-down"></i>
@@ -131,7 +217,7 @@
                             </ul>
                         </div>
                     </li>
-
+-->
 
 
 
@@ -162,6 +248,7 @@
     </div>
     <!-- page-body-wrapper ends -->
 </div>
+
 <!-- container-scroller -->
 
 <!-- plugins:js -->

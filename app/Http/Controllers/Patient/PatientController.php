@@ -37,7 +37,7 @@ class PatientController extends Controller
             if($mutuelle != null && $mutuelle != "") L_DossierMutuelle::insertL_DossierMutuelle($dossier, $mutuelle); // insérer les mutuelles
         }
 
-        return redirect()->route('patients')->with('success', 'Le patient "'.$nom.'" a été ajouté avec success');
+        return redirect()->route('dossiers')->with('success', 'Le patient "'.$nom.'" a été ajouté avec success');
     }
     public function showInsertPatient(Request $request){
         $data['statuss'] = DossierStatus::orderBy('ordre', 'desc')
