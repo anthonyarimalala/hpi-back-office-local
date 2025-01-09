@@ -26,7 +26,10 @@ DROP VIEW v_devis;
 CREATE OR REPLACE VIEW v_devis AS
 SELECT
     dos.dossier,
-    d.id as id_devis,
+    d.id AS id_devis,
+    pat.nom,
+    pat.date_naissance,
+    dos.status,
     d.date,
     d.montant,
     d.devis_signe,
@@ -38,6 +41,10 @@ SELECT
     dap.date_fin_validite_pec,
     dap.part_mutuelle,
     dap.part_rac,
+    dr.date_paiement_cb_ou_esp,
+    dr.date_depot_chq_pec,
+    dr.date_depot_chq_part_mut,
+    dr.date_depot_chq_rac,
     dam.date_1er_appel,
     dam.note_1er_appel,
     dam.date_2eme_appel,
@@ -45,10 +52,11 @@ SELECT
     dam.date_3eme_appel,
     dam.note_3eme_appel,
     dam.date_envoi_mail
-FROM dossiers dos
-LEFT JOIN devis d ON dos.dossier = d.dossier
-LEFT JOIN devis_accord_pecs dap ON d.id = dap.id_devis
-LEFT JOIN devis_appels_et_mails dam ON d.id = dam.id_devis
-LEFT JOIN devis_reglements dr ON d.id = dr.id_devis;
+FROM devis d
+         JOIN dossiers dos ON d.dossier = dos.dossier
+         JOIN patients pat ON dos.id_patient = pat.id
+         LEFT JOIN devis_accord_pecs dap ON d.id = dap.id_devis
+         LEFT JOIN devis_appels_et_mails dam ON d.id = dam.id_devis
+         LEFT JOIN devis_reglements dr ON d.id = dr.id_devis;
 
 

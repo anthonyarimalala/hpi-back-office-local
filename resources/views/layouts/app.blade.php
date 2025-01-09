@@ -11,7 +11,6 @@
     <title>Hpi Suivis</title>
     <!-- plugins:css -->
 
-    <link rel="stylesheet" href="{{ asset('fontawesome-free-6.5.2-web/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('star-admin2/vendors/feather/feather.css') }}">
     <link rel="stylesheet" href="{{ asset('star-admin2/vendors/mdi/css/materialdesignicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('star-admin2/vendors/ti-icons/css/themify-icons.css') }}">
@@ -116,7 +115,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{{asset('liste-devis')}}">
                             <i class="mdi mdi-file-document-outline menu-icon"></i>
                             <span class="menu-title">Devis</span>
                         </a>

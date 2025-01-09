@@ -10,6 +10,9 @@ class V_Devis extends Model
 {
     use HasFactory;
     protected $table = 'v_devis';
+    public function getDate(){
+        return Carbon::parse($this->date)->format('d F Y');
+    }
     public function getDate_envoi_mail(){
         if($this->date_envoi_mail == null){
             return 'Date: ...';
@@ -24,33 +27,33 @@ class V_Devis extends Model
     }
     public function getNote_3eme_appel(){
         if ($this->note_3eme_appel == null){
-            return 'Note: ...';
+            return '...';
         }
-        return $this->getNote_3eme_appel();
+        return $this->note_3eme_appel;
     }
     public function getDate_2eme_appel(){
         if ($this->date_2eme_appel == null){
-            return 'Date: ...';
+            return '...';
         }
         return Carbon::parse($this->date_2eme_appel)->format('d F Y');
     }
     public function getNote_2eme_appel(){
         if ($this->note_2eme_appel == null){
-            return 'Note: ...';
+            return '...';
         }
-        return $this->getNote_2eme_appel();
+        return $this->note_2eme_appel;
     }
     public function getDate_1er_appel(){
         if ($this->date_1er_appel == null){
-            return 'Date: ...';
+            return '...';
         }
         return Carbon::parse($this->date_1er_appel)->format('d F Y');
     }
     public function getNote_1er_appel(){
         if ($this->note_1er_appel == null){
-            return 'Note: ...';
+            return '...';
         }
-        return $this->getNote_1er_appel();
+        return $this->note_1er_appel;
     }
     public function getDate_depot_chq_rac(){
         if($this->date_depot_chq_rac == null){

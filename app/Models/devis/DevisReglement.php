@@ -9,9 +9,12 @@ class DevisReglement extends Model
 {
     use HasFactory;
     protected $table = 'devis_reglements';
+    protected $fillable = [
+        'id_devis'
+    ];
 
-    public function createDevisReglement($id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac){
-        $m_DevisReglement = new DevisReglement();
+    public static function createDevisReglement($id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac){
+        $m_DevisReglement = DevisReglement::firstOrNew(['id_devis'=>$id_devis]);
         $m_DevisReglement->id_devis = $id_devis;
         $m_DevisReglement->date_paiement_cb_ou_esp = $date_paiement_cb_ou_esp;
         $m_DevisReglement->date_depot_chq_pec = $date_depot_chq_pec;

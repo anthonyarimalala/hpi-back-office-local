@@ -36,6 +36,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('supprimer-mutuelle/{dossier}/{mutuelle}', [\App\Http\Controllers\Dossier\DossierController::class, 'supprimerMutuelle'])->name('supprimer.mutuelle');
 
     // section: devis
+    Route::post('modifier-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'modifierDevis']);
+    Route::get('{dossier}/devis-prothese-chq/{id_devis}/modifier', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showModifierDevis']);
+    Route::get('liste-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getAllListeDevis']);
     Route::get('{dossier}/devis-prothese-chq/{id_devis}', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getDevis']);
     Route::get('{dossier}/nouveau-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'nouveauDevis']);
     Route::post('{dossier}/nouveau-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'creerDevis']);

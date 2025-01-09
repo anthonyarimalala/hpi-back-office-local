@@ -4,7 +4,7 @@
         <div class="col-12 text-center">
             <h1 class="display-4">Devis dossier: {{ $v_devis->dossier }}</h1>
             <div>
-                <a href="{{ asset('devis-prothese-chq/modifier/'.$v_devis->dossier) }}">
+                <a href="{{ asset($v_devis->dossier.'/devis-prothese-chq/'.$v_devis->id_devis.'/modifier') }}">
                     <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-pen"></i>Modifier</button>
                 </a>
             </div>
@@ -159,62 +159,59 @@
             </div>
         </div>
         <div class="col-lg-4 d-flex flex-column">
-
-            <div class="row flex-grow">
-                <div class="col-12 grid-margin stretch-card">
-                    <div class="card card-rounded">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <h4 class="card-title card-title-dash">Appels et mail</h4>
-                                    </div>
-                                    <div class="list-wrapper">
-                                        <ul class="todo-list todo-list-rounded">
-                                            <li class="d-block">
-                                                <div class="form-check w-100">
-                                                    <label class="form-check-label">
-                                                        {{ $v_devis->getNote_1er_appel() }}
-                                                        <i class="input-helper"></i></label>
-                                                    <div class="d-flex mt-2">
-                                                        <div class="ps-4 text-small me-3">{{ $v_devis->getDate_1er_appel() }}</div>
-                                                        <div class="badge badge-opacity-warning me-3">1er appel</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="d-block">
-                                                <div class="form-check w-100">
-                                                    <label class="form-check-label">
-                                                        {{ $v_devis->getNote_2eme_appel() }}
-                                                        <i class="input-helper"></i></label>
-                                                    <div class="d-flex mt-2">
-                                                        <div class="ps-4 text-small me-3">{{ $v_devis->getDate_2eme_appel() }}</div>
-                                                        <div class="badge badge-opacity-warning me-3">2ème appel</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="form-check w-100">
-                                                    <label class="form-check-label">
-                                                        {{ $v_devis->getNote_3eme_appel() }}
-                                                        <i class="input-helper"></i></label>
-                                                    <div class="d-flex mt-2">
-                                                        <div class="ps-4 text-small me-3">{{ $v_devis->getDate_3eme_appel() }}</div>
-                                                        <div class="badge badge-opacity-warning me-3">3ème appel</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="border-bottom-0">
-                                                <div class="form-check w-100">
-                                                    <div class="d-flex mt-2">
-                                                        <div class="ps-4 text-small me-3">{{ $v_devis->getDate_envoi_mail() }}</div>
-                                                        <div class="badge badge-opacity-success me-3">Email</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card card-rounded">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="card-title card-title-dash">Appels et mail</h4>
                                 </div>
+                            </div>
+                            <div class="list-wrapper">
+                                <ul class="todo-list todo-list-rounded">
+                                    <li class="d-block">
+                                        <div class="form-check w-100">
+                                            <label class="form-check-label">
+                                                {{ $v_devis->getNote_1er_appel() }}
+                                                <i class="input-helper"></i></label>
+                                            <div class="d-flex mt-2">
+                                                <div class="ps-4 text-small me-3"><i class="mdi mdi-calendar text-muted me-1"></i> {{ $v_devis->getDate_1er_appel() }}</div>
+                                                <div class="badge badge-opacity-warning me-3">1er appel</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="d-block">
+                                        <div class="form-check w-100">
+                                            <label class="form-check-label">
+                                                {{ $v_devis->getNote_2eme_appel() }}
+                                                <i class="input-helper"></i></label>
+                                            <div class="d-flex mt-2">
+                                                <div class="ps-4 text-small me-3"><i class="mdi mdi-calendar text-muted me-1"></i> {{ $v_devis->getDate_2eme_appel() }}</div>
+                                                <div class="badge badge-opacity-warning me-3">2ème appel</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check w-100">
+                                            <label class="form-check-label">
+                                                {{ $v_devis->getNote_3eme_appel() }}
+                                                <i class="input-helper"></i></label>
+                                            <div class="d-flex mt-2">
+                                                <div class="ps-4 text-small me-3"><i class="mdi mdi-calendar text-muted me-1"></i>{{ $v_devis->getDate_3eme_appel() }}</div>
+                                                <div class="badge badge-opacity-warning me-3">3ème appel</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="border-bottom-0">
+                                        <div class="form-check w-100">
+                                            <div class="d-flex mt-2">
+                                                <div class="ps-4 text-small me-3"><i class="mdi mdi-calendar text-muted me-1"></i>{{ $v_devis->getDate_envoi_mail() }}</div>
+                                                <div class="badge badge-opacity-success me-3">Email</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
