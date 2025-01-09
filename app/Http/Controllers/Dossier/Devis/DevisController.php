@@ -7,6 +7,7 @@ use App\Models\devis\Devis;
 use App\Models\devis\DevisAccordPec;
 use App\Models\devis\DevisAppelsEtMail;
 use App\Models\devis\DevisReglement;
+use App\Models\dossier\L_DossierMutuelle;
 use App\Models\praticien\Praticien;
 use App\Models\views\V_Devis;
 use App\Models\views\V_PatientDossier;
@@ -71,6 +72,9 @@ class DevisController extends Controller
         $data['v_devis'] = V_Devis::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
             ->first();
+        $data['mutuelles'] = L_DossierMutuelle::where('dossier', $dossier)
+            ->where('is_deleted', 0)
+            ->get();
         return view('dossier/devis/detail/devis-prothese-chq')->with($data);
     }
     public function creerDevis(Request $request)

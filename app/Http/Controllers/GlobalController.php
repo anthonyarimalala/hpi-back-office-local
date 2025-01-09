@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 class GlobalController extends Controller
 {
     //
+
     public function search(Request $request)
     {
         $query = $request->input('q');
@@ -20,6 +21,7 @@ class GlobalController extends Controller
             ->where('is_deleted', 0) // Filtrer les éléments non supprimés
             ->limit(7) // Limite à 7 résultats
             ->get();
+
 
         return response()->json($results);
     }

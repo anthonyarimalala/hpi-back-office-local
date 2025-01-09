@@ -48,6 +48,14 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('{dossier}/liste-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getListeDevis'])->name('liste-devis');
     Route::get('devis-prothese-chq/{dossier}', [\App\Http\Controllers\Dossier\DossierController::class, 'showDetailDossier']);
     Route::get('devis-prothese-chq/modifier/{dossier}', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showModifierDevis']);
+
+    // section: autres
+    Route::get('liste-praticiens', [\App\Http\Controllers\Autre\PraticienController::class, 'showPraticiens']);
+    Route::post('save-praticien', [\App\Http\Controllers\Autre\PraticienController::class, 'savePraticien']);
+    Route::post('delete-praticien', [\App\Http\Controllers\Autre\PraticienController::class, 'deletePraticien']);
+    Route::get('liste-dossier-status', [\App\Http\Controllers\Autre\DossierStatusController::class, 'showDossierStatus']);
+    Route::post('save-dossier-status', [\App\Http\Controllers\Autre\DossierStatusController::class, 'saveDossierStatus']);
+    Route::post('delete-dossier-status', [\App\Http\Controllers\Autre\DossierStatusController::class, 'deleteDossierStatus']);
 });
 
 

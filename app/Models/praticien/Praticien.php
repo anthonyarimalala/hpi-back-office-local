@@ -9,4 +9,5 @@ class Praticien extends Model
 {
     use HasFactory;
     protected $table = 'praticiens';
+    public $incrementing = false;
 }

@@ -18,6 +18,19 @@
                         <div class="card-body">
                             <div class="d-sm-flex justify-content-between align-items-start">
                                 <div>
+                                    <h4 class="card-title card-title-dash">Info Patient</h4>
+                                    <p class="card-subtitle card-subtitle-dash"> Nom: {{ $v_devis->nom }}</p>
+                                    <p class="card-subtitle card-subtitle-dash"> Status: {{ $v_devis->status }}</p>
+                                    <p class="card-subtitle card-subtitle-dash">
+                                        Mutuelle:
+                                        {{ $mutuelles->pluck('mutuelle')->join(' ') }}
+                                    </p>
+
+
+                                </div>
+                            </div>
+                            <div class="d-sm-flex justify-content-between align-items-start">
+                                <div>
                                     <h4 class="card-title card-title-dash">Devis</h4>
                                     <p class="card-subtitle card-subtitle-dash"> Date: @if($v_devis->date != null) {{ \Carbon\Carbon::parse($v_devis->date)->translatedFormat('d F Y') }} @endif</p>
                                 </div>

@@ -201,6 +201,20 @@
                         </a>
                     </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#autre" aria-expanded="false" aria-controls="ui-basic">
+                            <i class="menu-icon mdi mdi-dots-horizontal"></i>
+                            <span class="menu-title">Autres</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="autre">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" href="{{ asset('liste-dossier-status') }}">Status dossier</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="{{ asset('liste-praticiens') }}">Praticiens</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
 
 <!--
                     <li class="nav-item">
