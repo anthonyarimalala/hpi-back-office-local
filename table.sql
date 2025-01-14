@@ -1,3 +1,5 @@
+
+-- section: DEVIS
 -- DEBUT: clés primaires
 CREATE TABLE dossier_statuss(
     status VARCHAR(50) PRIMARY KEY,
@@ -16,29 +18,6 @@ CREATE TABLE praticiens(
     updated_at TIMESTAMP
 );
 
-CREATE TABLE pose_statuss(
-    id SERIAL PRIMARY KEY,
-    designation VARCHAR(255),
-    is_deleted INTEGER DEFAULT 0,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
-);
-
-CREATE TABLE cheque_natures(
-    id SERIAL PRIMARY KEY,
-    designation VARCHAR(20),
-    is_deleted INTEGER DEFAULT 0,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
-);
-
-CREATE TABLE cheque_situations(
-    id SERIAL PRIMARY KEY,
-    designation VARCHAR(20),
-    is_deleted INTEGER DEFAULT 0,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
-);
 -- FIN: clés primaires
 
 CREATE TABLE patients(
@@ -69,6 +48,23 @@ CREATE TABLE l_dossier_mutuelles(
     updated_at TIMESTAMP
 );
 
+CREATE TABLE devis_etats(
+                            etat VARCHAR(255) PRIMARY KEY,
+                            couleur VARCHAR(30)
+);
+INSERT INTO devis_etats VALUES
+                            ('',''),
+                            ('Ó relancer', '#FFFF00'),
+                            ('Dossier validÚ/ Travaux en cours', '#999999'),
+                            ('refusÚ par la mutuelle ', '#FF9900'),
+                            ('refusÚ par le patient ou remplacÚ par le praticien', '#FF0000'),
+                            ('dossier validÚ', '#00FFFF'),
+                            ('dossier C2S', '#4A86E8'),
+                            ('a voir avec Faten anomalie', '#9900FF'),
+                            ('dossier cloturÚ', '#34A853'),
+                            ('devis Ó refaire', '#EA9999'),
+                            ('Devis implant', '#FF00FF');
+
 CREATE TABLE devis(
     id SERIAL PRIMARY KEY,
     dossier VARCHAR(20) REFERENCES dossiers(dossier),
@@ -81,6 +77,10 @@ CREATE TABLE devis(
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
+ALTER TABLE devis
+    ADD COLUMN devis_etat VARCHAR,
+ADD CONSTRAINT fk_devis_etat FOREIGN KEY (devis_etat) REFERENCES devis_etats(etat);
+
 
 CREATE TABLE devis_accord_pecs(
     id SERIAL PRIMARY KEY,
@@ -133,3 +133,22 @@ INSERT INTO dossier_statuss(status, ordre) VALUES
 INSERT INTO praticiens(praticien) VALUES
                                       ('RL'),
                                       ('KC');
+DROP TABLE info_cheques;
+CREATE TABLE info_cheques(
+                             id SERIAL PRIMARY KEY,
+                             id_devis INTEGER REFERENCES devis(id),
+                             numero_cheque VARCHAR(20),
+                             montant_cheque FLOAT,
+                             nom_document VARCHAR(255),
+                             date_encaissement_cheque TIMESTAMP,
+                             date_1er_acte TIMESTAMP,
+                             nature_cheque VARCHAR(20),
+                             travaux_sur_devis TEXT,
+                             situation_cheque VARCHAR(255),
+                             observation TEXT,
+                             created_at TIMESTAMP,
+                             updated_at TIMESTAMP
+);
+
+
+

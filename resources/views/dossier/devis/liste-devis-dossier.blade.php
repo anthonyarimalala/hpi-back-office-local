@@ -53,19 +53,20 @@
                                     </thead>
                                     <tbody>
                                     @foreach($deviss as $devis)
-                                        <tr>
-                                            <td onclick="window.location.href='devis-prothese-chq/{{ $devis->id }}';" style="cursor:pointer;"><strong>{{ $devis->dossier }}</strong></td>
-                                            <td onclick="window.location.href='devis-prothese-chq/{{ $devis->id }}';" style="cursor:pointer;">{{ $devis->getDate() }}</td>
-                                            <td onclick="window.location.href='devis-prothese-chq/{{ $devis->id }}';" style="cursor:pointer;">{{ $devis->montant }}</td>
-                                            <td onclick="window.location.href='devis-prothese-chq/{{ $devis->id }}';" style="cursor:pointer;">
-                                            @if($devis->devis_signe == 'oui')
-                                                <label class="badge badge-info">Oui</label>
-                                            @else
-                                                Non
-                                            @endif
+                                        <tr style="background-color: {{ $devis->couleur }}">
+                                            <td onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;"><strong>{{ $devis->dossier }}</strong></td>
+                                            <td onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;"> {{ $devis->nom }}</td>
+                                            <td onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">{{ $devis->getDate() }}</td>
+                                            <td onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">{{ $devis->montant }}</td>
+                                            <td onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                                @if($devis->devis_signe == 'oui')
+                                                    <label class="badge badge-info">Oui</label>
+                                                @else
+                                                    Non
+                                                @endif
                                             </td>
-                                            <td onclick="window.location.href='devis-prothese-chq/{{ $devis->id }}';" style="cursor:pointer;">{{ $devis->praticien }}</td>
-                                            <td onclick="window.location.href='devis-prothese-chq/{{ $devis->id }}';" style="cursor:pointer;">{{ $devis->observation }}</td>
+                                            <td onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">{{ $devis->praticien }}</td>
+                                            <td onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">{{ $devis->observation }}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>

@@ -51,12 +51,33 @@ SELECT
     dam.note_2eme_appel,
     dam.date_3eme_appel,
     dam.note_3eme_appel,
-    dam.date_envoi_mail
+    dam.date_envoi_mail,
+    de.etat,
+    de.couleur
 FROM devis d
          JOIN dossiers dos ON d.dossier = dos.dossier
          JOIN patients pat ON dos.id_patient = pat.id
          LEFT JOIN devis_accord_pecs dap ON d.id = dap.id_devis
          LEFT JOIN devis_appels_et_mails dam ON d.id = dam.id_devis
-         LEFT JOIN devis_reglements dr ON d.id = dr.id_devis;
+         LEFT JOIN devis_reglements dr ON d.id = dr.id_devis
+         LEFT JOIN devis_etats de ON d.devis_etat = de.etat;
 
+CREATE VIEW v_cheques AS
+SELECT
+    d.dossier,
+    d.id AS id_devis,
+    ic.id AS id_info_cheques,
+    ic.numero_cheque ,
+    ic.montant_cheque ,
+    ic.nom_document ,
+    ic.date_encaissement_cheque ,
+    ic.date_1er_acte ,
+    ic.nature_cheque ,
+    ic.travaux_sur_devis ,
+    ic.situation_cheque ,
+    ic.observation ,
+    ic.created_at ,
+    ic.updated_at
+FROM devis d
+        LEFT JOIN info_cheques ic ON d.id = ic.id_devis;
 

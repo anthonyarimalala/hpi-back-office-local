@@ -17,14 +17,14 @@
                         @csrf
                         <div class="form-group">
                             <label for="code_u">Code Utilisateur :</label>
-                            <input type="text" id="code_u" name="code_u" class="form-control" required>
+                            <input type="text" id="code_u" name="code_u" class="form-control" value="U0001" required>
                             @error('code_u')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="form-group">
                             <label for="password">Mot de passe :</label>
-                            <input type="password" id="password" name="password" class="form-control" required>
+                            <input type="password" id="password" name="password" class="form-control" value="anthonyy" required>
                             @error('password')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror

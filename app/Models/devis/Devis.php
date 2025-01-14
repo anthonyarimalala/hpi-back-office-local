@@ -27,12 +27,13 @@ class Devis extends Model
         // Retourne l'ID du devis créé
         return $devis->id;
     }
-    public static function updateDevis($id_devis, $devis_signe, $observation){
+    public static function updateDevis($id_devis, $devis_signe, $observation, $devis_etat){
         $m_devis = Devis::find($id_devis);
         $m_devis->devis_signe = $devis_signe;
         $m_devis->observation = $observation;
+        $m_devis->devis_etat = $devis_etat;
         $m_devis->save();
-        return $m_devis->id;
+        return $m_devis;
     }
 
     public function getDate(){

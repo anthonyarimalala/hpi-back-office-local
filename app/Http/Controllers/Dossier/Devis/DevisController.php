@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\devis\Devis;
 use App\Models\devis\DevisAccordPec;
 use App\Models\devis\DevisAppelsEtMail;
+use App\Models\devis\DevisEtat;
 use App\Models\devis\DevisReglement;
 use App\Models\dossier\L_DossierMutuelle;
 use App\Models\praticien\Praticien;
 use App\Models\views\V_Devis;
 use App\Models\views\V_PatientDossier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DevisController extends Controller
 {
@@ -23,6 +25,7 @@ class DevisController extends Controller
             $id_devis = $request->input('id_devis');
             $devis_signe = $request->input('devis_signe');
             $observation = $request->input('observation');
+            $devis_etat = $request->input('devis_etat');
 
             // table: devis_accord_pecs
             $date_envoi_pec = $request->input('date_envoi_pec');
@@ -48,12 +51,16 @@ class DevisController extends Controller
 
             //print($date_envoi_mail);
 
-            Devis::updateDevis($id_devis, $devis_signe, $observation);
+            $m_devis = Devis::updateDevis($id_devis, $devis_signe, $observation, $devis_etat);
             DevisAccordPec::createOrUpdateDevisAccordPecs($id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_mutuelle, $part_rac);
             DevisReglement::createDevisReglement($id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac);
             DevisAppelsEtMail::createDevisAppelsEtMail($id_devis, $date_1er_appel, $note_1er_appel, $date_2eme_appel, $note_2eme_appel, $date_3eme_appel, $note_3eme_appel, $date_envoi_mail);
 
-            return back()->with('success', 'Le devis a été modifié avec succès.');
+            return redirect()->route('devis.detail', [
+                'dossier' => $m_devis->dossier,    // Remplacez par la valeur réelle de $dossier
+                'id_devis' => $id_devis      // Remplacez par la valeur réelle de $id_devis
+            ])->with('success', 'Le devis a été modifié avec succès.');
+
         } catch (\Exception $e) {
             // return back()->with('error', 'Une erreur est survenue lors de la modification du devis : ' . $e->getMessage());
             print ($e->getMessage());
@@ -64,8 +71,9 @@ class DevisController extends Controller
         $data['v_devis'] = V_Devis::where('dossier',$dossier)
             ->where('id_devis', $id_devis)
             ->first();
+        $data['etat_devis'] = DevisEtat::all();
         $data['praticiens'] = Praticien::where('is_deleted',0)->get();
-        return view('dossier/devis/detail/modifier/devis-prothese-chq-modifier')->with($data);
+        return view('dossier/devis/detail/modifier/devis-modifier')->with($data);
     }
 
     public function getDevis($dossier, $id_devis){
@@ -75,7 +83,7 @@ class DevisController extends Controller
         $data['mutuelles'] = L_DossierMutuelle::where('dossier', $dossier)
             ->where('is_deleted', 0)
             ->get();
-        return view('dossier/devis/detail/devis-prothese-chq')->with($data);
+        return view('dossier/devis/detail/devis')->with($data);
     }
     public function creerDevis(Request $request)
     {
@@ -112,7 +120,7 @@ class DevisController extends Controller
         return view('dossier/devis/nouveau-devis')->with($data);
     }
     public function getListeDevis($dossier){
-        $data['deviss'] = Devis::where('dossier', $dossier)->orderBy('date', 'desc')->get();
+        $data['deviss'] = V_Devis::where('dossier', $dossier)->orderBy('date', 'desc')->get();
         $data['dossier'] = V_PatientDossier::where('dossier', $dossier)->first();
         return view('dossier/devis/liste-devis-dossier')->with($data);
     }

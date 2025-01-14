@@ -29,6 +29,14 @@
                             <div class="card-body">
                                 <h4 class="card-title">Devis</h4>
                                 <div class="form-group">
+                                    <label for="devis_etat">Etat</label>
+                                    <select id="devis_etat" class="form-select" name="devis_etat" style="background-color: {{ $v_devis->couleur }}">
+                                        @foreach($etat_devis as $ed)
+                                            <option value="{{ $ed->etat }}" style="background-color: {{$ed->couleur}}" @if($ed->etat == $v_devis->etat) selected @endif>{{ $ed->etat }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label for="date">Date</label>
                                     <input type="date" class="form-control" id="date" name="date" value="{{ $v_devis->date ? \Carbon\Carbon::parse($v_devis->date)->format('Y-m-d') : '' }}" readonly>
                                 </div>
@@ -65,7 +73,7 @@
                     <div class="col-12 grid-margin stretch-card">
                         <div class="card card-rounded">
                             <div class="card-body">
-                                <h4 class="card-title">Accord PEC</h4>
+                                <h4 class="card-title">Retour mutuelle</h4>
                                 <div class="form-group">
                                     <label for="envoi_pec">Envoi PEC</label>
                                     <input type="date" class="form-control" id="envoi_pec" name="date_envoi_pec" value="{{ $v_devis->date_envoi_pec ? \Carbon\Carbon::parse($v_devis->date_envoi_pec)->format('Y-m-d'):'' }}">
@@ -170,4 +178,15 @@
             </div>
         </div>
     </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectElement = document.getElementById('devis_etat');
+
+            selectElement.addEventListener('change', function () {
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                const color = selectedOption.style.backgroundColor;
+                selectElement.style.backgroundColor = color;
+            });
+        });
+    </script>
 @endsection

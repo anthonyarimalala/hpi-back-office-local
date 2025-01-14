@@ -168,10 +168,6 @@
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
             <ul class="nav">
 
-
-                @if(\Illuminate\Support\Facades\Auth::user()->role == 'cuisinier' )
-
-                @endif
                 <li class="nav-item">
                     <a class="nav-link" href="{{asset('/')}}">
                         <i class="mdi mdi-view-dashboard menu-icon"></i>

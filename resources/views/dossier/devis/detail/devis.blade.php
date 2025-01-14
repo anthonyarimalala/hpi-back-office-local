@@ -1,10 +1,23 @@
 @extends(session('layout') ?? 'layouts.app')
 @section('content')
+    <div class="d-sm-flex align-items-center justify-content-between border-bottom">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#devis" role="tab" aria-controls="overview" aria-selected="true">Devis</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" href="{{ asset($v_devis->dossier.'/prothese/'.$v_devis->id_devis.'/detail') }}" role="tab" aria-selected="false">Prothèse</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" href="{{ asset($v_devis->dossier.'/cheque/'.$v_devis->id_devis.'/detail') }}" role="tab" aria-selected="false">Chèque</a>
+            </li>
+        </ul>
+    </div>
     <div class="row mb-4">
         <div class="col-12 text-center">
             <h1 class="display-4">Devis dossier: {{ $v_devis->dossier }}</h1>
             <div>
-                <a href="{{ asset($v_devis->dossier.'/devis-prothese-chq/'.$v_devis->id_devis.'/modifier') }}">
+                <a href="{{ asset($v_devis->dossier.'/devis/'.$v_devis->id_devis.'/modifier') }}">
                     <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-pen"></i>Modifier</button>
                 </a>
             </div>
@@ -18,6 +31,9 @@
                         <div class="card-body">
                             <div class="d-sm-flex justify-content-between align-items-start">
                                 <div>
+                                    @if($v_devis->etat != '' && $v_devis->etat != null)
+                                        <h3 class="p-3 text-white" style="background-color: {{ $v_devis->couleur }};">{{ $v_devis->etat }}</h3>
+                                    @endif
                                     <h4 class="card-title card-title-dash">Info Patient</h4>
                                     <p class="card-subtitle card-subtitle-dash"> Nom: {{ $v_devis->nom }}</p>
                                     <p class="card-subtitle card-subtitle-dash"> Status: {{ $v_devis->status }}</p>
@@ -64,7 +80,7 @@
                         <div class="card-body">
                             <div class="d-sm-flex justify-content-between align-items-start">
                                 <div>
-                                    <h4 class="card-title card-title-dash">Accord PEC</h4>
+                                    <h4 class="card-title card-title-dash">Retour mutuelle</h4>
                                     <p class="card-subtitle card-subtitle-dash">Charge d'acceuil</p>
                                 </div>
                             </div>
