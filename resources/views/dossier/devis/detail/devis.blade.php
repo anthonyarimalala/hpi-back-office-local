@@ -201,7 +201,7 @@
                                                 <i class="input-helper"></i></label>
                                             <div class="d-flex mt-2">
                                                 <div class="ps-4 text-small me-3"><i class="mdi mdi-calendar text-muted me-1"></i> {{ $v_devis->getDate_1er_appel() }}</div>
-                                                <div class="badge badge-opacity-warning me-3">1er appel</div>
+                                                <div @if($v_devis->note_1er_appel == null || $v_devis->note_1er_appel == '') class="badge badge-opacity-warning me-3" @else class="badge badge-opacity-success me-3" @endif >1er appel</div>
                                             </div>
                                         </div>
                                     </li>
@@ -212,7 +212,7 @@
                                                 <i class="input-helper"></i></label>
                                             <div class="d-flex mt-2">
                                                 <div class="ps-4 text-small me-3"><i class="mdi mdi-calendar text-muted me-1"></i> {{ $v_devis->getDate_2eme_appel() }}</div>
-                                                <div class="badge badge-opacity-warning me-3">2ème appel</div>
+                                                <div @if($v_devis->note_2eme_appel == null || $v_devis->note_2eme_appel == '') class="badge badge-opacity-warning me-3" @else class="badge badge-opacity-success me-3" @endif>2ème appel</div>
                                             </div>
                                         </div>
                                     </li>
@@ -223,7 +223,7 @@
                                                 <i class="input-helper"></i></label>
                                             <div class="d-flex mt-2">
                                                 <div class="ps-4 text-small me-3"><i class="mdi mdi-calendar text-muted me-1"></i>{{ $v_devis->getDate_3eme_appel() }}</div>
-                                                <div class="badge badge-opacity-warning me-3">3ème appel</div>
+                                                <div @if($v_devis->note_3eme_appel == null || $v_devis->note_3eme_appel == '') class="badge badge-opacity-warning me-3" @else class="badge badge-opacity-success me-3" @endif>3ème appel</div>
                                             </div>
                                         </div>
                                     </li>
@@ -231,16 +231,18 @@
                                         <div class="form-check w-100">
                                             <div class="d-flex mt-2">
                                                 <div class="ps-4 text-small me-3"><i class="mdi mdi-calendar text-muted me-1"></i>{{ $v_devis->getDate_envoi_mail() }}</div>
-                                                <div class="badge badge-opacity-success me-3">Email</div>
+                                                <div class="badge badge-opacity-warning me-3">Email</div>
                                             </div>
                                         </div>
                                     </li>
+
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 @endsection

@@ -163,7 +163,12 @@
                                     <input type="date" class="form-control" id="date_email" name="date_envoi_mail"
                                            value="{{ $v_devis->date_envoi_mail ? \Carbon\Carbon::parse($v_devis->date_envoi_mail)->format('Y-m-d') : '' }}">
                                 </div>
-
+                                <div class="form-group">
+                                    <input class="form-check-input" type="checkbox" id="toutValider">
+                                    <label class="form-check-label" for="toutValider">
+                                        Tout marquer comme validé
+                                    </label>
+                                </div>
                             </div>
 
                         </div>
