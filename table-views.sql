@@ -62,7 +62,7 @@ FROM devis d
          LEFT JOIN devis_reglements dr ON d.id = dr.id_devis
          LEFT JOIN devis_etats de ON d.devis_etat = de.etat;
 
-CREATE VIEW v_cheques AS
+CREATE OR REPLACE VIEW v_cheques AS
 SELECT
     d.dossier,
     d.id AS id_devis,

@@ -54,7 +54,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('{dossier}/prothese/{id_devis}/detail', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'showProthese']);
 
     // section: chèque
-    Route::get('{dossier}/cheque/{id_devis}/detail', [\App\Http\Controllers\Dossier\Cheque\ChequeController::class, 'showCheque']);
+    Route::get('{dossier}/cheque/{id_devis}/detail', [\App\Http\Controllers\Dossier\Cheque\ChequeController::class, 'showCheque'])->name('cheque.detail');
+    Route::get('{dossier}/cheque/{id_devis}/modifier', [\App\Http\Controllers\Dossier\Cheque\ChequeController::class, 'showModifierCheque']);
+    Route::post('modifier-cheque', [\App\Http\Controllers\Dossier\Cheque\ChequeController::class, 'modifierCheque']);
 
     // section: autres
     Route::get('liste-praticiens', [\App\Http\Controllers\Autre\PraticienController::class, 'showPraticiens']);

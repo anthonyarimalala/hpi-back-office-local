@@ -17,7 +17,7 @@
         <div class="col-12 text-center">
             <h1 class="display-4">Chèque dossier: {{ $v_cheque->dossier }}</h1>
             <div>
-                <a href="">
+                <a href="{{ asset($v_cheque->dossier.'/cheque/'.$v_cheque->id_devis.'/modifier') }}">
                     <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-pen"></i>Modifier</button>
                 </a>
             </div>
@@ -29,20 +29,20 @@
                 <div class="card-body">
                     <h4 class="card-title">Info chèque</h4>
                     <p class="card-description">
-                        <code>Nature cheque</code>
+                        <code>Nature: {{ $v_cheque->getNature_cheque() }}</code>
                     </p>
                     <div class="row">
                         <div class="col-md-6">
                             <address>
-                                <p class="fw-bold">N° 5342454</p>
+                                <p class="fw-bold">N° {{ $v_cheque->getNumero_cheque() }}</p>
                                 <p>
-                                    <strong>Nom document:</strong> Lorem Ipsum
+                                    <strong>Nom document:</strong> {{ $v_cheque->getNom_document() }}
                                 </p>
                                 <p>
-                                    <strong>Tavaux Sur le Devis:</strong> Lorem Ipsum
+                                    <strong>Tavaux Sur le Devis:</strong> {{ $v_cheque->getTravaux_sur_devis() }}
                                 </p>
                                 <p>
-                                    <strong>Situation:</strong> Lorem Ipsum
+                                    <strong>Situation:</strong> {{ $v_cheque->getSituation_cheque() }}
                                 </p>
                             </address>
                         </div>
@@ -52,22 +52,25 @@
                                     Date d'encaissement
                                 </p>
                                 <p class="mb-2">
-                                    12 avril 2024
+                                    {{ $v_cheque->getDate_encaissement_cheque() }}
                                 </p>
                                 <p class="fw-bold">
                                     Date de 1er L'acte
                                 </p>
                                 <p>
-                                    14 avril 2024
+                                    {{ $v_cheque->getDate_1er_acte() }}
                                 </p>
                             </address>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <h4 class="card-title">1 200,00 Euro</h4>
+                    <h4 class="card-title">Montant: {{ $v_cheque->getMontant_cheque() }}</h4>
+                    <p class="fw-bold">
+                        Observation:
+                    </p>
                     <p class="lead">
-                        Observations
+                        {{ $v_cheque->getObservation() }}
                     </p>
                 </div>
             </div>

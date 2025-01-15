@@ -56,6 +56,7 @@ class DevisController extends Controller
             DevisReglement::createDevisReglement($id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac);
             DevisAppelsEtMail::createDevisAppelsEtMail($id_devis, $date_1er_appel, $note_1er_appel, $date_2eme_appel, $note_2eme_appel, $date_3eme_appel, $note_3eme_appel, $date_envoi_mail);
 
+
             return redirect()->route('devis.detail', [
                 'dossier' => $m_devis->dossier,    // Remplacez par la valeur réelle de $dossier
                 'id_devis' => $id_devis      // Remplacez par la valeur réelle de $id_devis
@@ -73,7 +74,10 @@ class DevisController extends Controller
             ->first();
         $data['etat_devis'] = DevisEtat::all();
         $data['praticiens'] = Praticien::where('is_deleted',0)->get();
-        return view('dossier/devis/detail/modifier/devis-modifier')->with($data);
+        $data['mutuelles'] = L_DossierMutuelle::where('dossier', $dossier)
+            ->where('is_deleted', 0)
+            ->get();
+        return view('dossier/devis/detail/modifier/devis-modifier-2')->with($data);
     }
 
 
