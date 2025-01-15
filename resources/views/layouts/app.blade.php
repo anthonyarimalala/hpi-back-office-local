@@ -76,7 +76,7 @@
                     <img src="{{ asset('HPI/logo.jpg') }}" alt="logo" />
                 </a>
                 <a class="navbar-brand brand-logo-mini" href="index.html">
-                    <img src="{{ asset('star-admin2/images/logo-mini.svg') }}" alt="logo" />
+                    <img src="{{ asset('HPI/logo.jpg') }}" alt="logo" />
                 </a>
             </div>
         </div>

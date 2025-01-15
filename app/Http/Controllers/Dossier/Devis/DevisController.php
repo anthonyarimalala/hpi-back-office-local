@@ -76,6 +76,7 @@ class DevisController extends Controller
         return view('dossier/devis/detail/modifier/devis-modifier')->with($data);
     }
 
+
     public function getDevis($dossier, $id_devis){
         $data['v_devis'] = V_Devis::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
@@ -124,8 +125,69 @@ class DevisController extends Controller
         $data['dossier'] = V_PatientDossier::where('dossier', $dossier)->first();
         return view('dossier/devis/liste-devis-dossier')->with($data);
     }
-    public function getAllListeDevis(){
-        $data['deviss'] = V_Devis::orderBy('date', 'desc')->get();
-        return view('devis/liste-devis')->with($data);
+
+    /*
+    public function getAllListeDevis(Request $request){
+        $query = V_Devis::query();
+        $data['deviss'] = $query->orderBy('date', 'desc')->paginate(20);
+        //print($query->toSql());
+        $data['praticiens'] = Praticien::all();
+        return view('devis/liste-devis-2')->with($data);
     }
+    */
+
+
+    public function getAllListeDevis(Request $request){
+        $date_devis_debut = $request->input('date_devis_debut');
+        $date_devis_fin = $request->input('date_devis_fin');
+        $montant_min = $request->input('montant_min');
+        $montant_max = $request->input('montant_max');
+        $devis_signe = $request->input('devis_signe');
+        $praticiens = $request->input('praticiens');
+
+        // Création de la requête de base
+        $query = V_Devis::query(); // Crée une requête de base
+
+        // Applique les filtres de date
+        if ($date_devis_debut) {
+            $query->where('date', '>=', $date_devis_debut);
+        }
+        if ($date_devis_fin) {
+            $query->where('date', '<=', $date_devis_fin);
+        }
+        if ($montant_min) {
+            $query->where('montant', '>=', $montant_min);
+        }
+        if ($montant_max) {
+            $query->where('montant', '<=', $montant_max);
+        }
+        if ($devis_signe != '' || $devis_signe) {
+            $query->where('devis_signe', $devis_signe);
+        }
+        if ($praticiens && count($praticiens) > 0) {
+            $query->whereIn('praticien', $praticiens); // Exclut les praticiens présents dans le tableau
+        }
+
+        // Exécution de la requête avec pagination (20 éléments par page)
+        $data['deviss'] = $query->orderBy('date', 'desc')->paginate(20)->appends([
+            'date_devis_debut' => $date_devis_debut,
+            'date_devis_fin' => $date_devis_fin,
+            'montant_min' => $montant_min,
+            'montant_max' => $montant_max,
+            'devis_signe' => $devis_signe,
+            'praticiens' => $praticiens
+        ]);
+        $data['praticiens'] = Praticien::all();
+
+        return view('devis/liste-devis-2')->with($data)
+            ->with([
+            'inp_date_devis_debut' => $date_devis_debut,
+            'inp_date_devis_fin' => $date_devis_fin,
+            'inp_montant_min' => $montant_min,
+            'inp_montant_max' => $montant_max,
+            'inp_devis_signe' => $devis_signe,
+            'inp_praticiens' => $praticiens
+        ]);
+    }
+
 }
