@@ -45,7 +45,8 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('code_u', $request->code_u);
+        $user = User::where('code_u', $request->code_u)
+            ->where('is_deleted', 0);
         if($user == null){
             return back()->withErrors([
                 'code_u' => 'Code Utilisateur non reconu.',

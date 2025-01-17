@@ -52,6 +52,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     // section: prothèse
     Route::get('{dossier}/prothese/{id_devis}/detail', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'showProthese']);
+    Route::get('{dossier}/prothese/{id_devis}/modifier', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'showModifierProthese']);
+    Route::post('modifier-prothese', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'modifierProthese']);
 
     // section: chèque
     Route::get('{dossier}/cheque/{id_devis}/detail', [\App\Http\Controllers\Dossier\Cheque\ChequeController::class, 'showCheque'])->name('cheque.detail');
@@ -68,6 +70,14 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     // section: dashboard
     Route::get('dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboard'])->name('dashboard');
+
+    // section: gestion
+        //utilisateur
+        Route::get('utilisateurs',[\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'showListeUtilisateurs']);
+        Route::post('creer-utilisateur', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'creerUtilisateur']);
+        Route::get('effacer-utilisateur/{code_u}', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'effacerUtilisateur']);
+
+
 });
 
 

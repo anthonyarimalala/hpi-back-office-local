@@ -39,7 +39,7 @@
                                     <strong>Nom document:</strong> {{ $v_cheque->getNom_document() }}
                                 </p>
                                 <p>
-                                    <strong>Tavaux Sur le Devis:</strong> {{ $v_cheque->getTravaux_sur_devis() }}
+                                    <strong>Travaux Sur le Devis:</strong> {{ $v_cheque->getTravaux_sur_devis() }}
                                 </p>
                                 <p>
                                     <strong>Situation:</strong> {{ $v_cheque->getSituation_cheque() }}
@@ -48,30 +48,18 @@
                         </div>
                         <div class="col-md-6">
                             <address class="text-primary">
-                                <p class="fw-bold">
-                                    Date d'encaissement
-                                </p>
-                                <p class="mb-2">
-                                    {{ $v_cheque->getDate_encaissement_cheque() }}
-                                </p>
-                                <p class="fw-bold">
-                                    Date de 1er L'acte
-                                </p>
-                                <p>
-                                    {{ $v_cheque->getDate_1er_acte() }}
-                                </p>
+                                <p class="fw-bold">Date d'encaissement</p>
+                                <p class="mb-2">{{ $v_cheque->getDate_encaissement_cheque() }}</p>
+                                <p class="fw-bold">Date de 1er L'acte</p>
+                                <p>{{ $v_cheque->getDate_1er_acte() }}</p>
                             </address>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <h4 class="card-title">Montant: {{ $v_cheque->getMontant_cheque() }}</h4>
-                    <p class="fw-bold">
-                        Observation:
-                    </p>
-                    <p class="lead">
-                        {{ $v_cheque->getObservation() }}
-                    </p>
+                    <p class="fw-bold">Observation:</p>
+                    <p class="lead">{{ $v_cheque->getObservation() }}</p>
                 </div>
             </div>
         </div>

@@ -100,7 +100,7 @@
                             </p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
-                                    <p class="mb-0 text-small text-muted">{{ $v_devis->getDate_depot_chq_part_mut() }}</p>
+                                    <p class="mb-0 text-small text-muted">{{ $v_devis->getPart_mutuelle() }}</p>
                                 </div>
 
                             </div>
@@ -113,7 +113,7 @@
                             </p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
-                                    <p class="mb-0 text-small text-muted">{{ $v_devis->getDate_depot_chq_rac() }}</p>
+                                    <p class="mb-0 text-small text-muted">{{ $v_devis->getPart_rac() }}</p>
                                 </div>
 
                             </div>

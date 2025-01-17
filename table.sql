@@ -1,4 +1,8 @@
 
+ALTER TABLE users
+    ADD COLUMN is_deleted INTEGER NOT NULL DEFAULT 0;
+
+
 -- section: DEVIS
 -- DEBUT: clés primaires
 CREATE TABLE dossier_statuss(
@@ -150,5 +154,38 @@ CREATE TABLE info_cheques(
                              updated_at TIMESTAMP
 );
 
+CREATE TABLE prothese_empreintes(
+                                    id SERIAL PRIMARY KEY,
+                                    id_devis SERIAL REFERENCES devis(id),
+                                    laboratoire VARCHAR(255),
+                                    date_empreinte TIMESTAMP,
+                                    date_envoi_labo TIMESTAMP,
+                                    travail_demande TEXT,
+                                    numero_dent VARCHAR(255),
+                                    observations TEXT,
+                                    created_at TIMESTAMP,
+                                    updated_at TIMESTAMP
+);
+CREATE TABLE prothese_retour_labos(
+                                      id SERIAL PRIMARY KEY,
+                                      id_devis INTEGER REFERENCES devis(id),
+                                      date_livraison TIMESTAMP,
+                                      numero_suivi VARCHAR(20),
+                                      numero_facture_labo VARCHAR(20),
+                                      created_at TIMESTAMP,
+                                      updated_at TIMESTAMP
+);
+CREATE TABLE prothese_travaux(
+                                 id SERIAL PRIMARY KEY,
+                                 id_devis INTEGER REFERENCES devis(id),
+                                 date_pose_prevue TIMESTAMP,
+                                 statut VARCHAR(255),
+                                 date_pose_reel TIMESTAMP,
+                                 organisme_payeur VARCHAR(255),
+                                 montant_encaisse FLOAT,
+                                 date_controle_paiement TIMESTAMP,
+                                 created_at TIMESTAMP,
+                                 updated_at TIMESTAMP
+);
 
 

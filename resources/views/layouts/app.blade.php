@@ -73,12 +73,13 @@
             </div>
             <div>
                 <a class="navbar-brand brand-logo" href="index.html">
-                    <img src="{{ asset('HPI/logo.jpg') }}" alt="logo" />
+                    <img src="{{ asset('HPI/logo.jpg') }}" alt="logo" style="width: 100px; height: auto; object-fit: contain;" />
                 </a>
                 <a class="navbar-brand brand-logo-mini" href="index.html">
-                    <img src="{{ asset('HPI/logo.jpg') }}" alt="logo" />
+                    <img src="{{ asset('HPI/logo.jpg') }}" alt="logo" style="width: 75px; height: auto; object-fit: contain;" />
                 </a>
             </div>
+
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-top">
             <ul class="navbar-nav">
@@ -210,9 +211,16 @@
                             </ul>
                         </div>
                     </li>
+                <li class="nav-item nav-category">Gestion des utilisateurs</li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ asset('utilisateurs') }}">
+                        <i class="mdi mdi-account-multiple menu-icon"></i>
+                        <span class="menu-title">Utilisateurs</span>
+                    </a>
+                </li>
 
 
-<!--
+                <!--
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#entree" aria-expanded="false" aria-controls="ui-basic">
                             <i class="menu-icon mdi mdi-cart-arrow-down"></i>
