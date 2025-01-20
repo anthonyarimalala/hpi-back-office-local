@@ -45,7 +45,7 @@ class Dashboard extends Model
                 ) AS appels_mails
                 JOIN devis ON appels_mails.id_devis = devis.id
                 JOIN dossiers ON devis.dossier = dossiers.dossier
-                JOIN patients ON patients.id = dossiers.id_patient
+
                 WHERE appels_mails.date_appel::date = CURRENT_DATE;
                             "
                         );

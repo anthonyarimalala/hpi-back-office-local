@@ -32,12 +32,9 @@ class DossierController extends Controller
     {
         $i_dossier = $request->input('dossier');
         $i_status = $request->input('status');
-        $i_mutuelles = $request->input('mutuelle', []);
+        $mutuelle = $request->input('mutuelle');
 
-        Dossier::modifierDossier($i_dossier, $i_status);
-        foreach ($i_mutuelles as $i_mutuelle){
-            L_DossierMutuelle::insertL_DossierMutuelle($i_dossier, $i_mutuelle);
-        }
+        Dossier::modifierDossier($i_dossier, $i_status, $mutuelle);
         return back()->with('success', 'Le dossier "'.$i_dossier.'" a été mis à jour.');
     }
     public function showModifierDossier($dossier)
@@ -46,31 +43,41 @@ class DossierController extends Controller
             ->where('is_deleted', 0)
             ->orderBy('status', 'asc')
             ->get();
-        $data['v_dossier'] = V_Dossier::where('dossier', $dossier)
+        $data['v_dossier'] = Dossier::where('dossier', $dossier)
             ->where('is_deleted', 0)
             ->first();
-        $data['dossier_muts'] = L_DossierMutuelle::where('dossier', $dossier)
-            ->where('is_deleted', 0)
-            ->get();
 
         // print($data['v_dossier']);
         return view('dossier/modifier-dossier')->with($data);
     }
-    public function insertDossier(Request $request){
-        $validated = $request->validate([
-           'numero' => 'required|min:3',
-           'id_patient' => 'required',
-           'status' => 'required',
-        ]);
-        $numero = $request->input('numero');
-        $id_patient =$request->input('id_patient');
-        $status = $request->input('status');
-        Dossier::insertDossier($numero, $id_patient, $status);
-        return back()->with('success', 'Le dossier "'.$numero.'" a été ajouté avec success!');
-    }
     public function showDossiers()
     {
-        $data['v_dossiers'] = V_Dossier::all();
+        $data['v_dossiers'] = Dossier::all();
         return view('dossier/liste-dossier')->with($data);
+    }
+
+    public function insertDossier(Request $request)
+    {
+        $validated = $request->validate([
+            'nom' => 'required|string|min:3',
+            'date_naissance' => 'required',
+        ]);
+        $nom = $request->input('nom');
+        $date_naissance = $request->input('date_naissance');
+        $dossier = $request->input('dossier');
+        $status = $request->input('status');
+        $mutuelle = $request->input('mutuelle');
+
+        Dossier::insertDossier($dossier, $nom, $date_naissance, $status, $mutuelle); // insérer son dossier
+
+
+        return redirect()->route('dossiers')->with('success', 'Le patient "'.$nom.'" a été ajouté avec success');
+    }
+    public function showInsertDossier(Request $request){
+        $data['statuss'] = DossierStatus::orderBy('ordre', 'desc')
+            ->orderBy('status', 'asc')
+            ->where('is_deleted', 0)
+            ->get();
+        return view('dossier/nouveau-dossier')->with($data);
     }
 }

@@ -24,7 +24,7 @@ class GlobalController extends Controller
             ->get();
         */
                 $results = DB::select("
-                    SELECT * FROM v_dossiers
+                    SELECT * FROM dossiers
                     WHERE (dossier ILIKE ? OR nom ILIKE ? OR TO_CHAR(date_naissance, 'DD-MM-YYYY') ILIKE ?)
                     AND is_deleted = 0
                     LIMIT 7

@@ -78,14 +78,10 @@ CREATE TABLE devis(
     praticien VARCHAR(10) REFERENCES praticiens(praticien),
     observation TEXT,
     is_deleted INTEGER DEFAULT 0,
+    devis_etat VARCHAR REFERENCES devis_etats(etat),
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
-ALTER TABLE devis
-    ADD COLUMN devis_etat VARCHAR,
-ADD CONSTRAINT fk_devis_etat FOREIGN KEY (devis_etat) REFERENCES devis_etats(etat);
-
-
 CREATE TABLE devis_accord_pecs(
     id SERIAL PRIMARY KEY,
     id_devis INTEGER REFERENCES devis(id),

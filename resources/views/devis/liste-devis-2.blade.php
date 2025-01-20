@@ -74,7 +74,7 @@
                                     <thead>
                                     <!-- Section INFO DEVIS -->
                                     <tr>
-                                        <th class="infoCheques" colspan="6" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO DEVIS</th>
+                                        <th class="infoCheques" colspan="8" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO DEVIS</th>
                                         <th class="infoAccordPec" colspan="4" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO ACCORD PEC</th>
                                         <th class="appelsMail" colspan="7" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">APPELS & MAIL</th>
                                         <th class="infoEmpreinte" colspan="6" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO D'EMPREINTE</th>
@@ -91,66 +91,70 @@
                                         <!-- 1 -->
                                         <th onclick="sortTableByString('myTable', 1)" class="infoCheques">Patient<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 2 -->
-                                        <th onclick="sortTableByDate('myTable', 2)" class="infoCheques">Date<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 2)" class="infoCheques">Status<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 3 -->
-                                        <th onclick="sortTableByNumber('myTable', 3)" class="infoCheques">Montant<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 3)" class="infoCheques">Mutuelle<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 4 -->
-                                        <th onclick="sortTableByString('myTable', 4)" class="infoCheques">Devis signé<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 4)" class="infoCheques">Date<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 5 -->
-                                        <th onclick="sortTableByString('myTable', 5)" style="border-right: 2px solid #000;" class="infoCheques">Praticien<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
-                                        <!-- INFO ACCORD PEC -->
+                                        <th onclick="sortTableByNumber('myTable', 5)" class="infoCheques">Montant<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 6 -->
-                                        <th onclick="sortTableByDate('myTable', 6)" class="infoAccordPec">Date envoie PEC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 6)" class="infoCheques">Devis signé<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 7 -->
-                                        <th onclick="sortTableByDate('myTable', 7)" class="infoAccordPec">Date fin validité PEC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 7)" style="border-right: 2px solid #000;" class="infoCheques">Praticien<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <!-- INFO ACCORD PEC -->
                                         <!-- 8 -->
-                                        <th onclick="sortTableByNumber('myTable', 8)" class="infoAccordPec">Part mutuelle<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 8)" class="infoAccordPec">Date envoie PEC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 9 -->
-                                        <th onclick="sortTableByNumber('myTable', 9)" style="border-right: 2px solid #000;" class="infoAccordPec">Part RAC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
-                                        <!-- APPELS & MAIL -->
+                                        <th onclick="sortTableByDate('myTable', 9)" class="infoAccordPec">Date fin validité PEC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 10 -->
-                                        <th onclick="sortTableByDate('myTable', 10)" class="appelsMail">Date 1er appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByNumber('myTable', 10)" class="infoAccordPec">Part mutuelle<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 11 -->
-                                        <th class="appelsMail">Note 1er appel</th>
+                                        <th onclick="sortTableByNumber('myTable', 11)" style="border-right: 2px solid #000;" class="infoAccordPec">Part RAC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <!-- APPELS & MAIL -->
                                         <!-- 12 -->
-                                        <th onclick="sortTableByDate('myTable', 12)" class="appelsMail">Date 2ème appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 12)" class="appelsMail">Date 1er appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 13 -->
-                                        <th class="appelsMail">Note 2ème appel</th>
+                                        <th class="appelsMail">Note 1er appel</th>
                                         <!-- 14 -->
-                                        <th onclick="sortTableByDate('myTable', 14)" class="appelsMail">Date 3ème appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 14)" class="appelsMail">Date 2ème appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 15 -->
-                                        <th class="appelsMail">Note 3ème appel</th>
+                                        <th class="appelsMail">Note 2ème appel</th>
                                         <!-- 16 -->
-                                        <th onclick="sortTableByDate('myTable', 16)" style="border-right: 2px solid #000;" class="appelsMail">Date envoi mail<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 16)" class="appelsMail">Date 3ème appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 17 -->
-                                        <th class="infoEmpreinte">Laboratoire</th>
+                                        <th class="appelsMail">Note 3ème appel</th>
                                         <!-- 18 -->
-                                        <th class="infoEmpreinte">Date D'empreinte</th>
+                                        <th onclick="sortTableByDate('myTable', 18)" style="border-right: 2px solid #000;" class="appelsMail">Date envoi mail<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 19 -->
-                                        <th class="infoEmpreinte">Date d'envoi au labo</th>
+                                        <th class="infoEmpreinte">Laboratoire</th>
                                         <!-- 20 -->
-                                        <th class="infoEmpreinte">Travail demandé</th>
+                                        <th class="infoEmpreinte">Date D'empreinte</th>
                                         <!-- 21 -->
-                                        <th class="infoEmpreinte">N° dent</th>
+                                        <th class="infoEmpreinte">Date d'envoi au labo</th>
                                         <!-- 22 -->
-                                        <th  style="border-right: 2px solid #000;" class="infoEmpreinte">Observations</th>
+                                        <th class="infoEmpreinte">Travail demandé</th>
                                         <!-- 23 -->
-                                        <th class="retourLabo">Date livraison</th>
+                                        <th class="infoEmpreinte">N° dent</th>
                                         <!-- 24 -->
-                                        <th class="retourLabo">numero suivi colis de retour<br>+ société de livraison</th>
+                                        <th  style="border-right: 2px solid #000;" class="infoEmpreinte">Observations</th>
                                         <!-- 25 -->
-                                        <th style="border-right: 2px solid #000;" class="retourLabo">N° Facture Labo</th>
+                                        <th class="retourLabo">Date livraison</th>
                                         <!-- 26 -->
-                                        <th class="pose">Date de pose prévue</th>
+                                        <th class="retourLabo">numero suivi colis de retour<br>+ société de livraison</th>
                                         <!-- 27 -->
-                                        <th style="border-right: 2px solid #000;" class="pose">Statut</th>
+                                        <th style="border-right: 2px solid #000;" class="retourLabo">N° Facture Labo</th>
                                         <!-- 28 -->
-                                        <th class="pose">Date de pose réelle</th>
+                                        <th class="pose">Date de pose prévue</th>
                                         <!-- 29 -->
-                                        <th class="travauxCloture">organisme payeur</th>
+                                        <th style="border-right: 2px solid #000;" class="pose">Statut</th>
                                         <!-- 30 -->
-                                        <th class="travauxCloture">Montant encaissé</th>
+                                        <th class="pose">Date de pose réelle</th>
                                         <!-- 31 -->
+                                        <th class="travauxCloture">organisme payeur</th>
+                                        <!-- 32 -->
+                                        <th class="travauxCloture">Montant encaissé</th>
+                                        <!-- 33 -->
                                         <th style="border-right: 2px solid #000;" class="travauxCloture">date ou vous devez <br>controler paiement</th>
                                         <th class="infoCheques">Numéro de chèque</th>
                                         <th class="infoCheques">Montant du chèque</th>
@@ -173,6 +177,12 @@
                                             </td>
                                             <td class="infoCheques" onclick="window.location.href='{{ $devis->dossier }}/devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; word-wrap: break-word; max-width: 150px; overflow: hidden; text-overflow: ellipsis;">
                                                 {{ $devis->nom }}
+                                            </td>
+                                            <td class="infoCheques" onclick="window.location.href='{{ $devis->dossier }}/devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                                {{ $devis->status }}
+                                            </td>
+                                            <td class="infoCheques" onclick="window.location.href='{{ $devis->dossier }}/devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                                {{ $devis->mutuelle }}
                                             </td>
                                             <td class="infoCheques" onclick="window.location.href='{{ $devis->dossier }}/devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                                 {{ $devis->getDate() }}

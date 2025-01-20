@@ -16,6 +16,9 @@
                     <div class="mb-2">
                         <strong>Status:</strong> {{ $dossier->status }}
                     </div>
+                    <div class="mb-2">
+                        <strong>Mutuelle:</strong> {{ $dossier->mutuelle }}
+                    </div>
                 </div>
                 <!-- Grand titre -->
                 <div class="row mb-4">
@@ -34,6 +37,24 @@
                                         <div class="form-group">
                                             <label for="dossier">Dossier</label>
                                             <input type="text" class="form-control" id="dossier" name="dossier" placeholder="Dossier" value="{{ $dossier->dossier }}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="status">Status</label>
+                                            <select class="form-select" name="status" id="status">
+                                                @foreach($statuss as $s)
+                                                    <option value="{{ $s->status }}" @if($dossier->status == $s->status) selected @endif>{{ $s->status }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('status')
+                                            <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="mutuelle">Mutuelle</label>
+                                            <input type="text" step="0.01" class="form-control" id="mutuelle" name="mutuelle" placeholder="Mutuelle" value="{{ $dossier->mutuelle }}">
+                                            @error('mutuelle')
+                                            <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                         <div class="form-group">
                                             <label for="date">Date</label>

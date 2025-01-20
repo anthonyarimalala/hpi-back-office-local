@@ -8,6 +8,8 @@ use App\Models\devis\DevisAccordPec;
 use App\Models\devis\DevisAppelsEtMail;
 use App\Models\devis\DevisEtat;
 use App\Models\devis\DevisReglement;
+use App\Models\dossier\Dossier;
+use App\Models\dossier\DossierStatus;
 use App\Models\dossier\L_DossierMutuelle;
 use App\Models\praticien\Praticien;
 use App\Models\views\V_Devis;
@@ -74,9 +76,6 @@ class DevisController extends Controller
             ->first();
         $data['etat_devis'] = DevisEtat::all();
         $data['praticiens'] = Praticien::where('is_deleted',0)->get();
-        $data['mutuelles'] = L_DossierMutuelle::where('dossier', $dossier)
-            ->where('is_deleted', 0)
-            ->get();
         return view('dossier/devis/detail/modifier/devis-modifier-2')->with($data);
     }
 
@@ -85,9 +84,6 @@ class DevisController extends Controller
         $data['v_devis'] = V_Devis::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
             ->first();
-        $data['mutuelles'] = L_DossierMutuelle::where('dossier', $dossier)
-            ->where('is_deleted', 0)
-            ->get();
         return view('dossier/devis/detail/devis')->with($data);
     }
     public function creerDevis(Request $request)
@@ -103,6 +99,8 @@ class DevisController extends Controller
 
         // Récupération des données validées
         $dossier = $request->input('dossier');
+        $status = $request->input('status');
+        $mutuelle = $request->input('mutuelle');
         $date = $validated['date'];
         $montant = $validated['montant'];
         $devis_signe = $validated['devis_signe'];
@@ -111,7 +109,7 @@ class DevisController extends Controller
 
         try {
             // Création du devis
-            Devis::createDevis($dossier, $date, $montant, $devis_signe, $praticien, $observation);
+            Devis::createDevis($dossier, $status, $mutuelle, $date, $montant, $devis_signe, $praticien, $observation);
             return redirect()->to($dossier.'/liste-devis')->with('success', 'Le devis a été ajouté avec succès.');
         } catch (\Exception $e) {
             // print($e->getMessage());
@@ -120,13 +118,14 @@ class DevisController extends Controller
     }
 
     public function nouveauDevis($dossier){
-        $data['dossier'] = V_PatientDossier::where('dossier', $dossier)->first();
+        $data['dossier'] = Dossier::where('dossier', $dossier)->first();
+        $data['statuss'] = DossierStatus::where('is_deleted', 0)->get();
         $data['praticiens'] = Praticien::where('is_deleted', 0)->get();
         return view('dossier/devis/nouveau-devis')->with($data);
     }
     public function getListeDevis($dossier){
         $data['deviss'] = V_Devis::where('dossier', $dossier)->orderBy('date', 'desc')->get();
-        $data['dossier'] = V_PatientDossier::where('dossier', $dossier)->first();
+        $data['dossier'] = Dossier::where('dossier', $dossier)->first();
         return view('dossier/devis/liste-devis-dossier')->with($data);
     }
 

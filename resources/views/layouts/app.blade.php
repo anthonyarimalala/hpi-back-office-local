@@ -192,7 +192,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ asset('ajouter-patient') }}">
+                        <a class="nav-link" href="{{ asset('ajouter-dossier') }}">
                             <i class="mdi mdi-account-plus menu-icon"></i>
                             <span class="menu-title">Nouveau patient</span>
                         </a>

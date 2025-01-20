@@ -38,10 +38,7 @@
                             <p class="card-subtitle card-subtitle-dash"> Dossier: {{ $v_devis->dossier }}</p>
                             <p class="card-subtitle card-subtitle-dash"> Nom: {{ $v_devis->nom }}</p>
                             <p class="card-subtitle card-subtitle-dash"> Status: {{ $v_devis->status }}</p>
-                            <p class="card-subtitle card-subtitle-dash">
-                                Mutuelle:
-                                {{ $mutuelles->pluck('mutuelle')->join(' ') }}
-                            </p>
+                            <p class="card-subtitle card-subtitle-dash"> Mutuelle: {{ $v_devis->mutuelle }}</p>
                         </div>
                         <div class="col-md-6">
                             <p class="text-dark">Date: @if($v_devis->date != null) {{ \Carbon\Carbon::parse($v_devis->date)->translatedFormat('d F Y') }} @endif</p>

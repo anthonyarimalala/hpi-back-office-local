@@ -10,7 +10,7 @@
                     </div>
                 </div>
 
-                <form action="{{ asset('ajouter-patient') }}" method="POST" class="forms-sample">
+                <form action="{{ asset('ajouter-dossier') }}" method="POST" class="forms-sample">
                     @csrf
                     <div class="row">
                         <!-- Premier formulaire -->
@@ -58,14 +58,10 @@
                                                 @endforeach
                                             </select>
                                         </div>
-
-                                        <!-- Bouton + pour ajouter une mutuelle -->
                                         <div class="form-group">
-                                            <button type="button" class="btn btn-link" id="addMutuelleBtn">+ Ajouter une mutuelle</button>
+                                            <label for="mutuelle">Mutuelle</label>
+                                            <input type="text" class="form-control" id="mutuelle" name="mutuelle" placeholder="Mutuelle">
                                         </div>
-
-                                        <!-- Conteneur pour les mutuelles ajoutées -->
-                                        <div id="mutuellesContainer"></div>
                                     </div>
                                 </div>
                             </div>
@@ -83,39 +79,5 @@
         </div>
     </div>
 
-    <!-- Script JavaScript pour gérer les mutuelles dynamiquement -->
-    <script>
-        document.getElementById('addMutuelleBtn').addEventListener('click', function() {
-            // Créer un nouveau div pour le champ Mutuelle
-            var mutuelleDiv = document.createElement('div');
-            mutuelleDiv.classList.add('form-group');
 
-            // Créer le label
-            var label = document.createElement('label');
-            label.setAttribute('for', 'mutuelle');
-            label.textContent = 'Mutuelle';
-            mutuelleDiv.appendChild(label);
-
-            // Créer le champ input
-            var input = document.createElement('input');
-            input.type = 'text';
-            input.classList.add('form-control');
-            input.name = 'mutuelle[]';
-            input.placeholder = 'Mutuelle';
-            mutuelleDiv.appendChild(input);
-
-            // Créer le bouton d'enlever
-            var removeBtn = document.createElement('button');
-            removeBtn.type = 'button';
-            removeBtn.classList.add('btn', 'btn-danger', 'mt-2');
-            removeBtn.textContent = 'Enlever';
-            removeBtn.addEventListener('click', function() {
-                mutuelleDiv.remove();
-            });
-            mutuelleDiv.appendChild(removeBtn);
-
-            // Ajouter le nouveau champ dans le conteneur
-            document.getElementById('mutuellesContainer').appendChild(mutuelleDiv);
-        });
-    </script>
 @endsection

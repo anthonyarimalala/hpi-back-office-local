@@ -236,7 +236,7 @@ class V_Devis extends Model
         if ($this->numero_facture_labo == null) {
             return '...';
         }
-        return number_format($this->numero_facture_labo, 0, ',', ' ');
+        return $this->numero_facture_labo;
     }
     public function getMontant(){
         return number_format($this->montant, 2, ',', ' ');

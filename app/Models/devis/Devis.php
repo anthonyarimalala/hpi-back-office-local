@@ -11,11 +11,13 @@ class Devis extends Model
     use HasFactory;
     protected $table = 'devis';
 
-    public static function createDevis($dossier, $date, $montant, $devis_signe, $praticien, $observation)
+    public static function createDevis($dossier, $status, $mutuelle, $date, $montant, $devis_signe, $praticien, $observation)
     {
         // Création d'un nouveau devis
         $devis = new Devis();
         $devis->dossier = $dossier;
+        $devis->status = $status;
+        $devis->mutuelle = $mutuelle;
         $devis->date = $date;
         $devis->montant = $montant;
         $devis->devis_signe = $devis_signe;

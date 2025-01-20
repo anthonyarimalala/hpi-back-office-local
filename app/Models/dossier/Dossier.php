@@ -13,16 +13,19 @@ class Dossier extends Model
     public $incrementing = false;
 
 
-    public static function modifierDossier($num_dossier, $status){
+    public static function modifierDossier($num_dossier, $status, $mutuelle){
         $dossier = Dossier::where('dossier', $num_dossier)->first();
         $dossier->status = $status;
+        $dossier->mutuelle = $mutuelle;
         $dossier->save();
     }
-    public static function insertDossier($num_dossier, $id_patient, $status){
+    public static function insertDossier($num_dossier, $nom, $date_naissance, $status, $mutuelle){
         $dossier = new Dossier();
         $dossier->dossier = $num_dossier;
-        $dossier->id_patient = $id_patient;
+        $dossier->nom = $nom;
+        $dossier->date_naissance = $date_naissance;
         $dossier->status = $status;
+        $dossier->mutuelle = $mutuelle;
         $dossier->save();
         return $dossier->numero;
     }

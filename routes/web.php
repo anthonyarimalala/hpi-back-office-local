@@ -30,8 +30,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
 
     // section: patients
-    Route::get('ajouter-patient', [\App\Http\Controllers\Patient\PatientController::class, 'showInsertPatient']);
-    Route::post('ajouter-patient', [\App\Http\Controllers\Patient\PatientController::class, 'insertPatient'])->name('ajouter.patient');
+    Route::get('ajouter-dossier', [\App\Http\Controllers\Dossier\DossierController::class, 'showInsertDossier']);
+    Route::post('ajouter-dossier', [\App\Http\Controllers\Dossier\DossierController::class, 'insertDossier'])->name('ajouter.patient');
 
     // section: dossiers
     Route::get('dossiers', [\App\Http\Controllers\Dossier\DossierController::class, 'showDossiers'])->name('dossiers');
@@ -77,6 +77,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         Route::post('creer-utilisateur', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'creerUtilisateur']);
         Route::get('effacer-utilisateur/{code_u}', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'effacerUtilisateur']);
 
+    // section: exports
+    Route::get('v_devis/export/', [\App\Http\Controllers\Export\ExportsController::class, 'exportV_Devis'])->name('v_devis.export');
 
 });
 
