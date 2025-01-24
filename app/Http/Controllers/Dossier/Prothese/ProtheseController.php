@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\devis\prothese\ProtheseEmpreinte;
 use App\Models\devis\prothese\ProtheseRetourLabo;
 use App\Models\devis\prothese\ProtheseTravaux;
+use App\Models\hist\H_Prothese;
 use App\Models\views\V_Cheque;
 use App\Models\views\V_Prothese;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProtheseController extends Controller
 {
@@ -32,10 +34,14 @@ class ProtheseController extends Controller
         $montantEncaisse = $request->input('montant_encaisse');
         $dateControlePaiement = $request->input('date_controle_paiement');
         //print($dateLivraison);
+        $m_h_prothese = new H_Prothese();
+        $m_h_prothese->code_u = Auth::user()->code_u;
+        $m_h_prothese->id_devis = $id_devis;
 
-        ProtheseEmpreinte::createOrUpdateEmpreinte($id_devis, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $numeroDent, $observations);
-        ProtheseRetourLabo::createOrUpdateEmpreinte($id_devis, $dateLivraison, $numeroSuivi, $numeroFactureLabo);
-        ProtheseTravaux::createOrUpdateTravaux($id_devis, $datePosePrevue, $statut, $datePoseReel, $organismePayeur, $montantEncaisse, $dateControlePaiement);
+        ProtheseEmpreinte::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $numeroDent, $observations);
+        ProtheseRetourLabo::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $dateLivraison, $numeroSuivi, $numeroFactureLabo);
+        ProtheseTravaux::createOrUpdateTravaux($m_h_prothese, $id_devis, $datePosePrevue, $statut, $datePoseReel, $organismePayeur, $montantEncaisse, $dateControlePaiement);
+        $m_h_prothese->save();
         return redirect()->to($dossier."/prothese/".$id_devis."/detail");
 
     }

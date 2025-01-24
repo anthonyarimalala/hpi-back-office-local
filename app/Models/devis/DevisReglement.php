@@ -2,6 +2,7 @@
 
 namespace App\Models\devis;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,13 +14,29 @@ class DevisReglement extends Model
         'id_devis'
     ];
 
-    public static function createDevisReglement($id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac){
+    public static function createDevisReglement($m_h_devis, $id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac){
         $m_DevisReglement = DevisReglement::firstOrNew(['id_devis'=>$id_devis]);
         $m_DevisReglement->id_devis = $id_devis;
-        $m_DevisReglement->date_paiement_cb_ou_esp = $date_paiement_cb_ou_esp;
-        $m_DevisReglement->date_depot_chq_pec = $date_depot_chq_pec;
-        $m_DevisReglement->date_depot_chq_part_mut = $date_depot_chq_part_mut;
-        $m_DevisReglement->date_depot_chq_rac = $date_depot_chq_rac;
+        if (($m_DevisReglement->date_paiement_cb_ou_esp ? Carbon::parse($m_DevisReglement->date_paiement_cb_ou_esp)->format('Y-m-d') : '') != $date_paiement_cb_ou_esp) {
+            $m_h_devis->action .= "<strong>Date paiement CB ou ESP:</strong> " . ($m_DevisReglement->date_paiement_cb_ou_esp ? Carbon::parse($m_DevisReglement->date_paiement_cb_ou_esp)->format('d-m-Y') : '...') . " => " . ($date_paiement_cb_ou_esp ? Carbon::parse($date_paiement_cb_ou_esp)->format('d-m-Y') : '...') . "\n";
+            $m_DevisReglement->date_paiement_cb_ou_esp = $date_paiement_cb_ou_esp;
+        }
+
+        if (($m_DevisReglement->date_depot_chq_pec ? Carbon::parse($m_DevisReglement->date_depot_chq_pec)->format('Y-m-d') : '') != $date_depot_chq_pec) {
+            $m_h_devis->action .= "<strong>Date dépôt chèque PEC:</strong> " . ($m_DevisReglement->date_depot_chq_pec ? Carbon::parse($m_DevisReglement->date_depot_chq_pec)->format('d-m-Y') : '...') . " => " . ($date_depot_chq_pec ? Carbon::parse($date_depot_chq_pec)->format('d-m-Y') : '...') . "\n";
+            $m_DevisReglement->date_depot_chq_pec = $date_depot_chq_pec;
+        }
+
+        if (($m_DevisReglement->date_depot_chq_part_mut ? Carbon::parse($m_DevisReglement->date_depot_chq_part_mut)->format('Y-m-d') : '') != $date_depot_chq_part_mut) {
+            $m_h_devis->action .= "<strong>Date dépôt chèque part mutuelle:</strong> " . ($m_DevisReglement->date_depot_chq_part_mut ? Carbon::parse($m_DevisReglement->date_depot_chq_part_mut)->format('d-m-Y') : '...') . " => " . ($date_depot_chq_part_mut ? Carbon::parse($date_depot_chq_part_mut)->format('d-m-Y') : '...') . "\n";
+            $m_DevisReglement->date_depot_chq_part_mut = $date_depot_chq_part_mut;
+        }
+
+        if (($m_DevisReglement->date_depot_chq_rac ? Carbon::parse($m_DevisReglement->date_depot_chq_rac)->format('Y-m-d') : '') != $date_depot_chq_rac) {
+            $m_h_devis->action .= "<strong>Date dépôt chèque RAC:</strong> " . ($m_DevisReglement->date_depot_chq_rac ? Carbon::parse($m_DevisReglement->date_depot_chq_rac)->format('d-m-Y') : '...') . " => " . ($date_depot_chq_rac ? Carbon::parse($date_depot_chq_rac)->format('d-m-Y') : '...') . "\n";
+            $m_DevisReglement->date_depot_chq_rac = $date_depot_chq_rac;
+        }
+
         $m_DevisReglement->save();
         return $m_DevisReglement->id;
     }

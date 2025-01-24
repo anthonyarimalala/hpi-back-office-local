@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\devis\Devis;
 use App\Models\dossier\Dossier;
 use App\Models\dossier\DossierStatus;
-use App\Models\dossier\L_DossierMutuelle;
 use App\Models\views\V_Devis;
-use App\Models\views\V_Dossier;
 use Illuminate\Http\Request;
 
 class DossierController extends Controller
@@ -19,15 +17,7 @@ class DossierController extends Controller
         $data['v_devis'] = V_Devis::where('dossier',$dossier)->first();
         return view('dossier/details/detail-dossier-devis')->with($data);
     }
-    public function supprimerMutuelle($dossier, $mutuelle)
-    {
-        $dossier_mutuelle = L_DossierMutuelle::where('dossier', $dossier)
-            ->where('mutuelle', $mutuelle)
-            ->first();
-        $dossier_mutuelle->is_deleted = 1;
-        $dossier_mutuelle->save();
-        return back();
-    }
+
     public function modifierDossier(Request $request)
     {
         $i_dossier = $request->input('dossier');

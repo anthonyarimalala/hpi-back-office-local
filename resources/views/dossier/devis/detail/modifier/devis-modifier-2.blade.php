@@ -44,9 +44,9 @@
                     <div class="row">
                         <div class="col-md-6">
                             <label for="devis_etat"></label>
-                            <select id="devis_etat" class="form-select" name="devis_etat" style="background-color: {{ $v_devis->couleur }}">
+                            <select id="devis_etat" class="form-select" name="id_devis_etat" style="background-color: {{ $v_devis->couleur }}">
                                 @foreach($etat_devis as $ed)
-                                    <option value="{{ $ed->etat }}" style="background-color: {{$ed->couleur}}" @if($ed->etat == $v_devis->etat) selected @endif>{{ $ed->etat }}</option>
+                                    <option value="{{ $ed->id }}" style="background-color: {{$ed->couleur}}" @if($ed->etat == $v_devis->etat) selected @endif>{{ $ed->etat }}</option>
                                 @endforeach
                             </select>
                             <p class="card-subtitle card-subtitle-dash"> Dossier: {{ $v_devis->dossier }}</p>
@@ -67,7 +67,7 @@
                             <p class="text-dark">Praticien: {{ $v_devis->getPraticien() }} </p>
                             <div class="form-group">
                                 <label for="observation">Observation</label>
-                                <textarea class="form-control" id="observation" name="observation" style="height: 50px" cols="50" placeholder="Observation">{{ $v_devis->observation }}</textarea>
+                                <textarea class="form-control" id="observation" name="observation" style="height: 50px" cols="50" placeholder="Observation">{{ $v_devis->devis_observation }}</textarea>
                             </div>
 
                         </div>

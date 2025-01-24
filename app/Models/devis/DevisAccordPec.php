@@ -2,6 +2,7 @@
 
 namespace App\Models\devis;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,14 +13,30 @@ class DevisAccordPec extends Model
     protected $fillable = [
         'id_devis'
     ];
-    public static function createOrUpdateDevisAccordPecs($id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_mutuelle, $part_rac)
+    public static function createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_mutuelle, $part_rac)
     {
         $m_devisAccordPecs = DevisAccordPec::firstOrNew(['id_devis' => $id_devis]);
 
-        $m_devisAccordPecs->date_envoi_pec = $date_envoi_pec;
-        $m_devisAccordPecs->date_fin_validite_pec = $date_fin_validite_pec;
-        $m_devisAccordPecs->part_mutuelle = $part_mutuelle;
-        $m_devisAccordPecs->part_rac = $part_rac;
+        if (($m_devisAccordPecs->date_envoi_pec ? Carbon::parse($m_devisAccordPecs->date_envoi_pec)->format('Y-m-d') : '') != $date_envoi_pec) {
+            $m_h_devis->action .= "<strong>Date envoi PEC:</strong> " . ($m_devisAccordPecs->date_envoi_pec ? Carbon::parse($m_devisAccordPecs->date_envoi_pec)->format('d-m-Y') : '...') . " => " . ($date_envoi_pec ? Carbon::parse($date_envoi_pec)->format('d-m-Y') : '...') . "\n";
+            $m_devisAccordPecs->date_envoi_pec = $date_envoi_pec;
+        }
+
+        if (($m_devisAccordPecs->date_fin_validite_pec ? Carbon::parse($m_devisAccordPecs->date_fin_validite_pec)->format('Y-m-d') : '') != $date_fin_validite_pec) {
+            $m_h_devis->action .= "<strong>Date fin validité PEC:</strong> " . ($m_devisAccordPecs->date_fin_validite_pec ? Carbon::parse($m_devisAccordPecs->date_fin_validite_pec)->format('d-m-Y') : '...') . " => " . ($date_fin_validite_pec ? Carbon::parse($date_fin_validite_pec)->format('d-m-Y') : '...') . "\n";
+            $m_devisAccordPecs->date_fin_validite_pec = $date_fin_validite_pec;
+        }
+
+        if ($m_devisAccordPecs->part_mutuelle != $part_mutuelle) {
+            $m_h_devis->action .= "<strong>Part mutuelle:</strong> " . $m_devisAccordPecs->part_mutuelle . " => " . $part_mutuelle . "\n";
+            $m_devisAccordPecs->part_mutuelle = $part_mutuelle;
+        }
+
+        if ($m_devisAccordPecs->part_rac != $part_rac) {
+            $m_h_devis->action .= "<strong>Part RAC:</strong> " . $m_devisAccordPecs->part_rac . " => " . $part_rac . "\n";
+            $m_devisAccordPecs->part_rac = $part_rac;
+        }
+
 
         $m_devisAccordPecs->save();
 

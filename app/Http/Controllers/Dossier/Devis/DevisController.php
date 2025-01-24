@@ -11,10 +11,12 @@ use App\Models\devis\DevisReglement;
 use App\Models\dossier\Dossier;
 use App\Models\dossier\DossierStatus;
 use App\Models\dossier\L_DossierMutuelle;
+use App\Models\hist\H_Devis;
 use App\Models\praticien\Praticien;
 use App\Models\views\V_Devis;
 use App\Models\views\V_PatientDossier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DevisController extends Controller
@@ -27,7 +29,7 @@ class DevisController extends Controller
             $id_devis = $request->input('id_devis');
             $devis_signe = $request->input('devis_signe');
             $observation = $request->input('observation');
-            $devis_etat = $request->input('devis_etat');
+            $id_devis_etat = $request->input('id_devis_etat');
 
             // table: devis_accord_pecs
             $date_envoi_pec = $request->input('date_envoi_pec');
@@ -50,15 +52,18 @@ class DevisController extends Controller
             $note_3eme_appel = $request->input('note_3eme_appel');
             $date_envoi_mail = $request->input('date_envoi_mail');
 
+            $m_h_devis = new H_Devis();
+            $m_h_devis->code_u = Auth::user()->code_u;
+            $m_h_devis->id_devis = $id_devis;
+
 
             //print($date_envoi_mail);
 
-            $m_devis = Devis::updateDevis($id_devis, $devis_signe, $observation, $devis_etat);
-            DevisAccordPec::createOrUpdateDevisAccordPecs($id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_mutuelle, $part_rac);
-            DevisReglement::createDevisReglement($id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac);
-            DevisAppelsEtMail::createDevisAppelsEtMail($id_devis, $date_1er_appel, $note_1er_appel, $date_2eme_appel, $note_2eme_appel, $date_3eme_appel, $note_3eme_appel, $date_envoi_mail);
-
-
+            $m_devis = Devis::updateDevis($m_h_devis, $id_devis, $devis_signe, $observation, $id_devis_etat);
+            DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_mutuelle, $part_rac);
+            DevisReglement::createDevisReglement($m_h_devis, $id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac);
+            DevisAppelsEtMail::createDevisAppelsEtMail($m_h_devis, $id_devis, $date_1er_appel, $note_1er_appel, $date_2eme_appel, $note_2eme_appel, $date_3eme_appel, $note_3eme_appel, $date_envoi_mail);
+            $m_h_devis->save();
             return redirect()->route('devis.detail', [
                 'dossier' => $m_devis->dossier,    // Remplacez par la valeur réelle de $dossier
                 'id_devis' => $id_devis      // Remplacez par la valeur réelle de $id_devis

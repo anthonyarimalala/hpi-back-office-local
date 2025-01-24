@@ -29,11 +29,22 @@ class Devis extends Model
         // Retourne l'ID du devis créé
         return $devis->id;
     }
-    public static function updateDevis($id_devis, $devis_signe, $observation, $devis_etat){
+    public static function updateDevis($m_h_devis, $id_devis, $devis_signe, $observation, $id_devis_etat){
         $m_devis = Devis::find($id_devis);
-        $m_devis->devis_signe = $devis_signe;
-        $m_devis->observation = $observation;
-        $m_devis->devis_etat = $devis_etat;
+        if ($m_devis->devis_signe != $devis_signe) {
+            $m_h_devis->action .= "<strong>Devis signé:</strong> " . $m_devis->devis_signe . " => " . $devis_signe . "\n";
+            $m_devis->devis_signe = $devis_signe;
+        }
+
+        if ($m_devis->observation != $observation) {
+            $m_h_devis->action .= "<strong>Observation:</strong> " . $m_devis->observation . " => " . $observation . "\n";
+            $m_devis->observation = $observation;
+        }
+
+        if ($m_devis->id_devis_etat != $id_devis_etat) {
+            $m_h_devis->action .= "<strong>État du devis:</strong> " . $m_devis->id_devis_etat . " => " . $id_devis_etat . "\n";
+            $m_devis->id_devis_etat = $id_devis_etat;
+        }
         $m_devis->save();
         return $m_devis;
     }

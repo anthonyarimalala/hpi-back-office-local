@@ -335,10 +335,10 @@ class V_Devis extends Model
         return Carbon::parse($this->date_envoi_pec)->format('d/m/Y');
     }
     public function getObservation(){
-        if ($this->observation == null){
+        if ($this->devis_observation == null){
             return "...";
         }
-        return $this->observation;
+        return $this->devis_observation;
     }
     public function getPraticien()
     {

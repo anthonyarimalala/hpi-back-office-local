@@ -37,12 +37,11 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('dossiers', [\App\Http\Controllers\Dossier\DossierController::class, 'showDossiers'])->name('dossiers');
     Route::get('modifier-dossier/{dossier}', [\App\Http\Controllers\Dossier\DossierController::class, 'showModifierDossier']);
     Route::post('modifier-dossier', [\App\Http\Controllers\Dossier\DossierController::class, 'modifierDossier'])->name('modifier.dossier');
-    Route::get('supprimer-mutuelle/{dossier}/{mutuelle}', [\App\Http\Controllers\Dossier\DossierController::class, 'supprimerMutuelle'])->name('supprimer.mutuelle');
 
     // section: devis
     Route::post('modifier-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'modifierDevis']);
     Route::get('{dossier}/devis/{id_devis}/modifier', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showModifierDevis']);
-    Route::get('liste-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getAllListeDevis']);
+    Route::get('liste/devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getAllListeDevis']);
     Route::get('{dossier}/devis/{id_devis}/detail', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getDevis'])->name('devis.detail');;
     Route::get('{dossier}/nouveau-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'nouveauDevis']);
     Route::post('{dossier}/nouveau-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'creerDevis']);
@@ -69,7 +68,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('delete-dossier-status', [\App\Http\Controllers\Autre\DossierStatusController::class, 'deleteDossierStatus']);
 
     // section: dashboard
-    Route::get('dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboard'])->name('dashboard');
+    Route::get('dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboard']);
+    Route::get('rappels/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboardRappels'])->name('dashboard');
 
     // section: gestion
         //utilisateur
@@ -77,6 +77,14 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         Route::post('creer-utilisateur', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'creerUtilisateur']);
         Route::get('effacer-utilisateur/{code_u}', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'effacerUtilisateur']);
 
+    // section: historique
+    Route::get('historiques/modif-chq', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistCheque']);
+    Route::get('historiques/modif-pro', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistProthese']);
+    Route::get('historiques/modif-dev', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistDevis']);
+
+    // section: imports
+    Route::get('imports', [\App\Http\Controllers\Import\ImportsController::class, 'showImports']);
+    Route::post('devis/import', [\App\Http\Controllers\Import\ImportsController::class, 'importerDevis']);
     // section: exports
     Route::get('v_devis/export/', [\App\Http\Controllers\Export\ExportsController::class, 'exportV_Devis'])->name('v_devis.export');
 

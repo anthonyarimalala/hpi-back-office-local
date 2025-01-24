@@ -11,9 +11,13 @@ use Maatwebsite\Excel\Facades\Excel;
 class ExportsController extends Controller
 {
     //
-    public function exportV_Devis()
+    public function exportV_Devis(Request $request)
     {
-        $v_devis = V_Devis::all();
-        return Excel::download(new V_DevisExport($v_devis), 'v_devis.xlsx');
+        $date_devis_debut = $request->input('date_devis_debut');
+        $date_devis_fin = $request->input('date_devis_fin');
+        $v_devis = V_Devis::where('date', '>=', $date_devis_debut)
+            ->where('date', '<=', $date_devis_fin)
+            ->get();
+        return Excel::download(new V_DevisExport($v_devis), $date_devis_debut . 'a' . $date_devis_fin . '.xlsx');
     }
 }

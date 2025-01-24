@@ -22,7 +22,7 @@
     @csrf
         <label>
             <input type="number" name="id_devis" value="{{ $v_cheque->id_devis }}" hidden>
-            <input type="number" name="dossier" value="{{ $v_cheque->dossier }}" hidden>
+            <input type="text" name="dossier" value="{{ $v_cheque->dossier }}" hidden>
         </label>
         <div class="row">
         <div class="col-md-10 grid-margin stretch-card">

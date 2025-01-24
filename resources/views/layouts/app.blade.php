@@ -170,7 +170,7 @@
             <ul class="nav">
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{asset('/')}}">
+                    <a class="nav-link" href="{{asset('/dashboard')}}">
                         <i class="mdi mdi-view-dashboard menu-icon"></i>
                         <span class="menu-title">Dashboard</span>
                     </a>
@@ -186,11 +186,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{asset('liste-devis')}}">
+                        <a class="nav-link" href="{{asset('liste/devis')}}">
                             <i class="mdi mdi-file-document-outline menu-icon"></i>
                             <span class="menu-title">Devis</span>
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ asset('ajouter-dossier') }}">
                             <i class="mdi mdi-account-plus menu-icon"></i>
@@ -218,7 +219,29 @@
                         <span class="menu-title">Utilisateurs</span>
                     </a>
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#historiques" aria-expanded="false" aria-controls="ui-basic">
+                        <i class="menu-icon mdi mdi-history"></i>
+                        <span class="menu-title">Historiques</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="historiques">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('historiques/modif-dev') }}">Devis</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('historiques/modif-pro') }}">Prothèse</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('historiques/modif-chq') }}">Chèques</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <!--
+                <li class="nav-item nav-category">Gestion des données</li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ asset('imports') }}">
+                        <i class="mdi mdi-import menu-icon"></i>
+                        <span class="menu-title">Importer</span>
+                    </a>
+                </li>
+                -->
 
                 <!--
                     <li class="nav-item">

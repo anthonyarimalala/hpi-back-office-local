@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\DB;
 class Dashboard extends Model
 {
     use HasFactory;
+
+    public function getDetailsDevis(){
+        $details = DB::select('SELECT COUNT(CASE WHEN devis_signe = ? THEN 1 END) AS devis_signes, COUNT(CASE WHEN devis_signe = ? THEN 1 END) AS devis_non_signes FROM devis WHERE is_deleted = 0', ['oui', 'non']);
+        return $details;
+    }
+    public function getDetailsDossier(){
+        $details = DB::select('select count(dossier), max(created_at) from dossiers where is_deleted = 0');
+        return $details;
+    }
     public function getAppelsAujourdHui(){
         $appels = DB::select(
             "

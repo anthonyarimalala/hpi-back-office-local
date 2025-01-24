@@ -14,16 +14,6 @@ class V_DevisExport implements FromView
     {
         $this->data = $data;
     }
-    /**
-    * @return \Illuminate\Support\Collection
-    */
-
-    /*
-    public function collection()
-    {
-        return V_Devis::all();
-    }
-     */
 
     /**
      * @return View
@@ -35,4 +25,5 @@ class V_DevisExport implements FromView
            'data' => $this->data
         ]);
     }
+
 }
