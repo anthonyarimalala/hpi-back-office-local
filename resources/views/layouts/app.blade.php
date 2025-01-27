@@ -14,8 +14,66 @@
     <link rel="stylesheet" href="{{ asset('star-admin2/vendors/mdi/css/materialdesignicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('star-admin2/css/vertical-layout-light/style.css') }}">
     <link rel="stylesheet" href="{{ asset('star-admin2-global/template.css') }}">
+    <link rel="icon" href="{{ asset('HPI/logo(1).ico') }}" type="image/x-icon">
     <style>
+        .sidebar{
+            <!--
+            background-image: linear-gradient(
+                90deg,
+                #0367A6 2%,
+                #0367A6 7%,
+                #F4F5F7 7%,
+                #F4F5F7 8%,
+                #F2AE2E 8%,
+                #F2AE2E 12%,
+                #F4F5F7 12%,
+                #F4F5F7 73%,
+                #F4F5F7 73%,
+                #F4F5F7 74%,
+                #F4F5F7 74%,
+                #F4F5F7 78%,
+                #F4F5F7 78%,
+                #F4F5F7 100%
+            );
+            -->
+        }
+        .navbar .navbar-menu-wrapper{
+            background-image: linear-gradient(
+                -135deg,
+                #F4F5F7 0%,
+                #F4F5F7 30%,
+                #0367A6 30%,
+                #0367A6 43%,
+                #F4F5F7 43%,
+                #F4F5F7 44%,
+                #F2AE2E 44%,
+                #F2AE2E 73%,
+                #F4F5F7 73%,
+                #F4F5F7 74%,
+                #0367A6 74%,
+                #0367A6 78%,
+                #F4F5F7 78%,
+                #F4F5F7 100%
+            );
+        }
+        .content-wrapper {
+            <!--
+            background-image: linear-gradient(
+                135deg,
+                #F4F5F7 0%,
+                #F4F5F7 70%,
+                #F2AE2E 70%,
+                #F2AE2E 73%,
+                #F4F5F7 73%,
+                #F4F5F7 74%,
+                #0367A6 74%,
+                #0367A6 81%,
+                #F4F5F7 81%
+            );
+            -->
+        }
         #search-results {
+            width: 300px; /* Définir la largeur à 150px */
             max-height: 300px; /* Limite la hauteur */
             overflow-y: auto; /* Ajoute un défilement si nécessaire */
             background-color: #fff; /* Fond blanc */
@@ -27,6 +85,7 @@
             list-style: none; /* Supprime les puces */
             padding: 0; /* Supprime les marges/paddings internes */
         }
+
 
         #search-results .list-group-item {
             padding: 10px 15px; /* Ajoute un espacement */
@@ -56,10 +115,6 @@
 
 
     </style>
-
-
-
-
 </head>
 <body>
 <div class="container-scroller">
@@ -72,7 +127,7 @@
                 </button>
             </div>
             <div>
-                <a class="navbar-brand brand-logo" href="index.html">
+                <a class="navbar-brand brand-logo" href="">
                     <img src="{{ asset('HPI/logo.jpg') }}" alt="logo" style="width: 100px; height: auto; object-fit: contain;" />
                 </a>
                 <a class="navbar-brand brand-logo-mini" href="index.html">
@@ -101,17 +156,8 @@
                             aria-label="Search"
                             name="q">
                     </form>
-                    <ul id="search-results" class="list-group position-absolute w-100" style="display: none;">
-                        <!-- Exemples de résultats -->
-                        <li class="list-group-item">
-                            <a href="/123/liste-devis">Jean Dupont - 1990-01-01</a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="/124/liste-devis">Marie Curie - 1992-05-15</a>
-                        </li>
-                        <li class="list-group-item">
-                            <a href="/125/liste-devis">Paul Martin - 1985-10-22</a>
-                        </li>
+                    <ul id="search-results" class="list-group position-absolute w-150" style="display: none; width: 300px">
+
                     </ul>
                 </li>
             </ul>
@@ -230,6 +276,7 @@
                             <li class="nav-item"> <a class="nav-link" href="{{ asset('historiques/modif-dev') }}">Devis</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ asset('historiques/modif-pro') }}">Prothèse</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ asset('historiques/modif-chq') }}">Chèques</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('') }}">Autres</a></li>
                         </ul>
                     </div>
                 </li>

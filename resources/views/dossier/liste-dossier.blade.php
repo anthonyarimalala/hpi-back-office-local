@@ -13,6 +13,9 @@
 
                             </div>
                             <div class="table-responsive  mt-1">
+                                <div class="d-flex justify-content-center">
+                                    {{ $v_dossiers->links('pagination::bootstrap-4') }}
+                                </div>
                                 <table class="table table-hover select-table">
                                     <thead>
                                     <tr>
@@ -52,7 +55,9 @@
                                     @endforeach
                                     </tbody>
                                 </table>
-
+                                <div class="d-flex justify-content-center">
+                                    {{ $v_dossiers->links('pagination::bootstrap-4') }}
+                                </div>
                             </div>
                         </div>
                     </div>

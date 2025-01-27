@@ -14,6 +14,7 @@ use App\Models\dossier\L_DossierMutuelle;
 use App\Models\hist\H_Devis;
 use App\Models\praticien\Praticien;
 use App\Models\views\V_Devis;
+use App\Models\views\V_H_Devis;
 use App\Models\views\V_PatientDossier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -89,6 +90,10 @@ class DevisController extends Controller
         $data['v_devis'] = V_Devis::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
             ->first();
+        $data['hists'] = V_H_Devis::where('id_devis', $id_devis)
+            ->orderBy('created_at', 'desc')
+            ->limit(7)
+            ->get();
         return view('dossier/devis/detail/devis')->with($data);
     }
     public function creerDevis(Request $request)

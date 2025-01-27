@@ -121,5 +121,34 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Historique</h4>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Utilisateur</th>
+                            <th>Dossier</th>
+                            <th>Action</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($hists as $hist)
+                            <tr>
+                                <td>{{ $hist->prenom }} {{ $hist->nom }}</td>
+                                <td>{{ $hist->dossier }}</td>
+                                <td>{!! nl2br($hist->action) !!}</td>
+                                <td>{{ $hist->created_at }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection

@@ -42,7 +42,7 @@ class DossierController extends Controller
     }
     public function showDossiers()
     {
-        $data['v_dossiers'] = Dossier::all();
+        $data['v_dossiers'] = Dossier::orderBy('dossier')->paginate(15);
         return view('dossier/liste-dossier')->with($data);
     }
 

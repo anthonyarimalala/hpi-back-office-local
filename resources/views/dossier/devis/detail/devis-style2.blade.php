@@ -27,7 +27,7 @@
         <div class="col-md-12 grid-margin">
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <h4 class="card-title text-primary">Info Devis</h4>
+                    <h4 class="card-title text-primary">Info Deviss</h4>
                     <div class="row mt-3">
                         <div class="col-md-6">
                             @if($v_devis->etat != '' && $v_devis->etat != null)

@@ -2,8 +2,10 @@
 
 namespace App\Models\dossier;
 
+use App\Models\hist\H_Autre;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Dossier extends Model
 {
@@ -20,6 +22,7 @@ class Dossier extends Model
         $dossier->save();
     }
     public static function insertDossier($num_dossier, $nom, $date_naissance, $status, $mutuelle){
+        $m_h_autres = new H_Autre();
         $dossier = new Dossier();
         $dossier->dossier = $num_dossier;
         $dossier->nom = $nom;
@@ -27,6 +30,12 @@ class Dossier extends Model
         $dossier->status = $status;
         $dossier->mutuelle = $mutuelle;
         $dossier->save();
+        $m_h_autres->code_u = Auth::user()->code_u;
+        $m_h_autres->categorie = "Dossier";
+        $m_h_autres->id_element_string = $dossier->dossier;
+        $m_h_autres->action = "<strong>Nouveau dossier: </strong>".$dossier->dossier.", ".$nom;
+        $m_h_autres->link = $dossier->dossier."/liste-devis";
+        $m_h_autres->save();
         return $dossier->numero;
     }
 }

@@ -8,6 +8,7 @@ use App\Models\devis\prothese\ProtheseRetourLabo;
 use App\Models\devis\prothese\ProtheseTravaux;
 use App\Models\hist\H_Prothese;
 use App\Models\views\V_Cheque;
+use App\Models\views\V_H_Prothese;
 use App\Models\views\V_Prothese;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -55,6 +56,11 @@ class ProtheseController extends Controller
         $data['v_prothese'] = V_Prothese::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
             ->first();
+        $data['hists'] = V_H_Prothese::where('dossier', $dossier)
+            ->where('id_devis', $id_devis)
+            ->orderBy('created_at', 'desc')
+            ->limit(7)
+            ->get();
         return view('dossier/prothese/prothese')->with($data);
     }
 }

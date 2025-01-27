@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\devis\cheque\InfoCheque;
 use App\Models\hist\H_Cheque;
 use App\Models\views\V_Cheque;
+use App\Models\views\V_H_Cheque;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -63,6 +64,11 @@ class ChequeController extends Controller
         $data['v_cheque'] = V_Cheque::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
             ->first();
+        $data['hists'] = V_H_Cheque::where('dossier', $dossier)
+            ->where('id_devis', $id_devis)
+            ->orderBy('created_at', 'desc')
+            ->limit(7)
+            ->get();
         return view('dossier/cheque/cheque')->with($data);
     }
 }
