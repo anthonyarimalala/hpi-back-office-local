@@ -23,6 +23,7 @@ class Devis extends Model
         $devis->devis_signe = $devis_signe;
         $devis->praticien = $praticien;
         $devis->observation = $observation;
+        $devis->id_devis_etat = 1;
 
         $devis->save();
 

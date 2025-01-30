@@ -29110,13 +29110,13 @@ div.tagsinput span.tag a {
 
 .sidebar .nav:not(.sub-menu) > .nav-item:hover > .nav-link, .sidebar .nav:not(.sub-menu) > .nav-item:hover[aria-expanded="true"] {
     background: linear-gradient(
-        135deg,
-        #F2AE2E 2%,
-        #F2AE2E 7%,
+        -135deg,
+        #0367A6 2%,
+        #0367A6 7%,
         #fff 7%,
         #fff 8%,
-        #0367A6 8%,
-        #0367A6 12%,
+        #F2AE2E 8%,
+        #F2AE2E 12%,
         #fff 12%,
         #fff 73%,
         #fff 73%,

@@ -21,7 +21,9 @@ Route::get('register', function() { return view('authentification/register'); })
 Route::post('register', [ \App\Http\Controllers\Authentification\LoginController::class, 'register'])->name('register');
 
 Route::middleware('auth')->group(function() {
-    Route::get('/', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboard']);
+    Route::get('/', function (){
+        return redirect()->route('dashboard');
+    });
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
@@ -68,8 +70,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('delete-dossier-status', [\App\Http\Controllers\Autre\DossierStatusController::class, 'deleteDossierStatus']);
 
     // section: dashboard
-    Route::get('dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboard']);
-    Route::get('rappels/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboardRappels'])->name('dashboard');
+    Route::get('dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboard'])->name('dashboard');
+    Route::get('rappels/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboardRappels'])->name('dashboard.rappel');
 
     // section: gestion
         //utilisateur

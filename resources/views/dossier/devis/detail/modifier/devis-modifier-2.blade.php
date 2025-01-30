@@ -211,6 +211,23 @@
     </div>
     </form>
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const partMutuelleInput = document.getElementById("part_mutuelle");
+            const partRacInput = document.getElementById("part_rac");
+            const montantTotal = parseFloat("{{ $v_devis->montant }}") || 0;
+            const partRacInitial = parseFloat("{{ $v_devis->part_rac }}");
+
+            if (!partRacInitial) { // Vérifie si part_rac est nul ou 0
+                partMutuelleInput.addEventListener("input", function() {
+                    let partMutuelle = parseFloat(partMutuelleInput.value) || 0;
+                    let partRac = montantTotal - partMutuelle;
+                    partRacInput.value = partRac.toFixed(2);
+                });
+            }
+        });
+
+    </script>
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
             const selectElement = document.getElementById('devis_etat');
 

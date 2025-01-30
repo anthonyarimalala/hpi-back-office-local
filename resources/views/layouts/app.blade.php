@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="{{ asset('star-admin2-global/template.css') }}">
     <link rel="icon" href="{{ asset('HPI/logo(1).ico') }}" type="image/x-icon">
     <style>
+        #deconnection{
+            color: whitesmoke;
+        }
         .sidebar{
             <!--
             background-image: linear-gradient(
@@ -40,11 +43,9 @@
         .navbar .navbar-menu-wrapper{
             background-image: linear-gradient(
                 -135deg,
-                #F4F5F7 0%,
-                #F4F5F7 30%,
-                #0367A6 30%,
-                #0367A6 43%,
-                #F4F5F7 43%,
+                #575756 0%,
+                #575756 15%,
+                #F4F5F7 15%,
                 #F4F5F7 44%,
                 #F2AE2E 44%,
                 #F2AE2E 73%,
@@ -57,20 +58,20 @@
             );
         }
         .content-wrapper {
-            <!--
             background-image: linear-gradient(
                 135deg,
                 #F4F5F7 0%,
                 #F4F5F7 70%,
-                #F2AE2E 70%,
-                #F2AE2E 73%,
                 #F4F5F7 73%,
                 #F4F5F7 74%,
                 #0367A6 74%,
-                #0367A6 81%,
-                #F4F5F7 81%
+                #0367A6 81%
             );
-            -->
+            background-size: 100% auto;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
         }
         #search-results {
             width: 300px; /* Définir la largeur à 150px */
@@ -190,9 +191,9 @@
 
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link btn btn-sm" href="{{ route('logout') }}"
+                    <a class="nav-link btn btn-sm" id="deconnection" href="{{ route('logout') }}"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="mdi mdi-logout"></i> Déconnexion
+                        <i class="mdi mdi-logout"></i> Déconnection
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf

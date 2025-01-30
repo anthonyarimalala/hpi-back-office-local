@@ -16,6 +16,9 @@
                                     </div>
                                 @endif
                                 <div>
+                                    <a href="#" class="btn btn-primary text-white me-0" data-bs-toggle="modal" data-bs-target="#fileModal">
+                                        <i class="icon-upload"></i> Import
+                                    </a>
                                     <a href="#" class="btn btn-primary text-white me-0" data-bs-toggle="modal" data-bs-target="#dateModal">
                                         <i class="icon-download"></i> Export
                                     </a>
@@ -330,6 +333,33 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="fileModal" tabindex="-1" aria-labelledby="fileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="fileModalLabel">Sélectionner un fichier .xslx</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="importForm" action="{{ asset('devis/import') }}" method="POST" class="forms-sample" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-12">
+                                <label for="devisFile">Fichier Excel</label>
+                                <input type="file" class="form-control" id="devisFile" name="devisFile" accept=".xlsx">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-primary" id="exportBtn">Importer</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="dateModal" tabindex="-1" aria-labelledby="dateModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -350,12 +380,7 @@
                                 <input type="date" id="date_devis_fin" name="date_devis_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
                             </div>
                         </div>
-                        <!-- Barre de progression -->
-                        <div id="progressContainer" class="mt-3" style="display: none;">
-                            <div class="progress">
-                                <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-                            </div>
-                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
@@ -420,81 +445,6 @@
             </div>
         </div>
     </div>
-    <script>
-        document.getElementById('exportForm').addEventListener('submit', function (e) {
-            e.preventDefault(); // Empêche la soumission par défaut
-
-            // Récupère les données du formulaire
-            const form = e.target;
-            const formData = new FormData(form);
-            const params = new URLSearchParams(formData).toString();
-
-            // URL pour envoyer la requête
-            const url = form.action + '?' + params;
-
-            // Affiche la barre de progression
-            const progressContainer = document.getElementById('progressContainer');
-            const progressBar = document.getElementById('progressBar');
-            progressContainer.style.display = 'block';
-            progressBar.style.width = '0%';
-            progressBar.textContent = '0%';
-
-            // Envoie la requête Fetch
-            fetch(url, {
-                method: 'GET',
-            })
-                .then(response => {
-                    if (!response.ok) throw new Error('Erreur lors de l\'exportation');
-
-                    const contentDisposition = response.headers.get('content-disposition');
-                    const filename = contentDisposition ? contentDisposition.split('filename=')[1] : 'export.xlsx';
-
-                    // Lit le flux pour suivre la progression
-                    const reader = response.body.getReader();
-                    const contentLength = +response.headers.get('content-length');
-                    let receivedLength = 0;
-
-                    return new Response(
-                        new ReadableStream({
-                            start(controller) {
-                                function push() {
-                                    reader.read().then(({ done, value }) => {
-                                        if (done) {
-                                            controller.close();
-                                            return;
-                                        }
-                                        receivedLength += value.length;
-                                        const percent = Math.round((receivedLength / contentLength) * 100);
-                                        progressBar.style.width = percent + '%';
-                                        progressBar.textContent = percent + '%';
-                                        controller.enqueue(value);
-                                        push();
-                                    });
-                                }
-                                push();
-                            }
-                        })
-                    ).blob().then(blob => {
-                        // Téléchargement du fichier
-                        const downloadUrl = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = downloadUrl;
-                        a.download = filename;
-                        a.click();
-                        URL.revokeObjectURL(downloadUrl);
-                    });
-                })
-                .catch(error => {
-                    alert('Une erreur est survenue : ' + error.message);
-                })
-                .finally(() => {
-                    // Cache la barre de progression après la fin
-                    setTimeout(() => {
-                        progressContainer.style.display = 'none';
-                    }, 1000);
-                });
-        });
-    </script>
 
     <script>
         function toggleColumnVisibility() {

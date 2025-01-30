@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Import;
 use App\Http\Controllers\Controller;
 use App\Imports\DevisImport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ImportsController extends Controller
@@ -19,6 +20,8 @@ class ImportsController extends Controller
 
         // Récupérer le fichier téléchargé
         $file = $request->file('devisFile');
+
+        DB::delete('DELETE FROM import_devis');
 
         // Importer le fichier avec la classe d'import
         Excel::import(new DevisImport, $file);

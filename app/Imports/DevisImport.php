@@ -18,36 +18,58 @@ class DevisImport implements ToModel, WithStartRow
      */
     public function model(array $row)
     {
+        $importDevis = new ImportDevis();
         try {
             // Validation et traitement des données
             return new ImportDevis([
                 'dossier' => $row[0],
-                'date_devis' => is_numeric($row[1]) ? Date::excelToDateTimeObject($row[1])->format('Y-m-d') : null,
-                'patient' => $row[2],
-                'mutuelle' => $row[3],
-                'patient_c2s' => $row[4],
+                'nom' => $row[1],
+                'mutuelle' => $row[2],
+                'status' => $row[3],
+                'date' => $importDevis->makeDate($row[4]),
                 'montant' => $row[5],
-                'devis_signe' => $row[6],
+                'devis_signe' => $importDevis->makeDevisSigne($row[6]),
                 'praticien' => $row[7],
-                'date_envoi_pec' => is_numeric($row[9]) ? Date::excelToDateTimeObject($row[9])->format('Y-m-d') : null,
-                'date_fin_validite_pec' => is_numeric($row[10]) ? Date::excelToDateTimeObject($row[10])->format('Y-m-d') : null,
-                'part_secu' => $row[11],
-                'part_mutuelle' => $row[12],
-                'part_rac' => floatval($row[13]),
-                'date_paiement_cb_ou_esp' => is_numeric($row[16]) ? Date::excelToDateTimeObject($row[16])->format('Y-m-d') : null,
-                'date_depot_chq_pec' => is_numeric($row[17]) ? Date::excelToDateTimeObject($row[17])->format('Y-m-d') : null,
-                'date_depot_chq_part_mut' => is_numeric($row[18]) ? Date::excelToDateTimeObject($row[18])->format('Y-m-d') : null,
-                'date_depot_chq_rac' => is_numeric($row[19]) ? Date::excelToDateTimeObject($row[19])->format('Y-m-d') : null,
-                'date_taille_empreinte' => is_numeric($row[20]) ? Date::excelToDateTimeObject($row[20])->format('Y-m-d') : null,
-                'retour_labo' => $row[21],
-                'travail_pose' => $row[22],
-                'date_1er_appel' => is_numeric($row[23]) ? Date::excelToDateTimeObject($row[23])->format('Y-m-d') : null,
-                'note_1er_appel' => $row[24],
-                'date_2eme_appel' => is_numeric($row[25]) ? Date::excelToDateTimeObject($row[25])->format('Y-m-d') : null,
-                'note_2eme_appel' => $row[26],
-                'date_3eme_appel' => is_numeric($row[27]) ? Date::excelToDateTimeObject($row[27])->format('Y-m-d') : null,
-                'note_3eme_appel' => $row[28],
-                'date_envoi_de_mail' => is_numeric($row[29]) ? Date::excelToDateTimeObject($row[29])->format('Y-m-d') : null,
+                'devis_observation' => $row[8],
+                'date_envoi_pec' => $importDevis->makeDate($row[9]),
+                'date_fin_validite_pec' => $importDevis->makeDate($row[10]),
+                'part_mutuelle' => $row[11],
+                'part_rac' => $row[12],
+                'date_paiement_cb_ou_esp' => $importDevis->makeDate($row[13]),
+                'date_depot_chq_pec' => $importDevis->makeDate($row[14]),
+                'date_depot_chq_part_mut' => $importDevis->makeDate($row[15]),
+                'date_depot_chq_rac' => $importDevis->makeDate($row[16]),
+                'date_1er_appel' => $importDevis->makeDate($row[17]),
+                'note_1er_appel' => $row[18],
+                'date_2eme_appel' => $importDevis->makeDate($row[19]),
+                'note_2eme_appel' => $row[20],
+                'date_3eme_appel' => $importDevis->makeDate($row[21]),
+                'note_3eme_appel' => $row[22],
+                'date_envoi_mail' => $importDevis->makeDate($row[23]),
+                'laboratoire' => $row[24],
+                'date_empreinte' => $importDevis->makeDate($row[25]),
+                'date_envoi_labo' => $importDevis->makeDate($row[26]),
+                'travail_demande' => $row[27],
+                'numero_dent' => $row[28],
+                'empreinte_observation' => $row[29],
+                'date_livraison' => $importDevis->makeDate($row[30]),
+                'numero_suivi' => $row[31],
+                'numero_facture_labo' => $row[32],
+                'date_pose_prevue' => $importDevis->makeDate($row[33]),
+                'pose_statut' => $row[34],
+                'date_pose_reel' => $importDevis->makeDate($row[35]),
+                'organisme_payeur' => $row[36],
+                'montant_encaisse' => $row[37],
+                'date_controle_paiement' => $importDevis->makeDate($row[38]),
+                'numero_cheque' => $row[39],
+                'montant_cheque' => $row[40],
+                'nom_document' => $row[41],
+                'date_encaissement_cheque' => $importDevis->makeDate($row[42]),
+                'date_1er_acte' => $importDevis->makeDate($row[43]),
+                'nature_cheque' => $row[44],
+                'travaux_sur_devis' => $row[45],
+                'situation_cheque' => $row[46],
+                'cheque_observation' => $row[47]
             ]);
         } catch (\Exception $e) {
             // Stocker l'erreur et la ligne
@@ -78,7 +100,7 @@ class DevisImport implements ToModel, WithStartRow
 
     public function startRow(): int
     {
-        return 13;  // Définir la première ligne de données
+        return 16;  // Définir la première ligne de données
     }
 }
 

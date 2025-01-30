@@ -2,6 +2,7 @@
 
 namespace App\Models\dashboard;
 
+use App\Models\views\V_Devis;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,13 +12,16 @@ class Dashboard extends Model
 {
     use HasFactory;
 
-    public function getDetailsDevis(){
-        $details = DB::select('SELECT COUNT(CASE WHEN devis_signe = ? THEN 1 END) AS devis_signes, COUNT(CASE WHEN devis_signe = ? THEN 1 END) AS devis_non_signes FROM devis WHERE is_deleted = 0', ['oui', 'non']);
-        return $details;
-    }
-    public function getDetailsDossier(){
-        $details = DB::select('select count(dossier), max(created_at) from dossiers where is_deleted = 0');
-        return $details;
+    public function getReglementsAujourdHui()
+    {
+        $today = Carbon::today()->format('Y-m-d');
+        $rappels = V_Devis::where('date_paiement_cb_ou_esp', $today)
+            ->orWhere('date_depot_chq_pec', $today)
+            ->orWhere('date_depot_chq_part_mut', $today)
+            ->orWhere('date_depot_chq_rac', $today)
+            ->where('devis_signe', 'oui')
+            ->all();
+        return $rappels;
     }
     public function getAppelsAujourdHui(){
         $appels = DB::select(
@@ -55,7 +59,8 @@ class Dashboard extends Model
                 JOIN devis ON appels_mails.id_devis = devis.id
                 JOIN dossiers ON devis.dossier = dossiers.dossier
 
-                WHERE appels_mails.date_appel::date = CURRENT_DATE;
+                WHERE appels_mails.date_appel::date = CURRENT_DATE AND note_appel IS NULL
+                LIMIT 7;
                             "
                         );
         return $appels;

@@ -65,7 +65,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="montant">Montant</label>
-                                            <input type="number" step="0.01" class="form-control" id="montant" name="montant" placeholder="Montant" value="{{ old('montant') }}">
+                                            <input type="number" step="0.01" min='1' class="form-control" id="montant" name="montant" placeholder="Montant" value="{{ old('montant') }}">
                                             @error('montant')
                                             <div class="alert alert-danger mt-2">{{ $message }}</div>
                                             @enderror

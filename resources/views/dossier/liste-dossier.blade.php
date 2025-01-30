@@ -1,7 +1,7 @@
 @extends(session('layout') ?? 'layouts.app')
 @section('content')
     <div class="row">
-        <div class="col-lg-8 d-flex flex-column">
+        <div class="col-lg-12 d-flex flex-column">
             <div class="row flex-grow">
                 <div class="col-12 grid-margin stretch-card">
                     <div class="card card-rounded">

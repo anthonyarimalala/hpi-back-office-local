@@ -51,7 +51,7 @@
             </div>
             -->
             <div class="row">
-                <div class="col-lg-8 d-flex flex-column">
+                <div class="col-lg-12 d-flex flex-column">
                     <div class="row flex-grow">
                         <div class="col-md-6 col-lg-6 grid-margin stretch-card">
                             <div class="card card-rounded">
@@ -75,7 +75,7 @@
                                     <div class="list align-items-center pt-3">
                                         <div class="wrapper w-100">
                                             <p class="mb-0">
-                                                <a href="#" class="fw-bold text-primary">Show all <i class="mdi mdi-arrow-right ms-2"></i></a>
+                                                <a href="#" class="fw-bold text-primary">plus <i class="mdi mdi-arrow-right ms-2"></i></a>
                                             </p>
                                         </div>
                                     </div>
@@ -105,6 +105,61 @@
                                             @endif
                                         @endforeach
                                     </ul>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 col-lg-12 grid-margin stretch-card">
+                            <div class="card card-rounded">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <h4 class="card-title card-title-dash">Reglements aujourd'hui</h4>
+                                    </div>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Dossier</th>
+                                                <th>Patient</th>
+                                                <th>Date paiement par CB ou Esp</th>
+                                                <th>Date depot CHQ PEC</th>
+                                                <th>Date depot CHQ Part MUT</th>
+                                                <th>date depot CHQ RAC</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($reglements as $reglement)
+                                            <tr>
+                                                <td>{{ $reglement->dossier }}</td>
+                                                <td>{{ $reglement->nom }}</td>
+                                                <td @if($today == $reglement->date_paiement_cb_ou_esp && $reglement->date_paiement_cb_ou_esp) style="background-color: #F2CED5" @endif>
+                                                    @if($reglement->date_paiement_cb_ou_esp)
+                                                        {{ \Carbon\Carbon::parse($reglement->date_paiement_cb_ou_esp)->format('d-m-Y') }}
+                                                    @endif
+                                                </td>
+
+                                                <td @if($today == $reglement->date_depot_chq_pec && $reglement->date_depot_chq_pec) style="background-color: #F2CED5" @endif>
+                                                    @if($reglement->date_depot_chq_pec)
+                                                        {{ \Carbon\Carbon::parse($reglement->date_depot_chq_pec)->format('d-m-Y') }}
+                                                    @endif
+                                                </td>
+
+                                                <td @if($today == $reglement->date_depot_chq_part_mut && $reglement->date_depot_chq_part_mut) style="background-color: #F2CED5" @endif>
+                                                    @if($reglement->date_depot_chq_part_mut)
+                                                        {{ \Carbon\Carbon::parse($reglement->date_depot_chq_part_mut)->format('d-m-Y') }}
+                                                    @endif
+                                                </td>
+
+                                                <td @if($today == $reglement->date_depot_chq_rac && $reglement->date_depot_chq_rac) style="background-color: #F2CED5" @endif>
+                                                    @if($reglement->date_depot_chq_rac)
+                                                        {{ \Carbon\Carbon::parse($reglement->date_depot_chq_rac)->format('d-m-Y') }}
+                                                    @endif
+                                                </td>
+
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
 
                                 </div>
                             </div>
