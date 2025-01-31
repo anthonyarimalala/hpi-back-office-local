@@ -10,6 +10,10 @@ class Devis extends Model
 {
     use HasFactory;
     protected $table = 'devis';
+    protected $fillable = [
+        'dossier',
+        'date'
+    ];
 
     public static function createDevis($dossier, $status, $mutuelle, $date, $montant, $devis_signe, $praticien, $observation)
     {

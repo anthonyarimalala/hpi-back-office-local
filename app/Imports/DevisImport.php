@@ -4,24 +4,54 @@ namespace App\Imports;
 use App\Models\import\ImportDevis;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Row;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 
 class DevisImport implements ToModel, WithStartRow
 {
+    protected $couleurs = [];
     protected $errors = [];
+    protected $spreedsheet;
+    protected $j = -1;
 
-    /**
-     * @param array $row
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
-     */
+    public function __construct($path)
+    {
+        $this->spreedsheet = IOFactory::load($path);
+    }
+
+    public function getSpreedsheet(): \PhpOffice\PhpSpreadsheet\Spreadsheet
+    {
+        return $this->spreedsheet;
+    }
+
     public function model(array $row)
     {
         $importDevis = new ImportDevis();
+        $sheet = $this->spreedsheet->getActiveSheet();
+        $rowIndex = $this->getRowIndex($row);
+
         try {
+            $i = 1;
+            foreach ($row as $columnIndex => $cellValue) {
+                if ($i==1) $this->j++;
+                $cellCoordinate = Coordinate::stringFromColumnIndex($columnIndex + 1) . $rowIndex + $this->j;
+                $cellColor = $sheet->getStyle($cellCoordinate)->getFill()->getStartColor()->getRGB();
+                $index = $row[0]."|".$row[4];
+                $this->couleurs[$index] = $cellColor;
+                echo ($this->j."<br>");
+                echo ("{$index}: #{$cellColor}<br>");
+
+                $i++;
+            }
+
+
             // Validation et traitement des données
             return new ImportDevis([
+                'couleur' => "#".$this->couleurs[$row[0]."|".$row[4]],
+                // 'color' => $firstCellColor,
                 'dossier' => $row[0],
                 'nom' => $row[1],
                 'mutuelle' => $row[2],
@@ -79,6 +109,10 @@ class DevisImport implements ToModel, WithStartRow
             ];
             return null;  // Retourner null si l'import échoue pour cette ligne
         }
+    }
+    public function onRow(Row $row)
+    {
+        $this->lineNumber = $row->getIndex();
     }
 
     /**

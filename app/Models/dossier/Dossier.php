@@ -13,6 +13,9 @@ class Dossier extends Model
     protected $primaryKey = 'dossier';
     protected $table = 'dossiers';
     public $incrementing = false;
+    protected $fillable = [
+        'dossier'
+    ];
 
 
     public static function modifierDossier($num_dossier, $status, $mutuelle){

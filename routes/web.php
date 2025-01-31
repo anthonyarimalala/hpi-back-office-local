@@ -72,6 +72,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // section: dashboard
     Route::get('dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboard'])->name('dashboard');
     Route::get('rappels/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboardRappels'])->name('dashboard.rappel');
+        Route::get('/reglements/load-more', [\App\Http\Controllers\Dashboard\DashboardController::class, 'loadMoreRappelsAppelsMails'])->name('reglements.loadMore');
+
 
     // section: gestion
         //utilisateur

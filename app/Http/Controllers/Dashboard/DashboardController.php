@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\dashboard\Dashboard;
+use App\Models\devis\DevisReglement;
 use App\Models\views\stats\V_StatDevisEtat;
 use App\Models\views\stats\V_StatDevisMens;
 use App\Models\views\stats\V_StatNbrDevis;
@@ -36,9 +37,25 @@ class DashboardController extends Controller
             ->orWhere('date_depot_chq_pec', $today)
             ->orWhere('date_depot_chq_part_mut', $today)
             ->orWhere('date_depot_chq_rac', $today)
+            ->get();
+        return view('dashboard/dashboard-rappels')->with($data);
+    }
+
+    public function loadMoreRappelsAppelsMails(Request $request)
+    {
+        $today = Carbon::today();
+        $offset = $request->input('offset', 0);
+        $reglements = V_Devis::where('date_paiement_cb_ou_esp', $today)
+            ->orWhere('date_depot_chq_pec', $today)
+            ->orWhere('date_depot_chq_part_mut', $today)
+            ->orWhere('date_depot_chq_rac', $today)
             ->where('devis_signe', 'oui')
+            ->skip($offset)
+            ->take(2)
             ->get();
 
-        return view('dashboard/dashboard-rappels')->with($data);
+        return response()->json([
+            'reglements' => $reglements
+        ]);
     }
 }
