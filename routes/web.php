@@ -86,6 +86,14 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('historiques/modif-pro', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistProthese']);
     Route::get('historiques/modif-dev', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistDevis']);
 
+    // section: ca
+    Route::get('liste-ca', [\App\Http\Controllers\Ca\CaController::class, 'showListeCa'])->name('liste.ca');
+    Route::get('ca/{id_ca}/{dossier}/modifier', [\App\Http\Controllers\Ca\CaController::class, 'showModifierCa']);
+    Route::post('ca/{id_ca}/{dossier}/modifier', [\App\Http\Controllers\Ca\CaController::class, 'updateCa']);
+    Route::get('ca/nouveau', [\App\Http\Controllers\Ca\CaController::class, 'showNouveauCa']);
+    Route::post('ca/nouveau', [\App\Http\Controllers\Ca\CaController::class, 'saveCa']);
+    Route::get('/get-patient-details', [\App\Http\Controllers\Ca\CaController::class, 'getPatientDetails'])->name('get.patient.details');
+
     // section: imports
     Route::get('imports', [\App\Http\Controllers\Import\ImportsController::class, 'showImports']);
     Route::post('devis/import', [\App\Http\Controllers\Import\ImportsController::class, 'importerDevis']);

@@ -41,8 +41,6 @@ class DevisImport implements ToModel, WithStartRow
                 $cellColor = $sheet->getStyle($cellCoordinate)->getFill()->getStartColor()->getRGB();
                 $index = $row[0]."|".$row[4];
                 $this->couleurs[$index] = $cellColor;
-                echo ($this->j."<br>");
-                echo ("{$index}: #{$cellColor}<br>");
 
                 $i++;
             }

@@ -235,7 +235,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{asset('liste/devis')}}">
                             <i class="mdi mdi-file-document-outline menu-icon"></i>
-                            <span class="menu-title">Devis</span>
+                            <span class="menu-title">DEVIS & <br>PROTHESE & CHQ</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ asset('liste-ca') }}">
+                            <i class="mdi mdi-chart-line menu-icon"></i>
+                            <span class="menu-title">CA</span>
                         </a>
                     </li>
 
