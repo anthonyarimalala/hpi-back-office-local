@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\dossier\Dossier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -9,6 +10,12 @@ class GlobalController extends Controller
 {
     //
 
+    public function searchDossier(Request $request)
+    {
+        $query = $request->input('query');
+        $dossiers = Dossier::where('dossier', 'LIKE', "$query%")->limit(5)->get();
+        return response()->json($dossiers);
+    }
     public function search(Request $request)
     {
         $query = $request->input('q');

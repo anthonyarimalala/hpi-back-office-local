@@ -13,7 +13,7 @@
                         <div class="card-body">
                             <div class="d-sm-flex justify-content-between align-items-start">
                                 <div>
-                                    <h4 class="card-title card-title-dash">Liste des devis</h4>
+                                    <h4 class="card-title card-title-dash">CA: </h4>
                                 </div>
                                 @if (session('success'))
                                     <div class="alert alert-success" role="alert">
@@ -21,8 +21,8 @@
                                     </div>
                                 @endif
                                 <div>
-                                    <a href="{{ asset('ca/nouveau') }}" class="btn btn-primary text-white me-0">
-                                        <i class="icon-plus"></i> Nouveau
+                                    <a href="{{ asset('ca/nouveau') }}" class="text-primary">
+                                        <i class="mdi mdi-plus mdi-24px">Nouveau</i>
                                     </a>
                                 </div>
                             </div>

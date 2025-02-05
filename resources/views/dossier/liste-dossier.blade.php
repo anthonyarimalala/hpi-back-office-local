@@ -29,13 +29,13 @@
                                     <tbody>
                                     @foreach($v_dossiers as $dossier)
                                         <tr>
-                                            <td onclick="window.location.href='{{ $dossier->dossier }}/liste-devis';" style="cursor:pointer;">
+                                            <td onclick="window.location.href='{{ $dossier->dossier }}/details';" style="cursor:pointer;">
                                                 {{ \Carbon\Carbon::parse($dossier->updated_at)->translatedFormat('d F Y') }}
                                             </td>
-                                            <td onclick="window.location.href='{{ $dossier->dossier }}/liste-devis';" style="cursor:pointer;">
+                                            <td onclick="window.location.href='{{ $dossier->dossier }}/details';" style="cursor:pointer;">
                                                 {{ $dossier->dossier }}
                                             </td>
-                                            <td onclick="window.location.href='{{ $dossier->dossier }}/liste-devis';" style="cursor:pointer;">
+                                            <td onclick="window.location.href='{{ $dossier->dossier }}/details';" style="cursor:pointer;">
                                                 <div class="d-flex ">
                                                     <div>
                                                         <h6>{{ $dossier->nom }}</h6>
@@ -43,7 +43,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td onclick="window.location.href='{{ $dossier->dossier }}/liste-devis';" style="cursor:pointer;">
+                                            <td onclick="window.location.href='{{ $dossier->dossier }}/details';" style="cursor:pointer;">
                                                 <div class="badge badge-opacity-warning">{{ $dossier->status }}</div>
                                             </td>
                                             <td>

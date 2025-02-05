@@ -50,7 +50,16 @@
                                 <tbody>
                                 <tr>
                                     <td><input type="date" class="form-control" id="date_derniere_modif" name="date_derniere_modif" placeholder="Date de modification" value="{{ old('date_derniere_modif') }}"></td>
-                                    <td><input type="text" class="form-control" id="dossier" name="dossier" placeholder="Numéro de dossier" required value="{{ old('dossier') }}"></td>
+                                    <td>
+                                        <input type="text" class="form-control" id="dossiers" name="dossiers" placeholder="Numéro de dossier" required list="dossier-list">
+                                        <datalist id="dossier-list">
+                                            <option value="New York">
+                                            <option value="Seattle">
+                                            <option value="Los Angeles">
+                                            <option value="Chicago">
+                                        </datalist>
+                                    </td>
+
                                     <td><input type="text" class="form-control" id="nom_patient" name="nom_patient" placeholder="Nom du patient" readonly></td>
                                     <td>
                                         <select class="form-select" name="statut" required>
@@ -298,8 +307,29 @@
     </form>
     <script src="{{ asset('jquery-3.7.1.min.js') }}"></script>
     <script>
+        $(document).ready(function () {
+            $('#dossiers').on('input', function () {
+                let query = $(this).val();
+                if (query.length > 0) {
+                    $.ajax({
+                        url: "{{ route('search.dossier') }}",
+                        type: "GET",
+                        data: { query: query },
+                        success: function (data) {
+                            let options = '';
+                            data.forEach(function (dossier) {
+                                options += `<option value="${dossier.dossier}">`;
+                            });
+                            $('#dossier-list').html(options);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+    <script>
         $(document).ready(function() {
-            $('#dossier').on('input', function() {
+            $('#dossiers').on('input', function() {
                 var dossier = $(this).val();
 
                 if (dossier.length > 0) {
@@ -337,6 +367,7 @@
                 }
             });
         });
+
     </script>
 
 

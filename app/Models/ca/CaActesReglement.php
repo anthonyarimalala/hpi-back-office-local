@@ -17,7 +17,7 @@ class CaActesReglement extends Model
     public static function saveCa(Request $request, $action, $id_ca=null)
     {
         // Récupérer les données du formulaire
-        $dossier = $request->input('dossier');
+        $dossier = $request->input('dossiers');
         $m_dossier = Dossier::where('dossier', $dossier)->first();
         if(!$m_dossier) return back()->withErrors('Le dossier "' . $dossier . '" n\'existe pas.');
         $date_derniere_modif = $request->input('date_derniere_modif');

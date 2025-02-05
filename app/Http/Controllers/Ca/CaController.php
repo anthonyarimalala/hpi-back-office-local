@@ -31,7 +31,7 @@ class CaController extends Controller
     public function saveCa(Request $request)
     {
         $m_ca_acte_reglement = CaActesReglement::saveCa($request, 0);
-        $dossier = $request->input('dossier');
+        $dossier = $request->input('dossiers');
         $m_dossier = Dossier::where('dossier', $dossier)->first();
         if(!$m_dossier) return back()->withErrors('Le dossier "' . $dossier . '" n\'existe pas.')->withInput();
         return redirect()->route('liste.ca');

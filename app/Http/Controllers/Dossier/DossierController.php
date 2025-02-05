@@ -6,18 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\devis\Devis;
 use App\Models\dossier\Dossier;
 use App\Models\dossier\DossierStatus;
+use App\Models\views\V_CaActesReglement;
 use App\Models\views\V_Devis;
 use Illuminate\Http\Request;
 
 class DossierController extends Controller
 {
     //
-
-    public function showDetailDossier($dossier){
-        $data['v_devis'] = V_Devis::where('dossier',$dossier)->first();
-        return view('dossier/details/detail-dossier-devis')->with($data);
+    public function getDetailDossier($dossier)
+    {
+        $data['deviss'] = V_Devis::where('dossier', $dossier)->orderBy('date', 'desc')->get();
+        $data['dossier'] = Dossier::where('dossier', $dossier)->first();
+        $data['ca_actes_reglements'] = V_CaActesReglement::where('dossier', $dossier)
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+        return view('dossier/devis/liste-devis-dossier')->with($data);
     }
-
     public function modifierDossier(Request $request)
     {
         $i_dossier = $request->input('dossier');

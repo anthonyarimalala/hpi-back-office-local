@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function() {
 Route::middleware(['auth', 'role:user'])->group(function () {
     // Recherche
     Route::get('/search', [\App\Http\Controllers\GlobalController::class, 'search'])->name('search');
+    Route::get('/search-dossier', [\App\Http\Controllers\GlobalController::class, 'searchDossier'])->name('search.dossier');
 
 
     // section: patients
@@ -47,8 +48,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('{dossier}/devis/{id_devis}/detail', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getDevis'])->name('devis.detail');;
     Route::get('{dossier}/nouveau-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'nouveauDevis']);
     Route::post('{dossier}/nouveau-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'creerDevis']);
-    Route::get('{dossier}/liste-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getListeDevis'])->name('liste-devis');
-    Route::get('devis/{dossier}', [\App\Http\Controllers\Dossier\DossierController::class, 'showDetailDossier']);
+    Route::get('{dossier}/details', [\App\Http\Controllers\Dossier\DossierController::class, 'getDetailDossier'])->name('dossier.detail');
+
     Route::get('devis/modifier/{dossier}', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showModifierDevis']);
 
     // section: prothèse

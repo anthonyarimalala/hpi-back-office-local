@@ -10,12 +10,11 @@ use App\Models\devis\DevisEtat;
 use App\Models\devis\DevisReglement;
 use App\Models\dossier\Dossier;
 use App\Models\dossier\DossierStatus;
-use App\Models\dossier\L_DossierMutuelle;
 use App\Models\hist\H_Devis;
 use App\Models\praticien\Praticien;
+use App\Models\views\V_CaActesReglement;
 use App\Models\views\V_Devis;
 use App\Models\views\V_H_Devis;
-use App\Models\views\V_PatientDossier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -132,11 +131,6 @@ class DevisController extends Controller
         $data['statuss'] = DossierStatus::where('is_deleted', 0)->get();
         $data['praticiens'] = Praticien::where('is_deleted', 0)->get();
         return view('dossier/devis/nouveau-devis')->with($data);
-    }
-    public function getListeDevis($dossier){
-        $data['deviss'] = V_Devis::where('dossier', $dossier)->orderBy('date', 'desc')->get();
-        $data['dossier'] = Dossier::where('dossier', $dossier)->first();
-        return view('dossier/devis/liste-devis-dossier')->with($data);
     }
 
     /*
