@@ -21,8 +21,6 @@
                                             <label for="dossier">Dossier</label>
                                             <input type="text" class="form-control" id="dossier" name="doss" placeholder="Dossier" list="dossier-list">
                                             <datalist id="dossier-list">
-                                                <option value="Santa Clara">Santa Clara</option>
-                                                <option value="Santa Cruz">Santa Cruz</option>
                                             </datalist>
                                         </div>
                                         <div class="form-group">

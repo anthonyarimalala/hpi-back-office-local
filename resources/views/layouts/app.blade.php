@@ -177,7 +177,7 @@
                                 data.forEach(result => {
                                     const li = document.createElement('li');
                                     li.classList.add('list-group-item');
-                                    li.innerHTML = `<a href="/${result.dossier}/liste-devis">${result.dossier}: ${result.nom} - ${result.date_naissance}</a>`;
+                                    li.innerHTML = `<a href="/${result.dossier}/details">${result.dossier}: ${result.nom} - ${result.date_naissance}</a>`;
                                     resultsContainer.appendChild(li);
                                 });
                                 resultsContainer.style.display = 'block';

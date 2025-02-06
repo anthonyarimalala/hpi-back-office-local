@@ -40,6 +40,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('dossiers', [\App\Http\Controllers\Dossier\DossierController::class, 'showDossiers'])->name('dossiers');
     Route::get('modifier-dossier/{dossier}', [\App\Http\Controllers\Dossier\DossierController::class, 'showModifierDossier']);
     Route::post('modifier-dossier', [\App\Http\Controllers\Dossier\DossierController::class, 'modifierDossier'])->name('modifier.dossier');
+    Route::get('{dossier}/details', [\App\Http\Controllers\Dossier\DossierController::class, 'getDetailDossier'])->name('dossier.detail');
 
     // section: devis
     Route::post('modifier-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'modifierDevis']);
@@ -48,7 +49,6 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('{dossier}/devis/{id_devis}/detail', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getDevis'])->name('devis.detail');;
     Route::get('{dossier}/nouveau-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'nouveauDevis']);
     Route::post('{dossier}/nouveau-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'creerDevis']);
-    Route::get('{dossier}/details', [\App\Http\Controllers\Dossier\DossierController::class, 'getDetailDossier'])->name('dossier.detail');
     Route::get('devis/nouveau', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showNouveauDevis']);
     Route::post('devis/nouveau', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'creerDevisSansDossier']);
 
