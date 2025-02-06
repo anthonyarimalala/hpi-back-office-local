@@ -23,7 +23,7 @@
 
                                         <div class="form-group">
                                             <label for="nom">Nom</label>
-                                            <input type="text" class="form-control" id="nom" name="nom" placeholder="Nom" value="{{ $v_dossier->nom }}" disabled>
+                                            <input type="text" class="form-control" id="nom" name="nom" placeholder="Nom" value="{{ $v_dossier->nom }}">
                                             @error('nom')
                                             <div class="alert alert-danger mt-2">{{ $message }}</div>
                                             @enderror

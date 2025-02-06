@@ -53,10 +53,6 @@
                                     <td>
                                         <input type="text" class="form-control" id="dossiers" name="dossiers" placeholder="Numéro de dossier" required list="dossier-list">
                                         <datalist id="dossier-list">
-                                            <option value="New York">
-                                            <option value="Seattle">
-                                            <option value="Los Angeles">
-                                            <option value="Chicago">
                                         </datalist>
                                     </td>
 

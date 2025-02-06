@@ -22,7 +22,7 @@
                                     <a href="#" class="btn btn-primary text-white me-0" data-bs-toggle="modal" data-bs-target="#dateModal">
                                         <i class="icon-download"></i> Export
                                     </a>
-                                    <a href="" class="text-primary">
+                                    <a href="{{ asset('devis/nouveau') }}" class="text-primary">
                                         <i class="mdi mdi-plus mdi-24px">Nouveau</i>
                                     </a>
                                 </div>

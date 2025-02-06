@@ -15,6 +15,7 @@ use App\Models\praticien\Praticien;
 use App\Models\views\V_CaActesReglement;
 use App\Models\views\V_Devis;
 use App\Models\views\V_H_Devis;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -95,22 +96,47 @@ class DevisController extends Controller
             ->get();
         return view('dossier/devis/detail/devis')->with($data);
     }
+
+    public function creerDevisSansDossier(Request $request){
+        $validated = $request->validate([
+            'doss' => 'required',
+            'status' => 'required',
+            'montant' => 'required|numeric|min:0.01',
+            'devis_signe' => 'required|in:oui,non',
+            'praticien' => 'required|exists:praticiens,praticien',  // Assurez-vous que la table 'praticiens' et la colonne 'praticien' existent
+            'observation' => 'nullable|string',  // 'nullable' permet de laisser ce champ vide
+        ]);
+        $dossier = $validated['doss'];
+        $nom = $request->input('nom');
+        $status = $validated['status'];
+        $date = $request->input('date');
+        if (!$date || $date=='') $date = Carbon::parse()->format('Y-m-d');
+        $mutuelle = $request->input('mutuelle');
+        $montant = $validated['montant'];
+        $devis_signe = $validated['devis_signe'];
+        $praticien = $validated['praticien'];
+        $observation = $validated['observation'];
+
+        echo ($nom);
+        $id_devis = Devis::createDevisSansDossier($dossier, $nom, $status, $mutuelle, $date, $montant, $devis_signe, $praticien, $observation);
+        return redirect()->to($dossier.'/devis/'.$id_devis.'/detail');
+    }
     public function creerDevis(Request $request)
     {
         // Validation des données
         $validated = $request->validate([
-            'date' => 'required|date',
             'montant' => 'required|numeric|min:0.01',
             'devis_signe' => 'required|in:oui,non',
             'praticien' => 'required|exists:praticiens,praticien',  // Assurez-vous que la table 'praticiens' et la colonne 'praticien' existent
-            'observation' => 'nullable|string|max:500',  // 'nullable' permet de laisser ce champ vide
+            'observation' => 'nullable|string',  // 'nullable' permet de laisser ce champ vide
         ]);
 
         // Récupération des données validées
         $dossier = $request->input('dossier');
         $status = $request->input('status');
         $mutuelle = $request->input('mutuelle');
-        $date = $validated['date'];
+        $date = $request->input('date');
+        if (!$date || $date=='') $date = Carbon::parse()->format('Y-m-d');
         $montant = $validated['montant'];
         $devis_signe = $validated['devis_signe'];
         $praticien = $validated['praticien'];
@@ -131,6 +157,11 @@ class DevisController extends Controller
         $data['statuss'] = DossierStatus::where('is_deleted', 0)->get();
         $data['praticiens'] = Praticien::where('is_deleted', 0)->get();
         return view('dossier/devis/nouveau-devis')->with($data);
+    }
+    public function showNouveauDevis(){
+        $data['statuss'] = DossierStatus::where('is_deleted', 0)->get();
+        $data['praticiens'] = Praticien::where('is_deleted', 0)->get();
+        return view('devis/nouveau/nouveau-devis')->with($data);
     }
 
     /*

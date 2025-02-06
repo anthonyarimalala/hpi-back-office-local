@@ -25,10 +25,11 @@ class DossierController extends Controller
     public function modifierDossier(Request $request)
     {
         $i_dossier = $request->input('dossier');
+        $i_nom = $request->input('nom');
         $i_status = $request->input('status');
         $mutuelle = $request->input('mutuelle');
 
-        Dossier::modifierDossier($i_dossier, $i_status, $mutuelle);
+        Dossier::modifierDossier($i_dossier, $i_nom, $i_status, $mutuelle);
         return back()->with('success', 'Le dossier "'.$i_dossier.'" a été mis à jour.');
     }
     public function showModifierDossier($dossier)

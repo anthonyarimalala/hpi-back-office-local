@@ -49,6 +49,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('{dossier}/nouveau-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'nouveauDevis']);
     Route::post('{dossier}/nouveau-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'creerDevis']);
     Route::get('{dossier}/details', [\App\Http\Controllers\Dossier\DossierController::class, 'getDetailDossier'])->name('dossier.detail');
+    Route::get('devis/nouveau', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showNouveauDevis']);
+    Route::post('devis/nouveau', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'creerDevisSansDossier']);
 
     Route::get('devis/modifier/{dossier}', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showModifierDevis']);
 

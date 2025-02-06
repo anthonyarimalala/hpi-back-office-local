@@ -18,8 +18,9 @@ class Dossier extends Model
     ];
 
 
-    public static function modifierDossier($num_dossier, $status, $mutuelle){
+    public static function modifierDossier($num_dossier, $nom, $status, $mutuelle){
         $dossier = Dossier::where('dossier', $num_dossier)->first();
+        $dossier->nom = $nom;
         $dossier->status = $status;
         $dossier->mutuelle = $mutuelle;
         $dossier->save();

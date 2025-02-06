@@ -2,6 +2,7 @@
 
 namespace App\Models\devis;
 
+use App\Models\dossier\Dossier;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +16,28 @@ class Devis extends Model
         'date'
     ];
 
+    public static function createDevisSansDossier($dossier, $nom, $status, $mutuelle, $date, $montant, $devis_signe, $praticien, $observation){
+        $m_dossier = Dossier::firstOrNew(['dossier'=> $dossier]);
+        if ($m_dossier->nom == null || $m_dossier->nom == ''){
+            $m_dossier->nom = $nom;
+        }
+        $m_dossier->status = $status;
+        $m_dossier->mutuelle = $mutuelle;
+        $m_dossier->is_deleted = 0;
+        $m_dossier->save();
+        $m_devis = new Devis();
+        $m_devis->dossier = $dossier;
+        $m_devis->status = $status;
+        $m_devis->mutuelle = $mutuelle;
+        $m_devis->date = $date;
+        $m_devis->montant = $montant;
+        $m_devis->devis_signe = $devis_signe;
+        $m_devis->praticien = $praticien;
+        $m_devis->observation = $observation;
+        $m_devis->id_devis_etat = 1;
+        $m_devis->save();
+        return $m_devis->id;
+    }
     public static function createDevis($dossier, $status, $mutuelle, $date, $montant, $devis_signe, $praticien, $observation)
     {
         // Création d'un nouveau devis
