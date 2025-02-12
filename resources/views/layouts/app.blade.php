@@ -215,12 +215,19 @@
         <!-- partial:partials/_sidebar.html -->
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
             <ul class="nav">
-
                 <li class="nav-item">
-                    <a class="nav-link" href="{{asset('/dashboard')}}">
-                        <i class="mdi mdi-view-dashboard menu-icon"></i>
+                    <a class="nav-link" data-bs-toggle="collapse" href="#dashboard" aria-expanded="false" aria-controls="ui-basic">
+                        <i class="menu-icon mdi mdi-view-dashboard"></i>
                         <span class="menu-title">Dashboard</span>
+                        <i class="menu-arrow"></i>
                     </a>
+                    <div class="collapse" id="dashboard">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('dashboard/overview') }}">Overview</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('dashboard/ca') }}">CA</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('dashboard/rappels') }}">Rappels</a></li>
+                        </ul>
+                    </div>
                 </li>
 
 
@@ -240,7 +247,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ asset('liste-ca') }}">
-                            <i class="mdi mdi-chart-line menu-icon"></i>
+                            <i class="mdi mdi-cash-multiple menu-icon"></i>
                             <span class="menu-title">CA</span>
                         </a>
                     </li>
@@ -283,6 +290,7 @@
                             <li class="nav-item"> <a class="nav-link" href="{{ asset('historiques/modif-dev') }}">Devis</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ asset('historiques/modif-pro') }}">Prothèse</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ asset('historiques/modif-chq') }}">Chèques</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('historiques/modif-ca') }}">CA</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ asset('') }}">Autres</a></li>
                         </ul>
                     </div>
@@ -349,32 +357,6 @@
 <!-- plugins:js -->
 <script src="{{ asset('star-admin2/js/jquery.cookie.js') }}" type="text/javascript"></script>
 <script src="{{ asset('star-admin2-global/template.js') }}"></script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const layoutKey = 'app_layout';
-        let currentLayout = localStorage.getItem(layoutKey);
-
-        if (!currentLayout) {
-            currentLayout = 'layouts.app';
-            localStorage.setItem(layoutKey, currentLayout);
-        }
-
-        fetch('/set-layout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ layout: currentLayout })
-        }).then(response => {
-            if (response.ok) {
-                console.log('Layout configuré pour cette session.');
-            }
-        });
-    });
-</script>
-
 
 <!-- End custom js for this page-->
 </body>

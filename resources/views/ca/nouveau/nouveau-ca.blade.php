@@ -1,4 +1,4 @@
-@extends(session('layout') ?? 'layouts.app')
+@extends('layouts.app')
 
 @section('content')
     <style>
@@ -56,7 +56,7 @@
                                         </datalist>
                                     </td>
 
-                                    <td><input type="text" class="form-control" id="nom_patient" name="nom_patient" placeholder="Nom du patient" readonly></td>
+                                    <td><input type="text" class="form-control" id="nom_patient" name="nom_patient" placeholder="Nom du patient" readonly ></td>
                                     <td>
                                         <select class="form-select" name="statut" required>
                                             <option value="" disabled selected>Choix statut</option>
@@ -225,7 +225,7 @@
                                 <tr>
                                     <td><input type="number" min="0" step="0.01" class="form-control" id="rcsd_cheque" name="rcsd_cheque" placeholder="Montant chèque"></td>
                                     <td><input type="number" min="0" step="0.01" class="form-control" id="rcsd_especes" name="rcsd_especes" placeholder="Montant espèces"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcsb_cb" name="rcsb_cb" placeholder="Montant CB"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcsd_cb" name="rcsd_cb" placeholder="Montant CB"></td>
                                 </tr>
                                 </tbody>
                             </table>

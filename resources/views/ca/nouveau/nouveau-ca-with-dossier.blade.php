@@ -10,16 +10,25 @@
                 #575756 100%);
         }
 
+
+
     </style>
     <div class="row mb-4">
         <div class="col-12 text-center">
-            <h1 class="display-4">CA: Modification</h1>
+            <h1 class="display-4">CA: Nouveau</h1>
         </div>
     </div>
+    @if ($errors->any())
+        <div class="alert alert-danger text-center">
+            @foreach ($errors->all() as $error)
+                <p>{{ $error }}</p>
+            @endforeach
+        </div>
+    @endif
 
-    <form action="{{ asset('ca/modifier') }}" method="POST">
+    <form action="{{ asset('ca/nouveau') }}" method="POST">
         @csrf
-        <input type="hidden" name="id_ca" value="{{ $v_ca_actes_reglement->id }}">
+
         <div class="row">
             <div class="col-md-12">
                 <div class="card shadow-sm">
@@ -40,21 +49,27 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="date" class="form-control" id="date_derniere_modif" name="date_derniere_modif" value="{{ $v_ca_actes_reglement->date_derniere_modif }}" placeholder="Date de modification"></td>
-                                    <td><input type="text" class="form-control" id="dossierr" name="dossierr" value="{{ $v_ca_actes_reglement->dossier }}" placeholder="Numéro de dossier" required readonly></td>
-                                    <td><input type="text" class="form-control" id="nom_patient" name="nom_patient" value="{{ $v_ca_actes_reglement->nom }}" placeholder="Nom du patient" readonly></td>
+                                    <td><input type="date" class="form-control" id="date_derniere_modif" name="date_derniere_modif" placeholder="Date de modification" value="{{ old('date_derniere_modif') }}"></td>
                                     <td>
-                                        <select class="form-select" name="statut" id="statut" required readonly>
+                                        <input type="text" class="form-control" id="dossiers" name="dossiers" placeholder="Numéro de dossier" required list="dossier-list" @if($m_v_devis) value="{{ $m_v_devis->dossier }}" @endif>
+                                        <datalist id="dossier-list">
+                                        </datalist>
+                                    </td>
+
+                                    <td><input type="text" class="form-control" id="nom_patient" name="nom_patient" placeholder="Nom du patient" readonly @if($m_v_devis) value="{{ $m_v_devis->nom }}" @endif></td>
+                                    <td>
+                                        <select class="form-select" name="statut" required>
                                             <option value="" disabled selected>Choix statut</option>
                                             @foreach($status as $st)
-                                                <option value="{{ $st->status }}" @if($v_ca_actes_reglement->statut == $st->status) selected @endif>{{ $st->status }}</option>
+                                                <option value="{{ $st->status }}" @if(old('statut') == $st->status) selected @endif @if($m_v_devis) @if($m_v_devis->status == $st->status) selected @endif @endif>{{ $st->status }}</option>
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td><input type="text" class="form-control" id="mutuelle" name="mutuelle" value="{{ $v_ca_actes_reglement->mutuelle }}" placeholder="Mutuelle" readonly></td>
+                                    <td><input type="text" class="form-control" id="mutuelle" name="mutuelle" placeholder="Mutuelle" @if($m_v_devis) value="{{ $m_v_devis->mutuelle }}" @endif></td>
                                 </tr>
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
                 </div>
@@ -82,19 +97,18 @@
                                 <tr>
                                     <td>
                                         <select class="form-select" name="praticien" required>
-                                            <option value="" disabled>Choix praticien</option>
+                                            <option value="" disabled selected>Choix praticien</option>
                                             @foreach($praticiens as $pra)
-                                                <option value="{{ $pra->praticien }}" @if($v_ca_actes_reglement->praticien == $pra->praticien) selected @endif>{{ $pra->praticien }}</option>
+                                                <option value="{{ $pra->praticien }}" @if(old('praticien')==$pra->praticien) selected @endif @if($m_v_devis) @if($m_v_devis->praticien == $pra->praticien) selected @endif @endif>{{ $pra->praticien }}</option>
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td><input type="text" class="form-control" id="nom_acte" name="nom_acte" value="{{ $v_ca_actes_reglement->nom_acte }}" placeholder="Nom de l'acte"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="cotation" name="cotation" value="{{ $v_ca_actes_reglement->cotation }}" placeholder="Cotation"></td>
-                                    <td><input type="text" class="form-control" id="controle_securisation" name="controle_securisation" value="{{ $v_ca_actes_reglement->controle_securisation }}" placeholder="Contrôle sécurisation"></td>
+                                    <td><input type="text" class="form-control" id="nom_acte" name="nom_acte" placeholder="Nom de l'acte"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="cotation" name="cotation" placeholder="Cotation"></td>
+                                    <td><input type="text" class="form-control" id="controle_securisation" name="controle_securisation" placeholder="Contrôle sécurisation"></td>
                                 </tr>
                                 </tbody>
                             </table>
-
 
                         </div>
                     </div>
@@ -122,15 +136,14 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_part_secu" name="ro_part_secu" value="{{ $v_ca_actes_reglement->ro_part_secu }}" placeholder="Part Sécu"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_virement_recu" name="ro_virement_recu" value="{{ $v_ca_actes_reglement->ro_virement_recu }}" placeholder="Virement reçu"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_indus_paye" name="ro_indus_paye" value="{{ $v_ca_actes_reglement->ro_indus_paye }}" placeholder="Indus payé"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_indus_en_attente" name="ro_indus_en_attente" value="{{ $v_ca_actes_reglement->ro_indus_en_attente }}" placeholder="Indus en attente"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_indus_irrecouvrable" name="ro_indus_irrecouvrable" value="{{ $v_ca_actes_reglement->ro_indus_irrecouvrable }}" placeholder="Indus irrecouvrable"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_part_secu" name="ro_part_secu" placeholder="Part Sécu"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_virement_recu" name="ro_virement_recu" placeholder="Virement reçu"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_indus_paye" name="ro_indus_paye" placeholder="Indus payé"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_indus_en_attente" name="ro_indus_en_attente" placeholder="Indus en attente"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_indus_irrecouvrable" name="ro_indus_irrecouvrable" placeholder="Indus irrecouvrable"></td>
                                 </tr>
                                 </tbody>
                             </table>
-
 
                         </div>
                     </div>
@@ -154,7 +167,7 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="part_mutuelle" name="part_mutuelle" value="{{ $v_ca_actes_reglement->part_mutuelle }}" placeholder="Part Mutuelle"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="part_mutuelle" name="part_mutuelle" placeholder="Part Mutuelle"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -180,13 +193,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcs_virement" name="rcs_virement" value="{{ $v_ca_actes_reglement->rcs_virement }}" placeholder="Montant virement"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcs_especes" name="rcs_especes" value="{{ $v_ca_actes_reglement->rcs_especes }}" placeholder="Montant espèces"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcs_cb" name="rcs_cb" value="{{ $v_ca_actes_reglement->rcs_cb }}" placeholder="Montant CB"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcs_virement" name="rcs_virement" placeholder="Montant virement"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcs_especes" name="rcs_especes" placeholder="Montant espèces"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcs_cb" name="rcs_cb" placeholder="Montant CB"></td>
                                 </tr>
                                 </tbody>
                             </table>
-
 
                         </div>
                     </div>
@@ -211,13 +223,12 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcsd_cheque" name="rcsd_cheque" value="{{ $v_ca_actes_reglement->rcsd_cheque }}" placeholder="Montant chèque"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcsd_especes" name="rcsd_especes" value="{{ $v_ca_actes_reglement->rcsd_especes }}" placeholder="Montant espèces"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcsd_cb" name="rcsd_cb" value="{{ $v_ca_actes_reglement->rcsd_cb }}" placeholder="Montant CB"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcsd_cheque" name="rcsd_cheque" placeholder="Montant chèque"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcsd_especes" name="rcsd_especes" placeholder="Montant espèces"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcsd_cb" name="rcsd_cb" placeholder="Montant CB"></td>
                                 </tr>
                                 </tbody>
                             </table>
-
 
                         </div>
                     </div>
@@ -243,14 +254,13 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rac_part_patient" name="rac_part_patient" value="{{ $v_ca_actes_reglement->rac_part_patient }}" placeholder="Part patient"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rac_cheque" name="rac_cheque" value="{{ $v_ca_actes_reglement->rac_cheque }}" placeholder="Montant chèque"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rac_especes" name="rac_especes" value="{{ $v_ca_actes_reglement->rac_especes }}" placeholder="Montant espèces"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rac_cb" name="rac_cb" value="{{ $v_ca_actes_reglement->rac_cb }}" placeholder="Montant CB"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rac_part_patient" name="rac_part_patient" placeholder="Part patient"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rac_cheque" name="rac_cheque" placeholder="Montant chèque"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rac_especes" name="rac_especes" placeholder="Montant espèces"></td>
+                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rac_cb" name="rac_cb" placeholder="Montant CB"></td>
                                 </tr>
                                 </tbody>
                             </table>
-
 
                         </div>
                     </div>
@@ -274,7 +284,7 @@
                                 <tbody>
                                 <tr>
                                     <td>
-                                        <textarea class="form-control" id="commentaire" name="commentaire" style="height: 150px" placeholder="Ajoutez un commentaire..." >{{ $v_ca_actes_reglement->commentaire }}</textarea>
+                                        <textarea class="form-control" id="commentaire" name="commentaire" style="height: 150px" placeholder="Ajoutez un commentaire..."></textarea>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -291,46 +301,31 @@
             </div>
         </div>
     </form>
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card shadow-sm">
-                <div class="card-header text-white" style="background: #F2CED5;">
-                    <h4 class="card-title mb-0">Historique</h4>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>Utilisateur</th>
-                                <th>Dossier</th>
-                                <th>Action</th>
-                                <th>Date</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($hists as $hist)
-                                <tr>
-                                    <td>{{ $hist->nom }}</td>
-                                    <td>{{ $hist->dossier }}</td>
-                                    <td>{!! nl2br($hist->action) !!}</td>
-                                    <td>{{ $hist->created_at }}</td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <script src="{{ asset('jquery-3.7.1.min.js') }}"></script>
-
+    <script>
+        $(document).ready(function () {
+            $('#dossiers').on('input', function () {
+                let query = $(this).val();
+                if (query.length > 0) {
+                    $.ajax({
+                        url: "{{ route('search.dossier') }}",
+                        type: "GET",
+                        data: { query: query },
+                        success: function (data) {
+                            let options = '';
+                            data.forEach(function (dossier) {
+                                options += `<option value="${dossier.dossier}">`;
+                            });
+                            $('#dossier-list').html(options);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
     <script>
         $(document).ready(function() {
-            $('#dossier').on('input', function() {
+            $('#dossiers').on('input', function() {
                 var dossier = $(this).val();
 
                 if (dossier.length > 0) {
@@ -368,6 +363,7 @@
                 }
             });
         });
+
     </script>
 
 

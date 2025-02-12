@@ -4,7 +4,7 @@
         <div class="col-lg-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Historique Devis</h4>
+                    <h4 class="card-title">Historique Ca</h4>
                     <div class="table-responsive">
                         <div class="d-flex justify-content-center">
                             {{ $hists->links('pagination::bootstrap-4') }}
@@ -21,7 +21,7 @@
                             <tbody>
                             @foreach($hists as $hist)
                                 <tr>
-                                    <td>{{ $hist->prenom }} {{ $hist->nom }}</td>
+                                    <td>{{ $hist->nom }}</td>
                                     <td>{{ $hist->dossier }}</td>
                                     <td>{!! nl2br($hist->action) !!}</td>
                                     <td>{{ $hist->created_at }}</td>

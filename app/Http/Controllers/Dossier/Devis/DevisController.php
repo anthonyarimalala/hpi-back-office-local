@@ -64,6 +64,10 @@ class DevisController extends Controller
             DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_mutuelle, $part_rac);
             DevisReglement::createDevisReglement($m_h_devis, $id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac);
             DevisAppelsEtMail::createDevisAppelsEtMail($m_h_devis, $id_devis, $date_1er_appel, $note_1er_appel, $date_2eme_appel, $note_2eme_appel, $date_3eme_appel, $note_3eme_appel, $date_envoi_mail);
+
+            // mettre le numero de dossier dans l'historique: dénormalisation
+            $m_h_devis->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;
+            $m_h_devis->dossier = $m_devis->dossier;
             $m_h_devis->save();
             return redirect()->route('devis.detail', [
                 'dossier' => $m_devis->dossier,    // Remplacez par la valeur réelle de $dossier
@@ -90,7 +94,7 @@ class DevisController extends Controller
         $data['v_devis'] = V_Devis::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
             ->first();
-        $data['hists'] = V_H_Devis::where('id_devis', $id_devis)
+        $data['hists'] = H_Devis::where('id_devis', $id_devis)
             ->orderBy('created_at', 'desc')
             ->limit(7)
             ->get();

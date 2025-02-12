@@ -1,4 +1,4 @@
-@extends(session('layout') ?? 'layouts.app')
+@extends('layouts.app')
 @section('content')
     <style>
         tr:hover {
@@ -289,7 +289,7 @@
                         <h4 class="card-title mb-0" style="color: whitesmoke">{{ $dossier->dossier }} - {{ $dossier->nom }}: CA </h4>
                     </div>
                     <div>
-                        <a href="" class="text-primary">
+                        <a href="{{ asset('ca/nouveau/'.$dossier->dossier) }}" class="text-primary">
                             <i class="mdi mdi-plus mdi-24px">Nouveau CA</i>
                         </a>
                     </div>

@@ -5,6 +5,7 @@ namespace App\Models\import;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class ImportDevis extends Model
 {
@@ -72,18 +73,35 @@ class ImportDevis extends Model
         'cheque_observation'
     ];
 
-    public function makeDate($date)
-    {
-        if ($date) {
-            $cleanedDate = preg_replace('/[^0-9\-]/', '', $date);
+    public function makeNumber($number){
+        if ($number){
+            $cleanedNumber = preg_replace('/[^0-9\-]/', '', $number);
             try {
-                return Carbon::parse($cleanedDate)->format('Y-m-d');
+                return $cleanedNumber;
             } catch (\Exception $e) {
                 return null;
             }
         }
-        return $date;
+        return $number;
     }
+
+    public function makeDate($date, $is_date_devis = false)
+    {
+        if ($date && $date!='') {
+            $cleanedDate = preg_replace('/[^0-9\/\-]/', '', $date);
+            $formattedDate = str_replace("/", "-", $cleanedDate);
+            $nouvelleDate = Date::excelToDateTimeObject((float) $formattedDate)->format('Y-m-d');
+
+            try {
+                return $nouvelleDate;
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+
+        return null ;
+    }
+
     public function makeDevisSigne($devis_signe)
     {
         $devis_signe = trim($devis_signe);

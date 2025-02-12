@@ -1,43 +1,43 @@
 
 
 CREATE OR REPLACE VIEW v_h_devis AS
-SELECT 
-    hd.code_u, 
+SELECT
+    hd.code_u,
     usr.nom,
     usr.prenom,
     hd.id_devis,
-    dos.dossier, 
-    hd.action, 
-    hd.created_at  
-FROM h_devis hd 
+    dos.dossier,
+    hd.action,
+    hd.created_at
+FROM h_devis hd
 JOIN devis dev ON hd.id_devis = dev.id
 JOIN dossiers dos ON dev.dossier = dos.dossier
 JOIN users usr ON hd.code_u = usr.code_u;
 
 CREATE OR REPLACE VIEW v_h_protheses AS
-SELECT 
-    hp.code_u, 
+SELECT
+    hp.code_u,
     usr.nom,
     usr.prenom,
     hp.id_devis,
-    dos.dossier, 
-    hp.action, 
-    hp.created_at  
-FROM h_protheses hp 
+    dos.dossier,
+    hp.action,
+    hp.created_at
+FROM h_protheses hp
 JOIN devis dev ON hp.id_devis = dev.id
 JOIN dossiers dos ON dev.dossier = dos.dossier
 JOIN users usr ON hp.code_u = usr.code_u;
 
 CREATE OR REPLACE VIEW v_h_cheques AS
-SELECT 
-    hc.code_u, 
+SELECT
+    hc.code_u,
     usr.nom,
     usr.prenom,
     hc.id_devis,
-    dos.dossier, 
-    hc.action, 
-    hc.created_at  
-FROM h_cheques hc 
+    dos.dossier,
+    hc.action,
+    hc.created_at
+FROM h_cheques hc
 JOIN devis dev ON hc.id_devis = dev.id
 JOIN dossiers dos ON dev.dossier = dos.dossier
 JOIN users usr ON hc.code_u = usr.code_u;
@@ -159,29 +159,7 @@ FROM
         LEFT JOIN prothese_retour_labos rl ON dev.id = rl.id_devis
         LEFT JOIN prothese_travaux tra ON dev.id = tra.id_devis;
 
-CREATE OR REPLACE VIEW v_stat_devis_mens AS
-SELECT 
-    TO_CHAR(date, 'YYYY-MM') AS annee_mois,
-    COUNT(id_devis) AS nbr_devis,
-    COUNT(CASE WHEN devis_signe = 'oui' THEN 1 END) AS nbr_devis_signe,
-    COUNT(CASE WHEN devis_signe = 'non' THEN 1 END) AS nbr_devis_non_signe
-FROM v_devis 
-GROUP BY TO_CHAR(date, 'YYYY-MM')
-ORDER BY annee_mois DESC;
-
-CREATE OR REPLACE VIEW v_stat_devis_etats AS
-SELECT 
-    TO_CHAR(d.date, 'YYYY-MM') AS annee_mois,
-    COALESCE(COUNT(d.id), 0) AS nbr_devis,
-    de.etat,
-    de.couleur,
-    de.id 
-FROM devis d
-JOIN devis_etats de ON d.id_devis_etat = de.id
-GROUP BY TO_CHAR(d.date, 'YYYY-MM'), de.id;
-
-CREATE OR REPLACE VIEW v_ca_actes_reglements AS 
+CREATE OR REPLACE VIEW v_ca_actes_reglements AS
 SELECT car.*, dos.nom, dos.date_naissance FROM ca_actes_reglements car
     JOIN dossiers dos ON car.dossier = dos.dossier;
-
 

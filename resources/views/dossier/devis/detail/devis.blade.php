@@ -1,5 +1,14 @@
-@extends(session('layout') ?? 'layouts.app')
+@extends('layouts.app')
 @section('content')
+    <style>
+        .card-header {
+            background: linear-gradient(
+                -135deg,
+                transparent 60%,
+                #575756 60%,
+                #575756 100%);
+        }
+    </style>
     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
@@ -25,11 +34,10 @@
     <div class="row">
         <div class="col-md-12 grid-margin">
             <div class="card">
+                <div class="card-header text-white">
+                    <h4 class="card-title mb-0" style="color: whitesmoke">Info Devis</h4>
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Info Devis</h4>
-                    <p class="card-description">
-                        <!-- Use class <code>.text-primary</code>, <code>.text-secondary</code> etc. for text in theme colors -->
-                    </p>
                     <div class="row">
                         <div class="col-md-6">
                             @if($v_devis->etat != '' && $v_devis->etat != null)
@@ -58,12 +66,10 @@
         </div>
         <div class="col-md-4 grid-margin stretch-card">
             <div class="card">
+                <div class="card-header text-white">
+                    <h4 class="card-title mb-0" style="color: whitesmoke">Retour mutuelle</h4>
+                </div>
                 <div class="card-body">
-                    <div class="d-sm-flex justify-content-between align-items-start">
-                        <div>
-                            <h4 class="card-title card-title-dash">Retour mutuelle</h4>
-                        </div>
-                    </div>
                     <div class="list align-items-center border-bottom py-2">
                         <div class="wrapper w-100">
                             <p class="mb-2 font-weight-medium">
@@ -122,8 +128,10 @@
         </div>
         <div class="col-md-4 grid-margin stretch-card">
             <div class="card">
+                <div class="card-header text-white">
+                    <h4 class="card-title mb-0" style="color: whitesmoke">Règlements</h4>
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title card-title-dash">Règlements</h4>
                     <div class="container">
                         <!-- Date paiement par CB ou Esp -->
                         <div class="row align-items-center border-bottom py-2">
@@ -174,12 +182,10 @@
         </div>
         <div class="col-md-4 grid-margin stretch-card">
             <div class="card">
+                <div class="card-header text-white">
+                    <h4 class="card-title mb-0" style="color: whitesmoke">Appels et mail</h4>
+                </div>
                 <div class="card-body">
-                    <div class="col-lg-12">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="card-title card-title-dash">Appels et mail</h4>
-                        </div>
-                    </div>
                     <div class="list-wrapper">
                         <ul class="todo-list todo-list-rounded">
                             <li class="d-block">
@@ -230,8 +236,10 @@
         </div>
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
+                <div class="card-header text-white" style="background: #F2CED5;">
+                    <h4 class="card-title mb-0">Historique</h4>
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Historique</h4>
                     <table class="table table-striped">
                         <thead>
                         <tr>
@@ -244,7 +252,7 @@
                         <tbody>
                         @foreach($hists as $hist)
                             <tr>
-                                <td>{{ $hist->prenom }} {{ $hist->nom }}</td>
+                                <td>{{ $hist->nom }}</td>
                                 <td>{{ $hist->dossier }}</td>
                                 <td>{!! nl2br($hist->action) !!}</td>
                                 <td>{{ $hist->created_at }}</td>

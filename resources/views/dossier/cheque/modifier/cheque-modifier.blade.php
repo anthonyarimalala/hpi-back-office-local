@@ -1,4 +1,4 @@
-@extends(session('layout') ?? 'layouts.app')
+@extends('layouts.app')
 @section('content')
     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
         <ul class="nav nav-tabs" role="tablist">
@@ -36,7 +36,12 @@
                                 <div class="row">
                                     <label for="nature_cheque" class="col-sm-3 col-form-label">Nature du chèque</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="nature_cheque" name="nature_cheque" placeholder="Nature du chèque" value="{{ $v_cheque->nature_cheque }}">
+                                        <select class="form-select" id="nature_cheque" name="nature_cheque">
+                                            <option value="" disabled selected>Choisir la nature du chèque</option>
+                                            @foreach($nature_cheques as $nc)
+                                                <option value="{{ $nc->nature_cheque }}" @if($nc->nature_cheque == $v_cheque->nature_cheque) selected @endif>{{ $nc->nature_cheque }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -51,15 +56,27 @@
                                         <input type="text" class="form-control" id="nom_document" name="nom_document" placeholder="Nom document" value="{{ $v_cheque->nom_document }}">
                                     </div>
                                 </div>
-                                <div>
-                                    <label for="travaux_sur_devis">Travaux sur devis</label>
-                                    <textarea type="text" class="form-control" id="travaux_sur_devis" name="travaux_sur_devis" placeholder="Travaux sur devis" style="height: 100px">{{ $v_cheque->travaux_sur_devis }}</textarea>
+                                <div class="row">
+                                    <label for="travaux_sur_devis" class="col-sm-3 col-form-label">Travaux sur devis</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-select" id="travaux_sur_devis" name="travaux_sur_devis">
+                                            <option value="" disabled selected>Travaux sur devis</option>
+                                            @foreach($travaux_sur_devis as $td)
+                                                <option value="{{ $td->travaux_sur_devis }}" @if($td->travaux_sur_devis == $v_cheque->travaux_sur_devis) selected @endif>{{ $td->travaux_sur_devis }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                                 <br>
                                 <div class="row">
                                     <label for="situation_cheque" class="col-sm-3 col-form-label">Situation</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="situation_cheque" name="situation_cheque" placeholder="Situation" value="{{ $v_cheque->situation_cheque }}">
+                                        <select class="form-select" id="situation_cheque" name="situation_cheque">
+                                            <option value="" disabled selected>Situation</option>
+                                            @foreach($situation_cheques as $sc)
+                                                <option value="{{ $sc->situation_cheque }}" @if($sc->situation_cheque == $v_cheque->situation_cheque) selected @endif>{{ $sc->situation_cheque }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </address>

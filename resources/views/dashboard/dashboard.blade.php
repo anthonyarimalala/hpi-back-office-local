@@ -1,4 +1,4 @@
-@extends(session('layout') ?? 'layouts.app')
+@extends('layouts.app')
 @section('content')
 
 
@@ -11,9 +11,28 @@
                                 <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="profile-tab" href="{{ asset('rappels/dashboard') }}" role="tab" aria-selected="false">Rappels</a>
+                                <a class="nav-link" id="profile-tab" href="{{ asset('dashboard/ca') }}" role="tab" aria-selected="false">CA</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-tab" href="{{ asset('dashboard/rappels') }}" role="tab" aria-selected="false">Rappels</a>
                             </li>
                         </ul>
+
+                        <div>
+                            <form action="#">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item">
+                                        <input type="date" name="dashboard_date_debut" value="{{ \Carbon\Carbon::parse($date_debut)->format('Y-m-d') }}" class="form-control">
+                                    </li>
+                                    <li class="nav-item">
+                                        <input type="date" name="dashboard_date_fin" value="{{ \Carbon\Carbon::parse($date_fin)->format('Y-m-d') }}" class="form-control">
+                                    </li>
+                                    <li class="nav-item">
+                                        <button type="submit" class="btn btn-primary text-white me-0"><i class="icon-eye"></i> Aperçu</button>
+                                    </li>
+                                </ul>
+                            </form>
+                        </div>
                     </div>
                     <div class="tab-content tab-content-basic">
                         <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
@@ -21,10 +40,10 @@
                                 <div class="col-sm-4">
                                     <div class="statistics-details d-flex align-items-center justify-content-between">
                                         <div>
-                                            <p class="statistics-title">Mois</p>
-                                            <h3 class="rate-percentage">{{ \Carbon\Carbon::parse($today)->format('F') }}</h3>
+                                            <p class="statistics-title">Date</p>
+                                            <h3 class="rate-percentage">{{ \Carbon\Carbon::parse($date_fin)->format('d-m-Y') }}</h3>
                                             <p class="text-black-50 d-flex align-items-center">
-                                                <span class="ms-2">{{ \Carbon\Carbon::parse($today)->format('Y') }}</span>
+                                                <span class="ms-2">{{ \Carbon\Carbon::parse($date_debut)->format('d-m-Y') }}</span>
                                             </p>
                                         </div>
                                         <div>
@@ -47,7 +66,7 @@
                                             <div class="card-body">
                                                 <h4 class="card-title">Etats de devis</h4>
                                                 <p class="card-description">
-                                                    {{ \Carbon\Carbon::parse($today)->format('F Y') }}
+                                                    {{ \Carbon\Carbon::parse($date_debut)->format('d-m-Y') }} -> {{ \Carbon\Carbon::parse($date_fin)->format('d-m-Y') }}
                                                 </p>
                                                 <div style="display: flex; align-items: center; gap: 20px; width: 100%;">
                                                     <!-- Conteneur du Canvas -->

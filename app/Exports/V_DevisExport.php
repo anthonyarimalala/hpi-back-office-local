@@ -1,6 +1,9 @@
 <?php
 namespace App\Exports;
 
+use App\Models\devis\cheque\InfoChequeNatureCheque;
+use App\Models\devis\cheque\InfoChequeSituationCheque;
+use App\Models\devis\cheque\InfoChequeTravauxDevis;
 use App\Models\dossier\DossierStatus;
 use App\Models\praticien\Praticien;
 use Illuminate\Contracts\View\View;
@@ -32,6 +35,9 @@ class V_DevisExport implements FromView, WithEvents
             AfterSheet::class => function(AfterSheet $event) {
                 $dossier_statuss = DossierStatus::where('is_deleted', 0)->get()->pluck('status')->toArray(); // Get all statuses
                 $praticiens = Praticien::where('is_deleted', 0)->get()->pluck('praticien')->toArray();
+                $info_cheques_nature_cheques = InfoChequeNatureCheque::where('is_deleted', 0)->get()->pluck('nature_cheque')->toArray();
+                $info_cheques_travaux_sur_devis = InfoChequeTravauxDevis::where('is_deleted', 0)->get()->pluck('travaux_sur_devis')->toArray();
+                $info_cheques_situation_cheques = InfoChequeSituationCheque::where('is_deleted', 0)->get()->pluck('situation_cheque')->toArray();
 
                 // Define the range for the dropdown (adjust the range as needed)
                 $startRow = 16; // Assuming your data starts from row 16
@@ -55,6 +61,25 @@ class V_DevisExport implements FromView, WithEvents
                 $validationH16->setType(DataValidation::TYPE_LIST);
                 $validationH16->setFormula1('"' . implode(',', $praticiens) . '"');
                 $validationH16->setShowDropDown(true);
+
+                $rangeAS16 = 'AS16:AS'.$endRow;
+                $validationAS16 = $event->sheet->getDelegate()->getDataValidation($rangeAS16);
+                $validationAS16->setType(DataValidation::TYPE_LIST);
+                $validationAS16->setFormula1('"' . implode(',', $info_cheques_nature_cheques) . '"');
+                $validationAS16->setShowDropDown(true);
+
+                $rangeAT16 = 'AT16:AT'.$endRow;
+                $validationAT16 = $event->sheet->getDelegate()->getDataValidation($rangeAT16);
+                $validationAT16->setType(DataValidation::TYPE_LIST);
+                $validationAT16->setFormula1('"' . implode(',', $info_cheques_travaux_sur_devis) . '"');
+                $validationAT16->setShowDropDown(true);
+
+                $rangeAU16 = 'AU16:AU'.$endRow;
+                $validationAU16 = $event->sheet->getDelegate()->getDataValidation($rangeAU16);
+                $validationAU16->setType(DataValidation::TYPE_LIST);
+                $validationAU16->setFormula1('"' . implode(',', $info_cheques_situation_cheques) . '"');
+                $validationAU16->setShowDropDown(true);
+
             },
         ];
     }

@@ -37,11 +37,13 @@ class ImportsController extends Controller
 
         $m_import_deviss = ImportDevis::all();
         foreach ($m_import_deviss as $mid){
+
             $m_devis_etats = DevisEtat::where('couleur', $mid->couleur)->get();
             $m_dossier = Dossier::firstOrNew(['dossier' => $mid->dossier]);
             $m_dossier->nom = $mid->nom;
             $m_dossier->status = $mid->status;
             $m_dossier->mutuelle = $mid->mutuelle;
+
             $m_dossier->save();
             $m_devis = Devis::firstOrNew(['dossier' => $mid->dossier, 'date' => $mid->date]);
             $m_devis->status = $mid->status;
@@ -52,6 +54,7 @@ class ImportsController extends Controller
             $m_devis->praticien = $mid->praticien;
             $m_devis->observation = $mid->devis_observation;
             foreach ($m_devis_etats as $m_devis_etat){$m_devis->id_devis_etat = $m_devis_etat->id;}
+            if($m_devis->id_devis_etat == null) $m_devis->id_devis_etat = 1;
             $m_devis->save();
             $m_devis_accord_pec = DevisAccordPec::firstOrNew(['id_devis' => $m_devis->id]);
             $m_devis_accord_pec->date_envoi_pec = $mid->date_envoi_pec;
@@ -105,6 +108,7 @@ class ImportsController extends Controller
             $m_info_cheques->situation_cheque = $mid->situation_cheque;
             $m_info_cheques->observation = $mid->cheque_observation;
             $m_info_cheques->save();
+
         }
 
         return back()->with('success', 'Fichier importé avec succès!');

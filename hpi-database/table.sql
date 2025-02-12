@@ -45,7 +45,7 @@
         id SERIAL PRIMARY KEY,
         dossier VARCHAR(20) REFERENCES dossiers(dossier),
         status VARCHAR(155) REFERENCES dossier_statuss(status),
-        mutuelle VARCHAR(10),
+        mutuelle VARCHAR(255),
         date DATE,
         montant DECIMAL(10, 2),
         devis_signe VARCHAR(3),
@@ -97,6 +97,18 @@
     );
 
     -- DROP TABLE info_cheques;
+    CREATE TABLE info_cheques_nature_cheques(
+        nature_cheque VARCHAR(50) PRIMARY KEY,
+        is_deleted INTEGER DEFAULT 0
+    );
+    CREATE TABLE info_cheques_travaux_sur_devis(
+        travaux_sur_devis VARCHAR(50) PRIMARY KEY,
+        is_deleted INTEGER DEFAULT 0
+    );
+    CREATE TABLE info_cheques_situation_cheques(
+        situation_cheque VARCHAR(50) PRIMARY KEY,
+        is_deleted INTEGER DEFAULT 0
+    );
     CREATE TABLE info_cheques(
         id SERIAL PRIMARY KEY,
         id_devis INTEGER REFERENCES devis(id),
@@ -105,13 +117,14 @@
         nom_document VARCHAR(255),
         date_encaissement_cheque DATE,
         date_1er_acte DATE,
-        nature_cheque VARCHAR(20),
-        travaux_sur_devis TEXT,
-        situation_cheque VARCHAR(255),
+        nature_cheque VARCHAR(50) REFERENCES info_cheques_nature_cheques(nature_cheque),
+        travaux_sur_devis VARCHAR(50) REFERENCES info_cheques_travaux_sur_devis(travaux_sur_devis),
+        situation_cheque VARCHAR(255) REFERENCES info_cheques_situation_cheques(situation_cheque),
         observation TEXT,
         created_at TIMESTAMP,
         updated_at TIMESTAMP
     );
+
 
     CREATE TABLE prothese_empreintes(
         id SERIAL PRIMARY KEY,
@@ -170,12 +183,12 @@
         rcs_cb DECIMAL(10, 2),
         rcsd_cheque DECIMAL(10, 2),
         rcsd_especes DECIMAL(10, 2),
-        rcsb_cb DECIMAL(10, 2),
+        rcsd_cb DECIMAL(10, 2),
         rac_part_patient DECIMAL(10, 2),
         rac_cheque DECIMAL(10, 2),
         rac_especes DECIMAL(10, 2),
         rac_cb DECIMAL(10, 2),
-        commentaire TEXT, 
+        commentaire TEXT,
         created_at TIMESTAMP,
         updated_at TIMESTAMP
     );
@@ -184,7 +197,9 @@
     CREATE TABLE h_protheses(
         id SERIAL PRIMARY KEY,
         code_u VARCHAR(10),
+        nom VARCHAR(255),
         id_devis INTEGER,
+        dossier VARCHAR(20),
         action TEXT,
         created_at TIMESTAMP,
         updated_at TIMESTAMP
@@ -192,7 +207,9 @@
     CREATE TABLE h_devis(
         id SERIAL PRIMARY KEY,
         code_u VARCHAR(10),
+        nom VARCHAR(255),
         id_devis INTEGER,
+        dossier VARCHAR(20),
         action TEXT,
         created_at TIMESTAMP,
         updated_at TIMESTAMP
@@ -200,7 +217,19 @@
     CREATE TABLE h_cheques(
         id SERIAL PRIMARY KEY,
         code_u VARCHAR(10),
+        nom VARCHAR(255),
         id_devis INTEGER,
+        dossier VARCHAR(20),
+        action TEXT,
+        created_at TIMESTAMP,
+        updated_at TIMESTAMP
+    );
+    CREATE TABLE h_ca_actes_reglements(
+        id SERIAL PRIMARY KEY,
+        code_u VARCHAR(10),
+        nom VARCHAR(255),
+        id_ca_actes_reglement INTEGER,
+        dossier VARCHAR(20),
         action TEXT,
         created_at TIMESTAMP,
         updated_at TIMESTAMP

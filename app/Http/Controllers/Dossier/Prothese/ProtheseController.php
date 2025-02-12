@@ -42,6 +42,9 @@ class ProtheseController extends Controller
         ProtheseEmpreinte::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $numeroDent, $observations);
         ProtheseRetourLabo::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $dateLivraison, $numeroSuivi, $numeroFactureLabo);
         ProtheseTravaux::createOrUpdateTravaux($m_h_prothese, $id_devis, $datePosePrevue, $statut, $datePoseReel, $organismePayeur, $montantEncaisse, $dateControlePaiement);
+
+        $m_h_prothese->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;
+        $m_h_prothese->dossier = $dossier;
         $m_h_prothese->save();
         return redirect()->to($dossier."/prothese/".$id_devis."/detail");
 
@@ -56,7 +59,7 @@ class ProtheseController extends Controller
         $data['v_prothese'] = V_Prothese::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
             ->first();
-        $data['hists'] = V_H_Prothese::where('dossier', $dossier)
+        $data['hists'] = H_Prothese::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
             ->orderBy('created_at', 'desc')
             ->limit(7)

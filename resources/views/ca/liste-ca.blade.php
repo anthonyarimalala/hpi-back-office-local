@@ -1,4 +1,4 @@
-@extends(session('layout') ?? 'layouts.app')
+@extends('layouts.app')
 @section('content')
     <style>
         tr:hover {
@@ -100,7 +100,7 @@
                                             <td class="text-end" style="border-right: 2px solid #000;">@if($ca->rcs_cb){{ number_format($ca->rcs_cb, 2, ',', ' ') }}@endif</td>
                                             <td class="text-end">@if($ca->rcsd_cheque){{ number_format($ca->rcsd_cheque, 2, ',', ' ') }}@endif</td>
                                             <td class="text-end">@if($ca->rcsd_especes){{ number_format($ca->rcsd_especes, 2, ',', ' ') }}@endif</td>
-                                            <td style="border-right: 2px solid #000;" class="text-end">@if($ca->rcsb_cb){{ number_format($ca->rcsb_cb, 2, ',', ' ') }}@endif</td>
+                                            <td style="border-right: 2px solid #000;" class="text-end">@if($ca->rcsd_cb){{ number_format($ca->rcsd_cb, 2, ',', ' ') }}@endif</td>
                                             <td class="text-end">@if($ca->rac_part_patient){{ number_format($ca->rac_part_patient, 2, ',', ' ') }}@endif</td>
                                             <td class="text-end">@if($ca->rac_cheque){{ number_format($ca->rac_cheque, 2, ',', ' ') }}@endif</td>
                                             <td class="text-end">@if($ca->rac_especes){{ number_format($ca->rac_especes, 2, ',', ' ') }}@endif</td>

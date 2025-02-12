@@ -1,6 +1,14 @@
-@extends(session('layout') ?? 'layouts.app')
-
+@extends('layouts.app')
 @section('content')
+    <style>
+        .card-header {
+            background: linear-gradient(
+                -135deg,
+                transparent 60%,
+                #575756 60%,
+                #575756 100%);
+        }
+    </style>
     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
@@ -27,8 +35,10 @@
     <div class="row">
         <div class="col-md-12 grid-margin">
             <div class="card">
+                <div class="card-header text-white">
+                    <h4 class="card-title mb-0" style="color: whitesmoke">Empreintes</h4>
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Empreintes</h4>
                     <div class="table-responsive mt-1"> <!-- Conteneur pour la responsivité -->
                         <table class="table table-bordered">
                             <thead class="table-light">
@@ -62,8 +72,10 @@
     <div class="row">
         <div class="col-md-12 grid-margin">
             <div class="card">
+                <div class="card-header text-white">
+                    <h4 class="card-title mb-0" style="color: whitesmoke">Retour Labo</h4>
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Retour Labo</h4>
                     <div class="table-responsive"> <!-- Conteneur pour la responsivité -->
                         <table class="table table-bordered">
                             <thead class="table-light">
@@ -90,8 +102,10 @@
     <div class="row">
         <div class="col-md-12 grid-margin">
             <div class="card">
+                <div class="card-header text-white">
+                    <h4 class="card-title mb-0" style="color: whitesmoke">Travaux</h4>
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Travaux</h4>
                     <div class="table-responsive"> <!-- Conteneur pour la responsivité -->
                         <table class="table table-bordered">
                             <thead class="table-light">
@@ -124,8 +138,10 @@
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
+                <div class="card-header text-white" style="background: #F2CED5;">
+                    <h4 class="card-title mb-0">Historique</h4>
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Historique</h4>
                     <table class="table table-striped">
                         <thead>
                         <tr>
@@ -138,7 +154,7 @@
                         <tbody>
                         @foreach($hists as $hist)
                             <tr>
-                                <td>{{ $hist->prenom }} {{ $hist->nom }}</td>
+                                <td>{{ $hist->nom }}</td>
                                 <td>{{ $hist->dossier }}</td>
                                 <td>{!! nl2br($hist->action) !!}</td>
                                 <td>{{ $hist->created_at }}</td>

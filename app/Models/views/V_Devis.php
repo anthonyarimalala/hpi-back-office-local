@@ -242,7 +242,9 @@ class V_Devis extends Model
         return number_format($this->montant, 2, ',', ' ');
     }
     public function getDate(){
-        return Carbon::parse($this->date)->format('d/m/Y');
+        if ($this->date && $this->date!=null && $this->date!='')
+            return Carbon::parse($this->date)->format('d/m/Y');
+        else return null;
     }
     public function getDate_envoi_mail(){
         if($this->date_envoi_mail == null){

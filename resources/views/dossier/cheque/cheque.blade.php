@@ -1,5 +1,14 @@
-@extends(session('layout') ?? 'layouts.app')
+@extends('layouts.app')
 @section('content')
+    <style>
+        .card-header {
+            background: linear-gradient(
+                -135deg,
+                transparent 60%,
+                #575756 60%,
+                #575756 100%);
+        }
+    </style>
     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
@@ -24,10 +33,12 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6 grid-margin stretch-card">
+        <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
+                <div class="card-header text-white">
+                    <h4 class="card-title mb-0" style="color: whitesmoke">Info chèque</h4>
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Info chèque</h4>
                     <p class="card-description">
                         <code>Nature: {{ $v_cheque->getNature_cheque() }}</code>
                     </p>
@@ -67,8 +78,10 @@
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
+                <div class="card-header text-white" style="background: #F2CED5;">
+                    <h4 class="card-title mb-0">Historique</h4>
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Historique</h4>
                     <table class="table table-striped">
                         <thead>
                         <tr>

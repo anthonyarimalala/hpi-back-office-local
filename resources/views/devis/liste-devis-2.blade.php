@@ -1,4 +1,4 @@
-@extends(session('layout') ?? 'layouts.app')
+@extends('layouts.app')
 @section('content')
     <div class="row">
         <div class="col-lg-12 d-flex flex-column">
@@ -77,15 +77,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="d-flex justify-content-center">
+                                {{ $deviss->links('pagination::bootstrap-4') }}
+                            </div>
                             <div class="table-responsive  mt-1">
-                                <div class="d-flex justify-content-center">
-                                    {{ $deviss->links('pagination::bootstrap-4') }}
-                                </div>
                                 <table class="table table-bordered" id="myTable">
                                     <thead>
                                     <!-- Section INFO DEVIS -->
                                     <tr>
                                         <th class="infoCheques" colspan="8" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO DEVIS</th>
+                                        <th class="infoCheques" colspan="1" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;"></th>
                                         <th class="infoAccordPec" colspan="4" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO ACCORD PEC</th>
                                         <th class="appelsMail" colspan="7" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">APPELS & MAIL</th>
                                         <th class="infoEmpreinte" colspan="6" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO D'EMPREINTE</th>
@@ -102,9 +103,9 @@
                                         <!-- 1 -->
                                         <th onclick="sortTableByString('myTable', 1)" class="infoCheques">Patient<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 2 -->
-                                        <th onclick="sortTableByString('myTable', 2)" class="infoCheques">Status<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 2)" class="infoCheques">Mutuelle<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 3 -->
-                                        <th onclick="sortTableByString('myTable', 3)" class="infoCheques">Mutuelle<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 3)" class="infoCheques">Status<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 4 -->
                                         <th onclick="sortTableByDate('myTable', 4)" class="infoCheques">Date<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 5 -->
@@ -113,45 +114,47 @@
                                         <th onclick="sortTableByString('myTable', 6)" class="infoCheques">Devis signé<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 7 -->
                                         <th onclick="sortTableByString('myTable', 7)" style="border-right: 2px solid #000;" class="infoCheques">Praticien<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
-                                        <!-- INFO ACCORD PEC -->
                                         <!-- 8 -->
-                                        <th onclick="sortTableByDate('myTable', 8)" class="infoAccordPec">Date envoie PEC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 8)" style="border-right: 2px solid #000;" class="infoCheques">Observation<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <!-- INFO ACCORD PEC -->
                                         <!-- 9 -->
-                                        <th onclick="sortTableByDate('myTable', 9)" class="infoAccordPec">Date fin validité PEC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 9)" class="infoAccordPec">Date envoie PEC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 10 -->
-                                        <th onclick="sortTableByNumber('myTable', 10)" class="infoAccordPec">Part mutuelle<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 10)" class="infoAccordPec">Date fin validité PEC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 11 -->
-                                        <th onclick="sortTableByNumber('myTable', 11)" style="border-right: 2px solid #000;" class="infoAccordPec">Part RAC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
-                                        <!-- APPELS & MAIL -->
+                                        <th onclick="sortTableByNumber('myTable', 11)" class="infoAccordPec">Part mutuelle<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 12 -->
-                                        <th onclick="sortTableByDate('myTable', 12)" class="appelsMail">Date 1er appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByNumber('myTable', 12)" style="border-right: 2px solid #000;" class="infoAccordPec">Part RAC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <!-- APPELS & MAIL -->
                                         <!-- 13 -->
-                                        <th class="appelsMail">Note 1er appel</th>
+                                        <th onclick="sortTableByDate('myTable', 13)" class="appelsMail">Date 1er appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 14 -->
-                                        <th onclick="sortTableByDate('myTable', 14)" class="appelsMail">Date 2ème appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th class="appelsMail">Note 1er appel</th>
                                         <!-- 15 -->
-                                        <th class="appelsMail">Note 2ème appel</th>
+                                        <th onclick="sortTableByDate('myTable', 15)" class="appelsMail">Date 2ème appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 16 -->
-                                        <th onclick="sortTableByDate('myTable', 16)" class="appelsMail">Date 3ème appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th class="appelsMail">Note 2ème appel</th>
                                         <!-- 17 -->
-                                        <th class="appelsMail">Note 3ème appel</th>
+                                        <th onclick="sortTableByDate('myTable', 17)" class="appelsMail">Date 3ème appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 18 -->
-                                        <th onclick="sortTableByDate('myTable', 18)" style="border-right: 2px solid #000;" class="appelsMail">Date envoi mail<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th class="appelsMail">Note 3ème appel</th>
                                         <!-- 19 -->
-                                        <th class="infoEmpreinte">Laboratoire</th>
+                                        <th onclick="sortTableByDate('myTable', 19)" style="border-right: 2px solid #000;" class="appelsMail">Date envoi mail<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 20 -->
-                                        <th class="infoEmpreinte">Date D'empreinte</th>
+                                        <th class="infoEmpreinte">Laboratoire</th>
                                         <!-- 21 -->
-                                        <th class="infoEmpreinte">Date d'envoi au labo</th>
+                                        <th class="infoEmpreinte">Date D'empreinte</th>
                                         <!-- 22 -->
-                                        <th class="infoEmpreinte">Travail demandé</th>
+                                        <th class="infoEmpreinte">Date d'envoi au labo</th>
                                         <!-- 23 -->
-                                        <th class="infoEmpreinte">N° dent</th>
+                                        <th class="infoEmpreinte">Travail demandé</th>
                                         <!-- 24 -->
-                                        <th  style="border-right: 2px solid #000;" class="infoEmpreinte">Observations</th>
+                                        <th class="infoEmpreinte">N° dent</th>
                                         <!-- 25 -->
-                                        <th class="retourLabo">Date livraison</th>
+                                        <th  style="border-right: 2px solid #000;" class="infoEmpreinte">Observations</th>
                                         <!-- 26 -->
+                                        <th class="retourLabo">Date livraison</th>
+                                        <!-- 27 -->
                                         <th class="retourLabo">numero suivi colis de retour<br>+ société de livraison</th>
                                         <!-- 27 -->
                                         <th style="border-right: 2px solid #000;" class="retourLabo">N° Facture Labo</th>
@@ -190,10 +193,10 @@
                                                 {{ $devis->nom }}
                                             </td>
                                             <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
-                                                {{ $devis->status }}
+                                                {{ $devis->mutuelle }}
                                             </td>
                                             <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
-                                                {{ $devis->mutuelle }}
+                                                {{ $devis->status }}
                                             </td>
                                             <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
                                                 {{ $devis->getDate() }}
@@ -210,6 +213,9 @@
                                             </td>
                                             <td class="infoCheques" style="border-right: 2px solid #000;" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
                                                 {{ $devis->praticien }}
+                                            </td>
+                                            <td class="infoCheques" style="border-right: 2px solid #000;" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                                {{ \Illuminate\Support\Str::limit($devis->devis_observation, 50, '...') }}
                                             </td>
 
                                             <!-- INFO ACCORD PEC -->
@@ -264,7 +270,7 @@
                                                 {{ $devis->getNumero_dent() }}
                                             </td>
                                             <td class="infoEmpreinte" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer; border-right: 2px solid #000;">
-                                                {{ $devis->getObservations() }}
+                                                @if($devis->empreinte_observation) {{ \Illuminate\Support\Str::limit($devis->empreinte_observation, 50, '...') }} @else ... @endif
                                             </td>
                                             <td class="retourLabo" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
                                                 {{ $devis->getDate_livraison() }}
@@ -318,17 +324,16 @@
                                                 {{ $devis->getSituation_cheque() }}
                                             </td>
                                             <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
-                                                {{ $devis->getCheque_observation() }}
+                                                @if($devis->cheque_observation) {{ \Illuminate\Support\Str::limit($devis->cheque_observation, 50, '...') }} @else ... @endif
                                             </td>
 
                                         </tr>
                                     @endforeach
                                     </tbody>
                                 </table>
-
-                                <div class="d-flex justify-content-center">
-                                    {{ $deviss->links('pagination::bootstrap-4') }}
-                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                {{ $deviss->links('pagination::bootstrap-4') }}
                             </div>
                         </div>
                     </div>

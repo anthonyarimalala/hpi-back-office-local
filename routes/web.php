@@ -73,9 +73,11 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('delete-dossier-status', [\App\Http\Controllers\Autre\DossierStatusController::class, 'deleteDossierStatus']);
 
     // section: dashboard
-    Route::get('dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboard'])->name('dashboard');
-    Route::get('rappels/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboardRappels'])->name('dashboard.rappel');
-        Route::get('/reglements/load-more', [\App\Http\Controllers\Dashboard\DashboardController::class, 'loadMoreRappelsAppelsMails'])->name('reglements.loadMore');
+    Route::get('dashboard/overview', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboard'])->name('dashboard');
+    Route::get('dashboard/rappels', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboardRappels'])->name('dashboard.rappel');
+    Route::get('dashboard/ca', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboardCa']);
+
+
 
 
     // section: gestion
@@ -88,12 +90,14 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('historiques/modif-chq', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistCheque']);
     Route::get('historiques/modif-pro', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistProthese']);
     Route::get('historiques/modif-dev', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistDevis']);
+    Route::get('historiques/modif-ca', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistCa']);
 
     // section: ca
     Route::get('liste-ca', [\App\Http\Controllers\Ca\CaController::class, 'showListeCa'])->name('liste.ca');
     Route::get('ca/{id_ca}/{dossier}/modifier', [\App\Http\Controllers\Ca\CaController::class, 'showModifierCa']);
-    Route::post('ca/{id_ca}/{dossier}/modifier', [\App\Http\Controllers\Ca\CaController::class, 'updateCa']);
+    Route::post('ca/modifier', [\App\Http\Controllers\Ca\CaController::class, 'updateCa']);
     Route::get('ca/nouveau', [\App\Http\Controllers\Ca\CaController::class, 'showNouveauCa']);
+    Route::get('ca/nouveau/{dossier}', [\App\Http\Controllers\Ca\CaController::class, 'showNouveauCaWithDossier']);
     Route::post('ca/nouveau', [\App\Http\Controllers\Ca\CaController::class, 'saveCa']);
     Route::get('/get-patient-details', [\App\Http\Controllers\Ca\CaController::class, 'getPatientDetails'])->name('get.patient.details');
 

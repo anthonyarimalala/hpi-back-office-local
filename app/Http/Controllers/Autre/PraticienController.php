@@ -34,6 +34,7 @@ class PraticienController extends Controller
     public function showPraticiens()
     {
         $data['praticiens'] = Praticien::where('is_deleted', 0)
+            ->where('praticien', '!=', '')
             ->get();
         return view('autres/praticien')->with($data);
     }

@@ -20,7 +20,7 @@ class DossierController extends Controller
         $data['ca_actes_reglements'] = V_CaActesReglement::where('dossier', $dossier)
             ->orderBy('created_at', 'desc')
             ->paginate(20);
-        return view('dossier/devis/liste-devis-dossier')->with($data);
+        return view('dossier/details/detail-dossier')->with($data);
     }
     public function modifierDossier(Request $request)
     {

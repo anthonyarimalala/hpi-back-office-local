@@ -44,8 +44,6 @@ class DevisImport implements ToModel, WithStartRow
 
                 $i++;
             }
-
-
             // Validation et traitement des données
             return new ImportDevis([
                 'couleur' => "#".$this->couleurs[$row[0]."|".$row[4]],
@@ -55,9 +53,9 @@ class DevisImport implements ToModel, WithStartRow
                 'mutuelle' => $row[2],
                 'status' => $row[3],
                 'date' => $importDevis->makeDate($row[4]),
-                'montant' => $row[5],
+                'montant' => $importDevis->makeNumber($row[5]),
                 'devis_signe' => $importDevis->makeDevisSigne($row[6]),
-                'praticien' => $row[7],
+                'praticien' => trim($row[7]),
                 'devis_observation' => $row[8],
                 'date_envoi_pec' => $importDevis->makeDate($row[9]),
                 'date_fin_validite_pec' => $importDevis->makeDate($row[10]),

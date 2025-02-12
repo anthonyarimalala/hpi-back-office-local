@@ -16,14 +16,24 @@ use Illuminate\Support\Facades\DB;
 class DashboardController extends Controller
 {
     //
-    public function showDashboard(){
-        $today = Carbon::today()->format('Y-m');
-        $data['today'] = $today;
-        // requetes: 2
-        $data['v_stat_devis_mens'] = V_StatDevisMens::getV_StatDevisMensByDate($today);
-        $data['v_stat_devis_etats'] = V_StatDevisEtat::where('annee_mois', $today)
-            ->limit(11)
-            ->get();
+    public function showDashboardCa(){
+        $m_dash = new Dashboard();
+        $data['bilan_financier'] = $m_dash->getCaBilanFincancier();
+        $data['ca_praticiens'] = $m_dash->getCaPraticiens();
+        return view('dashboard/dashboard-ca')->with($data);
+    }
+    public function showDashboard(Request $request){
+        $m_dash = new Dashboard();
+        $date_debut = $request->input('dashboard_date_debut');
+        $date_fin = $request->input('dashboard_date_fin');
+
+        if (!$date_debut || $date_debut == '') $date_debut = Carbon::now()->startOfMonth()->toDateString();
+        if (!$date_fin || $date_fin=='') $date_fin = Carbon::today()->format('Y-m-d');
+
+        $data['date_debut'] = $date_debut;
+        $data['date_fin'] = $date_fin;
+        $data['v_stat_devis_mens'] = $m_dash->getTotalDevisSigne($date_debut, $date_fin);
+        $data['v_stat_devis_etats'] = $m_dash->getTotalDevisEtats($date_debut, $date_fin);
         return view('dashboard/dashboard')->with($data);
     }
     public function showDashboardRappels(){
@@ -41,21 +51,4 @@ class DashboardController extends Controller
         return view('dashboard/dashboard-rappels')->with($data);
     }
 
-    public function loadMoreRappelsAppelsMails(Request $request)
-    {
-        $today = Carbon::today();
-        $offset = $request->input('offset', 0);
-        $reglements = V_Devis::where('date_paiement_cb_ou_esp', $today)
-            ->orWhere('date_depot_chq_pec', $today)
-            ->orWhere('date_depot_chq_part_mut', $today)
-            ->orWhere('date_depot_chq_rac', $today)
-            ->where('devis_signe', 'oui')
-            ->skip($offset)
-            ->take(2)
-            ->get();
-
-        return response()->json([
-            'reglements' => $reglements
-        ]);
-    }
 }

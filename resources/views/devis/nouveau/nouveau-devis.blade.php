@@ -1,4 +1,4 @@
-@extends(session('layout') ?? 'layouts.app')
+@extends('layouts.app')
 @section('content')
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">

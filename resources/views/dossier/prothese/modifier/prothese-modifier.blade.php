@@ -1,4 +1,4 @@
-@extends(session('layout') ?? 'layouts.app')
+@extends('layouts.app')
 @section('content')
     <div class="d-sm-flex align-items-center justify-content-between border-bottom pb-3 mb-4">
         <ul class="nav nav-tabs" role="tablist">
