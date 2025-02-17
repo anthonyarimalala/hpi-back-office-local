@@ -149,23 +149,32 @@
                                         updated_at TIMESTAMP
     );
 
+    CREATE TABLE prothese_travaux_status(
+        id SERIAL PRIMARY KEY,
+        travaux_status VARCHAR(255),
+        is_deleted INTEGER,
+        created_at TIMESTAMP,
+        updated_at TIMESTAMP
+    );
+
     CREATE TABLE prothese_travaux(
-                                    id SERIAL PRIMARY KEY,
-                                    id_devis INTEGER REFERENCES devis(id),
-                                    date_pose_prevue DATE,
-                                    statut VARCHAR(255),
-                                    date_pose_reel DATE,
-                                    organisme_payeur VARCHAR(255),
-                                    montant_encaisse DECIMAL(10, 2),
-                                    date_controle_paiement DATE,
-                                    created_at TIMESTAMP,
-                                    updated_at TIMESTAMP
+        id SERIAL PRIMARY KEY,
+        id_devis INTEGER REFERENCES devis(id),
+        date_pose_prevue DATE,
+        statut VARCHAR(255),
+        date_pose_reel DATE,
+        organisme_payeur VARCHAR(255),
+        montant_encaisse DECIMAL(10, 2),
+        date_controle_paiement DATE,
+        created_at TIMESTAMP,
+        updated_at TIMESTAMP
     );
 
     CREATE TABLE ca_actes_reglements(
         id SERIAL PRIMARY KEY,
         date_derniere_modif DATE,
         dossier VARCHAR(20) REFERENCES dossiers(dossier),
+        nom_patient VARCHAR(255),
         statut VARCHAR(50),
         mutuelle  VARCHAR(255),
         praticien VARCHAR(10) REFERENCES praticiens(praticien),
@@ -304,4 +313,35 @@ CREATE TABLE import_devis (
     travaux_sur_devis TEXT,
     situation_cheque VARCHAR(50),
     cheque_observation TEXT
+);
+
+CREATE TABLE import_ca_actes_reglements(
+    id SERIAL PRIMARY KEY,
+    date_derniere_modif DATE,
+    dossier VARCHAR(20) REFERENCES dossiers(dossier),
+    statut VARCHAR(50),
+    mutuelle  VARCHAR(255),
+    praticien VARCHAR(10) REFERENCES praticiens(praticien),
+    nom_acte VARCHAR(255),
+    cotation DECIMAL(10, 2),
+    controle_securisation VARCHAR(255),
+    ro_part_secu DECIMAL(10, 2),
+    ro_virement_recu DECIMAL(10, 2),
+    ro_indus_paye DECIMAL(10, 2),
+    ro_indus_en_attente DECIMAL(10, 2),
+    ro_indus_irrecouvrable DECIMAL(10, 2),
+    part_mutuelle DECIMAL(10, 2),
+    rcs_virement DECIMAL(10, 2),
+    rcs_especes DECIMAL(10, 2),
+    rcs_cb DECIMAL(10, 2),
+    rcsd_cheque DECIMAL(10, 2),
+    rcsd_especes DECIMAL(10, 2),
+    rcsd_cb DECIMAL(10, 2),
+    rac_part_patient DECIMAL(10, 2),
+    rac_cheque DECIMAL(10, 2),
+    rac_especes DECIMAL(10, 2),
+    rac_cb DECIMAL(10, 2),
+    commentaire TEXT,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 );

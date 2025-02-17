@@ -49,4 +49,5 @@ DROP TABLE dossiers;
 DROP TABLE praticiens;
 DROP TABLE dossier_statuss;
 DROP TABLE import_devis;
+DROP TABLE import_ca_actes_reglements;
 

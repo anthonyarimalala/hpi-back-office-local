@@ -75,7 +75,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // section: dashboard
     Route::get('dashboard/overview', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboard'])->name('dashboard');
     Route::get('dashboard/rappels', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboardRappels'])->name('dashboard.rappel');
-    Route::get('dashboard/ca', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboardCa']);
+    Route::get('dashboard/c-a', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboardCa']);
 
 
 
@@ -104,8 +104,12 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // section: imports
     Route::get('imports', [\App\Http\Controllers\Import\ImportsController::class, 'showImports']);
     Route::post('devis/import', [\App\Http\Controllers\Import\ImportsController::class, 'importerDevis']);
+    Route::post('ca/import', [\App\Http\Controllers\Import\ImportsController::class, 'importerCa'])->name('ca.import');
     // section: exports
     Route::get('v_devis/export/', [\App\Http\Controllers\Export\ExportsController::class, 'exportV_Devis'])->name('v_devis.export');
+    Route::get('ca/export', [\App\Http\Controllers\Export\ExportsController::class, 'exportV_Ca'])->name('v_ca.export');
+
+    Route::get('import-ca-view', function (){ return view('export-ca'); });
 
 });
 

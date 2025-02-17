@@ -11,7 +11,7 @@
                                 <a class="nav-link active ps-0" id="home-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="profile-tab" href="{{ asset('dashboard/ca') }}" role="tab" aria-selected="false">CA</a>
+                                <a class="nav-link" id="profile-tab" href="{{ asset('dashboard/c-a') }}" role="tab" aria-selected="false">CA</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="profile-tab" href="{{ asset('dashboard/rappels') }}" role="tab" aria-selected="false">Rappels</a>

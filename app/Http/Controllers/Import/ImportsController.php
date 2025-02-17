@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
+use App\Imports\CaImport;
 use App\Imports\DevisImport;
+use App\Models\ca\CaActesReglement;
 use App\Models\devis\cheque\InfoCheque;
 use App\Models\devis\Devis;
 use App\Models\devis\DevisAccordPec;
@@ -14,6 +16,7 @@ use App\Models\devis\prothese\ProtheseEmpreinte;
 use App\Models\devis\prothese\ProtheseRetourLabo;
 use App\Models\devis\prothese\ProtheseTravaux;
 use App\Models\dossier\Dossier;
+use App\Models\import\ImportCa;
 use App\Models\import\ImportDevis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +25,53 @@ use Maatwebsite\Excel\Facades\Excel;
 class ImportsController extends Controller
 {
     //
+    public function importerCa(Request $request)
+    {
+        $request->validate([
+           'caFile' => 'required|file|mimes:xlsx,xls',
+        ]);
+        $file = $request->file('caFile');
+        DB::delete('DELETE FROM import_ca_actes_reglements');
+        Excel::import(new CaImport, $file);
+
+        $m_import_cas = ImportCa::all();
+        foreach ($m_import_cas as $mic){
+
+            $m_dossier = Dossier::firstOrNew(['dossier' => $mic->dossier]);
+            $m_dossier->nom = $mic->nom_patient;
+            $m_dossier->save();
+
+            $m_ca = new CaActesReglement();
+            $m_ca->date_derniere_modif = $mic->date_derniere_modif;
+            $m_ca->dossier = $mic->dossier;
+            $m_ca->statut = $mic->status;
+            $m_ca->mutuelle = $mic->mutuelle;
+            $m_ca->praticien = $mic->praticien;
+            $m_ca->nom_acte = $mic->nom_acte;
+            $m_ca->cotation = $mic->cotation;
+            $m_ca->controle_securisation = $mic->controle_securisation;
+            $m_ca->ro_part_secu = $mic->ro_part_secu;
+            $m_ca->ro_virement_recu = $mic->ro_virement_recu;
+            $m_ca->ro_indus_paye = $mic->ro_indus_paye;
+            $m_ca->ro_indus_en_attente = $mic->ro_indus_en_attente;
+            $m_ca->ro_indus_irrecouvrable = $mic->ro_indus_irrecouvrable;
+            $m_ca->part_mutuelle = $mic->part_mutuelle;
+            $m_ca->rcs_virement = $mic->rcs_virement;
+            $m_ca->rcs_especes = $mic->rcs_especes;
+            $m_ca->rcs_cb = $mic->rcs_cb;
+            $m_ca->rcsd_cheque = $mic->rcsd_cheque;
+            $m_ca->rcsd_especes = $mic->rcsd_especes;
+            $m_ca->rcsd_cb = $mic->rcsd_cb;
+            $m_ca->rac_part_patient = $mic->rac_part_patient;
+            $m_ca->rac_cheque = $mic->rac_cheque;
+            $m_ca->rac_especes = $mic->rac_especes;
+            $m_ca->rac_cb = $mic->rac_cb;
+            $m_ca->commentaire = $mic->commentaire;
+            $m_ca->save();
+
+        }
+        return back()->with('success', 'Fichier importé avec succès');
+    }
     public function importerDevis(Request $request)
     {
         // Validation du fichier
@@ -43,8 +93,8 @@ class ImportsController extends Controller
             $m_dossier->nom = $mid->nom;
             $m_dossier->status = $mid->status;
             $m_dossier->mutuelle = $mid->mutuelle;
-
             $m_dossier->save();
+
             $m_devis = Devis::firstOrNew(['dossier' => $mid->dossier, 'date' => $mid->date]);
             $m_devis->status = $mid->status;
             $m_devis->mutuelle = $mid->mutuelle;

@@ -14,7 +14,6 @@ use App\Models\hist\H_Devis;
 use App\Models\praticien\Praticien;
 use App\Models\views\V_CaActesReglement;
 use App\Models\views\V_Devis;
-use App\Models\views\V_H_Devis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

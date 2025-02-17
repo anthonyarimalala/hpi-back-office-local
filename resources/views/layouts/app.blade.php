@@ -224,7 +224,7 @@
                     <div class="collapse" id="dashboard">
                         <ul class="nav flex-column sub-menu">
                             <li class="nav-item"> <a class="nav-link" href="{{ asset('dashboard/overview') }}">Overview</a></li>
-                            <li class="nav-item"> <a class="nav-link" href="{{ asset('dashboard/ca') }}">CA</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('dashboard/c-a') }}">CA</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ asset('dashboard/rappels') }}">Rappels</a></li>
                         </ul>
                     </div>

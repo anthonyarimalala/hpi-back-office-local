@@ -9,7 +9,6 @@ use App\Models\devis\cheque\InfoChequeSituationCheque;
 use App\Models\devis\cheque\InfoChequeTravauxDevis;
 use App\Models\hist\H_Cheque;
 use App\Models\views\V_Cheque;
-use App\Models\views\V_H_Cheque;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

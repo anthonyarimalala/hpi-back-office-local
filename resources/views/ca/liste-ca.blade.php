@@ -21,16 +21,21 @@
                                     </div>
                                 @endif
                                 <div>
+                                    <a href="#" class="btn btn-primary text-white me-0" data-bs-toggle="modal" data-bs-target="#fileModal">
+                                        <i class="icon-upload"></i> Import
+                                    </a>
+                                    <a href="#" class="btn btn-primary text-white me-0" data-bs-toggle="modal" data-bs-target="#dateModal">
+                                        <i class="icon-download"></i> Export
+                                    </a>
                                     <a href="{{ asset('ca/nouveau') }}" class="text-primary">
                                         <i class="mdi mdi-plus mdi-24px">Nouveau</i>
                                     </a>
                                 </div>
                             </div>
-
+                            <div class="d-flex justify-content-center">
+                                {{ $ca_actes_reglements->links('pagination::bootstrap-4') }}
+                            </div>
                             <div class="table-responsive  mt-1">
-                                <div class="d-flex justify-content-center">
-                                    {{ $ca_actes_reglements->links('pagination::bootstrap-4') }}
-                                </div>
                                 <table class="table table-bordered">
                                     <thead>
                                     <tr>
@@ -111,14 +116,82 @@
                                     @endforeach
                                     </tbody>
                                 </table>
-                                <div class="d-flex justify-content-center">
-                                    {{ $ca_actes_reglements->links('pagination::bootstrap-4') }}
-                                </div>
-
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                {{ $ca_actes_reglements->links('pagination::bootstrap-4') }}
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="fileModal" tabindex="-1" aria-labelledby="fileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="fileModalLabel">Sélectionner un fichier .xslx</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="importForm" action="{{ route('ca.import') }}" method="POST" class="forms-sample" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-12">
+                                <label for="caFile">Fichier Excel</label>
+                                <input type="file" class="form-control" id="caFile" name="caFile" accept=".xlsx">
+                            </div>
+                            <div class="col-md-12 mb-12">
+                                <label for="caFile">Action</label>
+                                <div>
+                                    <input type="radio" id="modification" name="action" value="modification" required>
+                                    <label for="modification">Modification</label>
+
+                                    <input type="radio" id="nouveau" name="action" value="nouveau" required>
+                                    <label for="nouveau">Nouveau</label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-primary" id="exportBtn">Importer</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="dateModal" tabindex="-1" aria-labelledby="dateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dateModalLabel">Sélectionner la période de modification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="exportForm" action="{{ asset('ca/export') }}" method="GET">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="date_ca_modif_debut" class="form-label">Date début</label>
+                                <input type="date" id="date_ca_modif_debut" name="date_ca_modif_debut" class="form-control" value="">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="date_ca_modif_fin" class="form-label">Date fin</label>
+                                <input type="date" id="date_ca_modif_fin" name="date_ca_modif_fin" class="form-control" value="">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-primary" id="exportBtn">Exporter</button>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>

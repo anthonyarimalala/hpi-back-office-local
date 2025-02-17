@@ -1,5 +1,14 @@
 @extends('layouts.app')
 @section('content')
+    <style>
+        .card-header {
+            background: linear-gradient(
+                -135deg,
+                transparent 60%,
+                #575756 60%,
+                #575756 100%);
+        }
+    </style>
     <div class="d-sm-flex align-items-center justify-content-between border-bottom pb-3 mb-4">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
@@ -27,8 +36,10 @@
     <div class="row">
         <div class="col-md-12 grid-margin">
             <div class="card">
+                <div class="card-header text-white">
+                    <h4 class="card-title mb-0" style="color: whitesmoke">Empreintes</h4>
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Empreintes</h4>
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead class="table-light">
@@ -61,8 +72,10 @@
     <div class="row">
         <div class="col-md-12 grid-margin">
             <div class="card">
+                <div class="card-header text-white">
+                    <h4 class="card-title mb-0" style="color: whitesmoke">Retour Labo</h4>
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Retour Labo</h4>
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead class="table-light">
@@ -89,8 +102,10 @@
     <div class="row">
         <div class="col-md-12 grid-margin">
             <div class="card">
+                <div class="card-header text-white">
+                    <h4 class="card-title mb-0" style="color: whitesmoke">Travaux</h4>
+                </div>
                 <div class="card-body">
-                    <h4 class="card-title">Travaux</h4>
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead class="table-light">

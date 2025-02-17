@@ -8,7 +8,6 @@ use App\Models\devis\prothese\ProtheseRetourLabo;
 use App\Models\devis\prothese\ProtheseTravaux;
 use App\Models\hist\H_Prothese;
 use App\Models\views\V_Cheque;
-use App\Models\views\V_H_Prothese;
 use App\Models\views\V_Prothese;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

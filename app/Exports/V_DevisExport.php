@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class V_DevisExport implements FromView, WithEvents
 {
@@ -79,6 +80,21 @@ class V_DevisExport implements FromView, WithEvents
                 $validationAU16->setType(DataValidation::TYPE_LIST);
                 $validationAU16->setFormula1('"' . implode(',', $info_cheques_situation_cheques) . '"');
                 $validationAU16->setShowDropDown(true);
+
+
+                $sheet = $event->sheet->getDelegate();
+                $colNumbers = ['F', 'L', 'M', 'AL', 'AO'];
+                foreach ($colNumbers as $col) {
+                    $sheet->getStyle($col . '16:' . $col . $sheet->getHighestRow())
+                        ->getNumberFormat()
+                        ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+                }
+                $colDates = ['E', 'J', 'K', 'N', 'O', 'P', 'Q', 'R', 'T', 'V', 'X', 'Z', 'AA', 'AE', 'AH', 'AJ', 'AM', 'AQ', 'AR'];
+                foreach ($colDates as $col){
+                    $sheet->getStyle($col . '16:' . $col . $sheet->getHighestRow())
+                        ->getNumberFormat()
+                        ->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                }
 
             },
         ];

@@ -6,7 +6,7 @@
                 <a class="nav-link" id="home-tab" href="{{ asset('dashboard/overview') }}" role="tab" aria-controls="overview" aria-selected="false">Overview</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="profile-tab" href="{{ asset('dashboard/ca') }}" role="tab" aria-selected="false">CA</a>
+                <a class="nav-link" id="profile-tab" href="{{ asset('dashboard/c-a') }}" role="tab" aria-selected="false">CA</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#audiences" role="tab" aria-selected="true">Rappels</a>
