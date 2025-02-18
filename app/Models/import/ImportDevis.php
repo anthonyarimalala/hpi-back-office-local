@@ -5,6 +5,7 @@ namespace App\Models\import;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class ImportDevis extends Model
@@ -90,7 +91,13 @@ class ImportDevis extends Model
         if ($date && $date!='') {
             $cleanedDate = preg_replace('/[^0-9\/\-]/', '', $date);
             $formattedDate = str_replace("/", "-", $cleanedDate);
-            $nouvelleDate = Date::excelToDateTimeObject((float) $formattedDate)->format('Y-m-d');
+            if (Str::contains($formattedDate, '-')){
+                $nouvelleDate = $formattedDate;
+            }
+            else{
+                $nouvelleDate = Date::excelToDateTimeObject((float) $formattedDate)->format('Y-m-d');
+            }
+
 
             try {
                 return $nouvelleDate;

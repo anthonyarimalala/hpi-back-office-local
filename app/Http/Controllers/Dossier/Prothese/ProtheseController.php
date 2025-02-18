@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\devis\prothese\ProtheseEmpreinte;
 use App\Models\devis\prothese\ProtheseRetourLabo;
 use App\Models\devis\prothese\ProtheseTravaux;
+use App\Models\devis\prothese\ProtheseTravauxStatus;
 use App\Models\hist\H_Prothese;
 use App\Models\views\V_Cheque;
 use App\Models\views\V_Prothese;
@@ -28,7 +29,7 @@ class ProtheseController extends Controller
         $numeroSuivi = $request->input('numero_suivi');
         $numeroFactureLabo = $request->input('numero_facture_labo');
         $datePosePrevue = $request->input('date_pose_prevue');
-        $statut = $request->input('statut');
+        $id_pose_statut = $request->input('id_pose_statut');
         $datePoseReel = $request->input('date_pose_reel');
         $organismePayeur = $request->input('organisme_payeur');
         $montantEncaisse = $request->input('montant_encaisse');
@@ -40,7 +41,7 @@ class ProtheseController extends Controller
 
         ProtheseEmpreinte::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $numeroDent, $observations);
         ProtheseRetourLabo::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $dateLivraison, $numeroSuivi, $numeroFactureLabo);
-        ProtheseTravaux::createOrUpdateTravaux($m_h_prothese, $id_devis, $datePosePrevue, $statut, $datePoseReel, $organismePayeur, $montantEncaisse, $dateControlePaiement);
+        ProtheseTravaux::createOrUpdateTravaux($m_h_prothese, $id_devis, $datePosePrevue, $id_pose_statut, $datePoseReel, $organismePayeur, $montantEncaisse, $dateControlePaiement);
 
         $m_h_prothese->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;
         $m_h_prothese->dossier = $dossier;
@@ -52,6 +53,7 @@ class ProtheseController extends Controller
         $data['v_prothese'] = V_Prothese::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
             ->first();
+        $data['status_poses'] = ProtheseTravauxStatus::where('is_deleted', '0')->get();
         return view('dossier/prothese/modifier/prothese-modifier')->with($data);
     }
     public function showProthese($dossier, $id_devis){

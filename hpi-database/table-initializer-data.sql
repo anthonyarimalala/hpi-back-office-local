@@ -42,3 +42,16 @@ INSERT INTO info_cheques_situation_cheques(situation_cheque) VALUES
     ('PERIME'),
     ('DEJA ENCAISSE');
 
+INSERT INTO prothese_travaux_status(travaux_status) VALUES
+    ('PosÚe/PayÚe'),
+    ('PosÚe/Non-PayÚe'),
+    ('Non posÚe/ RDV pose plannifiÚ'),
+    ('Non posÚe/Pas de RDV'),
+    ('Anomalie'),
+    ('Double envoi'),
+    ('Double facturation'),
+    ('RDV honorÚ /Non facturÚ'),
+    ('ProthÞse non revenue'),
+    ('Partiellement posÚ/pas de rdv'),
+    ('Partiellement posÚ/avec rdv');
+

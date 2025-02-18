@@ -121,7 +121,13 @@
                             <tbody>
                             <tr>
                                 <td><input type="date" class="form-control" name="date_pose_prevue" value="{{ $v_prothese->date_pose_prevue ? \Carbon\Carbon::parse($v_prothese->date_pose_prevue)->format('Y-m-d'):'' }}" placeholder="Date Pose Prévue" /></td>
-                                <td><input type="text" class="form-control" name="statut" value="{{ $v_prothese->statut }}" placeholder="Statut" /></td>
+                                <td>
+                                    <select class="form-select" name="id_pose_statut">
+                                        @foreach($status_poses as $sp)
+                                            <option value="{{ $sp->id }}" @if($sp->id == $v_prothese->id_pose_statut) selected @endif>{{ $sp->travaux_status }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
                                 <td><input type="date" class="form-control" name="date_pose_reel" value="{{ $v_prothese->date_pose_reel ? \Carbon\Carbon::parse($v_prothese->date_pose_reel)->format('Y-m-d'):'' }}" placeholder="Date Pose Réel" /></td>
                                 <td><input type="text" class="form-control" name="organisme_payeur" value="{{ $v_prothese->organisme_payeur }}" placeholder="Organisme Payeur" /></td>
                                 <td><input type="number" class="form-control" step="0.01" name="montant_encaisse" value="{{ $v_prothese->montant_encaisse }}" placeholder="Montant Encaissé" min="0"/></td>

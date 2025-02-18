@@ -71,6 +71,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('liste-dossier-status', [\App\Http\Controllers\Autre\DossierStatusController::class, 'showDossierStatus']);
     Route::post('save-dossier-status', [\App\Http\Controllers\Autre\DossierStatusController::class, 'saveDossierStatus']);
     Route::post('delete-dossier-status', [\App\Http\Controllers\Autre\DossierStatusController::class, 'deleteDossierStatus']);
+    Route::get('liste-pose-status', [\App\Http\Controllers\Autre\ProtheseTravauxStatusController::class, 'showProtheseTravauxStatus']);
+    Route::post('save-pose-status', [\App\Http\Controllers\Autre\ProtheseTravauxStatusController::class, 'saveProtheseTravauxStatus']);
+    Route::post('delete-pose-status', [\App\Http\Controllers\Autre\ProtheseTravauxStatusController::class, 'deleteProtheseTravauxStatus']);
 
     // section: dashboard
     Route::get('dashboard/overview', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboard'])->name('dashboard');

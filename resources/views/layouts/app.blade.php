@@ -269,6 +269,7 @@
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"> <a class="nav-link" href="{{ asset('liste-dossier-status') }}">Status dossier</a></li>
                                 <li class="nav-item"> <a class="nav-link" href="{{ asset('liste-praticiens') }}">Praticiens</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="{{ asset('liste-pose-status') }}">Status pose</a></li>
                             </ul>
                         </div>
                     </li>

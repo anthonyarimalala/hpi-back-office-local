@@ -87,7 +87,8 @@ SELECT
     rl.numero_suivi,
     rl.numero_facture_labo,
     tra.date_pose_prevue,
-    tra.statut AS pose_statut,
+    pts.id AS id_pose_statut,
+    pts.travaux_status AS pose_statut,
     tra.date_pose_reel,
     tra.organisme_payeur,
     tra.montant_encaisse,
@@ -110,7 +111,8 @@ FROM devis d
          LEFT JOIN prothese_empreintes emp ON d.id = emp.id_devis
          LEFT JOIN prothese_retour_labos rl ON d.id = rl.id_devis
          LEFT JOIN prothese_travaux tra ON d.id = tra.id_devis
-         LEFT JOIN info_cheques ic ON d.id = ic.id_devis;
+         LEFT JOIN info_cheques ic ON d.id = ic.id_devis
+         LEFT JOIN prothese_travaux_status pts ON tra.id_pose_statut = pts.id;
 
 CREATE OR REPLACE VIEW v_cheques AS
 SELECT
@@ -148,7 +150,8 @@ SELECT
     rl.numero_suivi,
     rl.numero_facture_labo,
     tra.date_pose_prevue,
-    tra.statut,
+    pts.id AS id_pose_statut,
+    pts.travaux_status AS statut,
     tra.date_pose_reel,
     tra.organisme_payeur,
     tra.montant_encaisse,
@@ -157,7 +160,8 @@ FROM
     devis dev
         LEFT JOIN prothese_empreintes emp ON dev.id = emp.id_devis
         LEFT JOIN prothese_retour_labos rl ON dev.id = rl.id_devis
-        LEFT JOIN prothese_travaux tra ON dev.id = tra.id_devis;
+        LEFT JOIN prothese_travaux tra ON dev.id = tra.id_devis
+       LEFT JOIN prothese_travaux_status pts ON tra.id_pose_statut = pts.id;
 
 CREATE OR REPLACE VIEW v_ca_actes_reglements AS
 SELECT car.*, dos.nom, dos.date_naissance FROM ca_actes_reglements car

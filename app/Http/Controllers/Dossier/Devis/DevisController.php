@@ -84,7 +84,6 @@ class DevisController extends Controller
             ->where('id_devis', $id_devis)
             ->first();
         $data['etat_devis'] = DevisEtat::all();
-        $data['praticiens'] = Praticien::where('is_deleted',0)->get();
         return view('dossier/devis/detail/modifier/devis-modifier-2')->with($data);
     }
 
@@ -148,7 +147,7 @@ class DevisController extends Controller
         try {
             // Création du devis
             Devis::createDevis($dossier, $status, $mutuelle, $date, $montant, $devis_signe, $praticien, $observation);
-            return redirect()->to($dossier.'/liste-devis')->with('success', 'Le devis a été ajouté avec succès.');
+            return redirect()->to($dossier.'/details')->with('success', 'Le devis a été ajouté avec succès.');
         } catch (\Exception $e) {
             // print($e->getMessage());
             return back()->with('error', 'Une erreur est survenue lors de la modification du devis : ' . $e->getMessage());
@@ -158,7 +157,7 @@ class DevisController extends Controller
     public function nouveauDevis($dossier){
         $data['dossier'] = Dossier::where('dossier', $dossier)->first();
         $data['statuss'] = DossierStatus::where('is_deleted', 0)->get();
-        $data['praticiens'] = Praticien::where('is_deleted', 0)->get();
+        $data['praticiens'] = Praticien::where('is_deleted', 0)->where('praticien', '!=','')->get();
         return view('dossier/devis/nouveau-devis')->with($data);
     }
     public function showNouveauDevis(){

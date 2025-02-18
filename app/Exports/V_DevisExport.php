@@ -4,6 +4,7 @@ namespace App\Exports;
 use App\Models\devis\cheque\InfoChequeNatureCheque;
 use App\Models\devis\cheque\InfoChequeSituationCheque;
 use App\Models\devis\cheque\InfoChequeTravauxDevis;
+use App\Models\devis\prothese\ProtheseTravauxStatus;
 use App\Models\dossier\DossierStatus;
 use App\Models\praticien\Praticien;
 use Illuminate\Contracts\View\View;
@@ -39,6 +40,7 @@ class V_DevisExport implements FromView, WithEvents
                 $info_cheques_nature_cheques = InfoChequeNatureCheque::where('is_deleted', 0)->get()->pluck('nature_cheque')->toArray();
                 $info_cheques_travaux_sur_devis = InfoChequeTravauxDevis::where('is_deleted', 0)->get()->pluck('travaux_sur_devis')->toArray();
                 $info_cheques_situation_cheques = InfoChequeSituationCheque::where('is_deleted', 0)->get()->pluck('situation_cheque')->toArray();
+                $prothese_travaux_status = ProtheseTravauxStatus::where('is_deleted', 0)->get()->pluck('travaux_status')->toArray();
 
                 // Define the range for the dropdown (adjust the range as needed)
                 $startRow = 16; // Assuming your data starts from row 16
@@ -62,6 +64,12 @@ class V_DevisExport implements FromView, WithEvents
                 $validationH16->setType(DataValidation::TYPE_LIST);
                 $validationH16->setFormula1('"' . implode(',', $praticiens) . '"');
                 $validationH16->setShowDropDown(true);
+
+                $rangeAI16 = 'AI16:AI'.$endRow;
+                $validationAI16 = $event->sheet->getDelegate()->getDataValidation($rangeAI16);
+                $validationAI16->setType(DataValidation::TYPE_LIST);
+                $validationAI16->setFormula1('"' . implode(',', $prothese_travaux_status) . '"');
+                $validationAI16->setShowDropDown(true);
 
                 $rangeAS16 = 'AS16:AS'.$endRow;
                 $validationAS16 = $event->sheet->getDelegate()->getDataValidation($rangeAS16);

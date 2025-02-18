@@ -124,8 +124,6 @@
         created_at TIMESTAMP,
         updated_at TIMESTAMP
     );
-
-
     CREATE TABLE prothese_empreintes(
         id SERIAL PRIMARY KEY,
         id_devis SERIAL REFERENCES devis(id),
@@ -152,7 +150,7 @@
     CREATE TABLE prothese_travaux_status(
         id SERIAL PRIMARY KEY,
         travaux_status VARCHAR(255),
-        is_deleted INTEGER,
+        is_deleted INTEGER DEFAULT 0,
         created_at TIMESTAMP,
         updated_at TIMESTAMP
     );
@@ -161,7 +159,7 @@
         id SERIAL PRIMARY KEY,
         id_devis INTEGER REFERENCES devis(id),
         date_pose_prevue DATE,
-        statut VARCHAR(255),
+        id_pose_statut INTEGER REFERENCES prothese_travaux_status(id),
         date_pose_reel DATE,
         organisme_payeur VARCHAR(255),
         montant_encaisse DECIMAL(10, 2),
@@ -318,10 +316,10 @@ CREATE TABLE import_devis (
 CREATE TABLE import_ca_actes_reglements(
     id SERIAL PRIMARY KEY,
     date_derniere_modif DATE,
-    dossier VARCHAR(20) REFERENCES dossiers(dossier),
+    dossier VARCHAR(20),
     statut VARCHAR(50),
     mutuelle  VARCHAR(255),
-    praticien VARCHAR(10) REFERENCES praticiens(praticien),
+    praticien VARCHAR(10),
     nom_acte VARCHAR(255),
     cotation DECIMAL(10, 2),
     controle_securisation VARCHAR(255),

@@ -26,7 +26,8 @@ DELETE FROM ca_actes_reglements;
 DELETE FROM dossiers;
 
 
-
+DROP TABLE import_devis;
+DROP TABLE import_ca_actes_reglements;
 DROP TABLE h_autres;
 DROP TABLE h_ca_actes_reglements;
 DROP TABLE h_cheques;
@@ -34,12 +35,13 @@ DROP TABLE h_devis;
 DROP TABLE h_protheses;
 DROP TABLE ca_actes_reglements;
 DROP TABLE prothese_travaux;
+DROP TABLE prothese_travaux_status;
 DROP TABLE prothese_retour_labos;
 DROP TABLE prothese_empreintes;
+DROP TABLE info_cheques;
 DROP TABLE info_cheques_nature_cheques;
 DROP TABLE info_cheques_travaux_sur_devis;
 DROP TABLE info_cheques_situation_cheques;
-DROP TABLE info_cheques;
 DROP TABLE devis_appels_et_mails;
 DROP TABLE devis_reglements;
 DROP TABLE devis_accord_pecs;
@@ -48,6 +50,4 @@ DROP TABLE devis_etats;
 DROP TABLE dossiers;
 DROP TABLE praticiens;
 DROP TABLE dossier_statuss;
-DROP TABLE import_devis;
-DROP TABLE import_ca_actes_reglements;
 

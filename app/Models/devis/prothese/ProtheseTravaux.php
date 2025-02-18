@@ -13,19 +13,36 @@ class ProtheseTravaux extends Model
     protected $fillable = [
         'id_devis'
     ];
-    public static function createOrUpdateTravaux($m_h_prothese, $id_devis, $date_pose_prevue, $statut, $date_pose_reel, $organisme_payeur, $montant_encaisse, $date_controle_paiement)
+    public static function createOrUpdateTravaux($m_h_prothese, $id_devis, $date_pose_prevue, $id_pose_statut, $date_pose_reel, $organisme_payeur, $montant_encaisse, $date_controle_paiement)
     {
+
+
         // Recherche ou création de l'empreinte
         $travaux = self::firstOrNew(['id_devis' => $id_devis]);
+        $m_ancien_pose_status = ProtheseTravauxStatus::find($travaux->id_pose_statut);
+        $m_nouveau_pose_status = ProtheseTravauxStatus::find($id_pose_statut);
+
+
         if ($travaux->date_pose_prevue != $date_pose_prevue) {
             $m_h_prothese->action .= "<strong>Date pose prévue:</strong> " . ($travaux->date_pose_prevue ? Carbon::parse($travaux->date_pose_prevue)->format('d-m-Y') : '...') . " => " . ($date_pose_prevue ? Carbon::parse($date_pose_prevue)->format('d-m-Y') : '...') . "\n";
             $travaux->date_pose_prevue = $date_pose_prevue;
         }
 
-        if ($travaux->statut != $statut) {
-            $m_h_prothese->action .= "<strong>Statut:</strong> " . ($statut ?: '...') . " => " . ($statut ?: '...') . "\n";
-            $travaux->statut = $statut;
+        if ($travaux->id_pose_statut != $id_pose_statut) {
+            if ($m_ancien_pose_status) {
+                $ancien_statut = $m_ancien_pose_status->travaux_status ?: '...';
+            } else {
+                $ancien_statut = '...';
+            }
+            if ($m_nouveau_pose_status) {
+                $nouveau_statut = $m_nouveau_pose_status->travaux_status ?: '...';
+            } else {
+                $nouveau_statut = '...';
+            }
+            $m_h_prothese->action .= "<strong>Statut:</strong> " . $ancien_statut . " => " . $nouveau_statut . "\n";
+            $travaux->id_pose_statut = $m_nouveau_pose_status ? $m_nouveau_pose_status->id : null;
         }
+
 
         if (($travaux->date_pose_reel ? Carbon::parse($travaux->date_pose_reel)->format('Y-m-d') : '') != $date_pose_reel) {
             $m_h_prothese->action .= "<strong>Date pose réelle:</strong> " . ($travaux->date_pose_reel ? Carbon::parse($travaux->date_pose_reel)->format('d-m-Y') : '...') . " => " . ($date_pose_reel ? Carbon::parse($date_pose_reel)->format('d-m-Y') : '...') . "\n";

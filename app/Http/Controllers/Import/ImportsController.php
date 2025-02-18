@@ -15,6 +15,7 @@ use App\Models\devis\DevisReglement;
 use App\Models\devis\prothese\ProtheseEmpreinte;
 use App\Models\devis\prothese\ProtheseRetourLabo;
 use App\Models\devis\prothese\ProtheseTravaux;
+use App\Models\devis\prothese\ProtheseTravauxStatus;
 use App\Models\dossier\Dossier;
 use App\Models\import\ImportCa;
 use App\Models\import\ImportDevis;
@@ -82,12 +83,15 @@ class ImportsController extends Controller
 
         DB::delete('DELETE FROM import_devis');
 
+        // step-1: importation des données
         // Importer le fichier avec la classe d'import
         Excel::import(new DevisImport($file), $file);
 
+        // step-2: mise à jour et insertion des données, celà peut prendre un certain moment
         $m_import_deviss = ImportDevis::all();
         foreach ($m_import_deviss as $mid){
 
+            $m_protheseTravauxStatus = ProtheseTravauxStatus::where('travaux_status', $mid->pose_statut)->first();
             $m_devis_etats = DevisEtat::where('couleur', $mid->couleur)->get();
             $m_dossier = Dossier::firstOrNew(['dossier' => $mid->dossier]);
             $m_dossier->nom = $mid->nom;
@@ -142,11 +146,12 @@ class ImportsController extends Controller
             $m_prothese_retour_labos->save();
             $m_prothese_travaux = ProtheseTravaux::firstOrNew(['id_devis' => $m_devis->id]);
             $m_prothese_travaux->date_pose_prevue = $mid->date_pose_prevue;
-            $m_prothese_travaux->statut = $mid->statut;
+/*-------*/ if ($m_protheseTravauxStatus) $m_prothese_travaux->id_pose_statut = $m_protheseTravauxStatus->id;
             $m_prothese_travaux->date_pose_reel = $mid->date_pose_reel;
             $m_prothese_travaux->organisme_payeur = $mid->organisme_payeur;
             $m_prothese_travaux->montant_encaisse = $mid->montant_encaisse;
             $m_prothese_travaux->date_controle_paiement = $mid->date_controle_paiement;
+            $m_prothese_travaux->save();
             $m_info_cheques = InfoCheque::firstOrNew(['id_devis' => $m_devis->id]);
             $m_info_cheques->numero_cheque = $mid->numero_cheque;
             $m_info_cheques->montant_cheque = $mid->montant_cheque;
@@ -158,9 +163,7 @@ class ImportsController extends Controller
             $m_info_cheques->situation_cheque = $mid->situation_cheque;
             $m_info_cheques->observation = $mid->cheque_observation;
             $m_info_cheques->save();
-
         }
-
         return back()->with('success', 'Fichier importé avec succès!');
     }
     public function showImports(){

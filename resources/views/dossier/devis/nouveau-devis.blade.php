@@ -92,6 +92,7 @@
                                         <div class="form-group">
                                             <label for="praticien">Praticien</label>
                                             <select id="praticien" name="praticien" class="form-select">
+                                                <option value="" disabled selected>Selectionner un praticien</option>
                                                 @foreach($praticiens as $praticien)
                                                     <option value="{{ $praticien->praticien }}" {{ old('praticien') == $praticien->praticien ? 'selected' : '' }}>
                                                         {{ $praticien->praticien }}
