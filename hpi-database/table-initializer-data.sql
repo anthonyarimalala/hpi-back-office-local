@@ -1,4 +1,5 @@
 INSERT INTO dossier_statuss(status, ordre) VALUES
+    ('', 0),
     ('C2S', 10),
     ('ALD', 0),
     ('CM24', 0),
@@ -20,21 +21,24 @@ INSERT INTO devis_etats(etat, couleur) VALUES
     ('Devis implant', '#FF00FF');
 
 INSERT INTO praticiens(praticien) VALUES
+    (''),
     ('RL'),
-    ('KC'),
-    ('');
+    ('KC');
 
 INSERT INTO info_cheques_nature_cheques(nature_cheque) VALUES
+    (''),
     ('PEC'),
     ('RAC'),
     ('PART MUT'),
     ('ANOMALIE');
 
 INSERT INTO info_cheques_travaux_sur_devis(travaux_sur_devis) VALUES
+    (''),
     ('CLOTUREE'),
     ('EN COURS');
 
 INSERT INTO info_cheques_situation_cheques(situation_cheque) VALUES
+    (''),
     ('A RESTITUER'),
     ('A ENCAISSER'),
     ('EN ATTENTE'),
@@ -43,6 +47,7 @@ INSERT INTO info_cheques_situation_cheques(situation_cheque) VALUES
     ('DEJA ENCAISSE');
 
 INSERT INTO prothese_travaux_status(travaux_status) VALUES
+    (''),
     ('PosÚe/PayÚe'),
     ('PosÚe/Non-PayÚe'),
     ('Non posÚe/ RDV pose plannifiÚ'),

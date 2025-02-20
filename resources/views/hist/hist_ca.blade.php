@@ -5,10 +5,10 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Historique Ca</h4>
+                    <div class="d-flex justify-content-center">
+                        {{ $hists->links('pagination::bootstrap-4') }}
+                    </div>
                     <div class="table-responsive">
-                        <div class="d-flex justify-content-center">
-                            {{ $hists->links('pagination::bootstrap-4') }}
-                        </div>
                         <table class="table table-striped">
                             <thead>
                             <tr>
@@ -29,9 +29,9 @@
                             @endforeach
                             </tbody>
                         </table>
-                        <div class="d-flex justify-content-center">
-                            {{ $hists->links('pagination::bootstrap-4') }}
-                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        {{ $hists->links('pagination::bootstrap-4') }}
                     </div>
                 </div>
             </div>

@@ -50,4 +50,4 @@ DROP TABLE devis_etats;
 DROP TABLE dossiers;
 DROP TABLE praticiens;
 DROP TABLE dossier_statuss;
-
+DROP TABLE errors_imports;

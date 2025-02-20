@@ -112,6 +112,10 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('v_devis/export/', [\App\Http\Controllers\Export\ExportsController::class, 'exportV_Devis'])->name('v_devis.export');
     Route::get('ca/export', [\App\Http\Controllers\Export\ExportsController::class, 'exportV_Ca'])->name('v_ca.export');
 
+    // section: erreurs
+    Route::get('erreur-import-1', [\App\Http\Controllers\Error\ErrorImportController::class, 'showDevisErrorImports']);
+    Route::get('erreur-import-2', [\App\Http\Controllers\Error\ErrorImportController::class, 'showCaErrorImports']);
+
     Route::get('import-ca-view', function (){ return view('export-ca'); });
 
 });

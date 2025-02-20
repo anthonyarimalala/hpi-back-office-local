@@ -1,5 +1,25 @@
 @extends('layouts.app')
 @section('content')
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            Sélectionner des options
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li class="dropdown-item">
+                <input type="checkbox" name="options[]" value="Option 1" id="option1">
+                <label for="option1">Option 1</label>
+            </li>
+            <li class="dropdown-item">
+                <input type="checkbox" name="options[]" value="Option 2" id="option2">
+                <label for="option2">Option 2</label>
+            </li>
+            <li class="dropdown-item">
+                <input type="checkbox" name="options[]" value="Option 3" id="option3">
+                <label for="option3">Option 3</label>
+            </li>
+        </ul>
+    </div>
+
     <div class="row">
         <div class="col-lg-12 d-flex flex-column">
             <div class="row flex-grow">

@@ -16,15 +16,15 @@ class CaImport implements ToModel, WithStartRow
     public function model(array $row)
     {
         return new ImportCa([
-            'date_derniere_modif' => trim($row[0]),
-            'dossier' => trim($row[1]),
-            'nom_patient' => trim($row[2]),
-            'statut' => trim($row[3]),
-            'mutuelle' => trim($row[4]),
-            'praticien' => trim($row[5]),
-            'nom_acte' => trim($row[6]),
-            'cotation' => trim($row[7]),
-            'controle_securisation' => trim($row[8]),
+            'date_derniere_modif' => $row[0],
+            'dossier' => $row[1],
+            'nom_patient' => $row[2],
+            'statut' => $row[3],
+            'mutuelle' => $row[4],
+            'praticien' => $row[5],
+            'nom_acte' => $row[6],
+            'cotation' => $row[7],
+            'controle_securisation' => $row[8],
             'ro_part_secu' => $row[9],
             'ro_virement_recu' => $row[10],
             'ro_indus_paye' => $row[11],
@@ -41,7 +41,7 @@ class CaImport implements ToModel, WithStartRow
             'rac_cheque' => $row[22],
             'rac_especes' => $row[23],
             'rac_cb' => $row[24],
-            'commentaire' => trim($row[25]),
+            'commentaire' => $row[25],
         ]);
     }
     public function startRow(): int

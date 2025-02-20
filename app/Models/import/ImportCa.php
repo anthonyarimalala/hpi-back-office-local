@@ -4,6 +4,8 @@ namespace App\Models\import;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class ImportCa extends Model
 {
@@ -36,5 +38,24 @@ class ImportCa extends Model
         'rac_cb',
         'commentaire',
     ];
-
+    public function makeDate($date)
+    {
+        $date = trim($date);
+        if ($date && $date!='') {
+            $cleanedDate = preg_replace('/[^0-9\/\-]/', '', $date);
+            $formattedDate = str_replace("/", "-", $cleanedDate);
+            if (Str::contains($formattedDate, '-')){
+                $nouvelleDate = $formattedDate;
+            }
+            else{
+                $nouvelleDate = Date::excelToDateTimeObject((float) $formattedDate)->format('Y-m-d');
+            }
+            try {
+                return $nouvelleDate;
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+        return null ;
+    }
 }

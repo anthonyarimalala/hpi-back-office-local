@@ -296,36 +296,19 @@
                         </ul>
                     </div>
                 </li>
-                <!--
-                <li class="nav-item nav-category">Gestion des données</li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('imports') }}">
-                        <i class="mdi mdi-import menu-icon"></i>
-                        <span class="menu-title">Importer</span>
+                    <a class="nav-link" data-bs-toggle="collapse" href="#erreurs" aria-expanded="false" aria-controls="ui-basic">
+                        <i class="menu-icon mdi mdi-alert-circle"></i>
+                        <span class="menu-title">Erreurs</span>
+                        <i class="menu-arrow"></i>
                     </a>
+                    <div class="collapse" id="erreurs">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('erreur-import-1') }}">DEVIS & <br>PROTHESE & CHQ</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{{ asset('erreur-import-2') }}">CA</a></li>
+                        </ul>
+                    </div>
                 </li>
-                -->
-
-                <!--
-                    <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#entree" aria-expanded="false" aria-controls="ui-basic">
-                            <i class="menu-icon mdi mdi-cart-arrow-down"></i>
-                            <span class="menu-title">Entrée</span>
-                            <i class="menu-arrow"></i>
-                        </a>
-                        <div class="collapse" id="entree">
-                            <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link" href="{{ asset('entree-produit') }}">Produit à vendre</a></li>
-                                <li class="nav-item"> <a class="nav-link" href="{{ asset('entree-ingredient') }}">Ingrédient</a></li>
-                                <li class="nav-item"> <a class="nav-link" href="{{ asset('entree-non-consommable') }}">Non Consommable</a></li>
-                            </ul>
-                        </div>
-                    </li>
--->
-
-
-
-
             </ul>
         </nav>
         <!-- partial -->

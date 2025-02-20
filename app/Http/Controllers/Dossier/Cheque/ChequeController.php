@@ -62,9 +62,9 @@ class ChequeController extends Controller
         $data['v_cheque'] = V_Cheque::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
             ->first();
-        $data['nature_cheques'] = InfoChequeNatureCheque::where('is_deleted', 0)->get();
-        $data['travaux_sur_devis'] = InfoChequeTravauxDevis::where('is_deleted', 0)->get();
-        $data['situation_cheques'] = InfoChequeSituationCheque::where('is_deleted', 0)->get();
+        $data['nature_cheques'] = InfoChequeNatureCheque::where('is_deleted', 0)->where('nature_cheque','!=','')->get();
+        $data['travaux_sur_devis'] = InfoChequeTravauxDevis::where('is_deleted', 0)->where('travaux_sur_devis','!=','')->get();
+        $data['situation_cheques'] = InfoChequeSituationCheque::where('is_deleted', 0)->where('situation_cheque','!=','')->get();
         return view('dossier/cheque/modifier/cheque-modifier')->with($data);
     }
     public function showCheque($dossier, $id_devis)

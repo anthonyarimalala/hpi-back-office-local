@@ -86,8 +86,9 @@ class ImportDevis extends Model
         return $number;
     }
 
-    public function makeDate($date, $is_date_devis = false)
+    public function makeDate($date)
     {
+        $date = trim($date);
         if ($date && $date!='') {
             $cleanedDate = preg_replace('/[^0-9\/\-]/', '', $date);
             $formattedDate = str_replace("/", "-", $cleanedDate);
@@ -97,15 +98,12 @@ class ImportDevis extends Model
             else{
                 $nouvelleDate = Date::excelToDateTimeObject((float) $formattedDate)->format('Y-m-d');
             }
-
-
             try {
                 return $nouvelleDate;
             } catch (\Exception $e) {
                 return null;
             }
         }
-
         return null ;
     }
 
