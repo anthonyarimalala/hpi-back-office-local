@@ -26,7 +26,7 @@ class ProtheseTravauxStatusController extends Controller
         return back();
     }
     public function showProtheseTravauxStatus(){
-        $data['statuss'] = ProtheseTravauxStatus::where('is_deleted', 0)->get();
+        $data['statuss'] = ProtheseTravauxStatus::where('is_deleted', 0)->where('travaux_status', '!=', '')->get();
         return view('autres/status-pose')->with($data);
     }
 }

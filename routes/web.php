@@ -68,12 +68,18 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('liste-praticiens', [\App\Http\Controllers\Autre\PraticienController::class, 'showPraticiens']);
     Route::post('save-praticien', [\App\Http\Controllers\Autre\PraticienController::class, 'savePraticien']);
     Route::post('delete-praticien', [\App\Http\Controllers\Autre\PraticienController::class, 'deletePraticien']);
+
     Route::get('liste-dossier-status', [\App\Http\Controllers\Autre\DossierStatusController::class, 'showDossierStatus']);
     Route::post('save-dossier-status', [\App\Http\Controllers\Autre\DossierStatusController::class, 'saveDossierStatus']);
     Route::post('delete-dossier-status', [\App\Http\Controllers\Autre\DossierStatusController::class, 'deleteDossierStatus']);
+
     Route::get('liste-pose-status', [\App\Http\Controllers\Autre\ProtheseTravauxStatusController::class, 'showProtheseTravauxStatus']);
     Route::post('save-pose-status', [\App\Http\Controllers\Autre\ProtheseTravauxStatusController::class, 'saveProtheseTravauxStatus']);
     Route::post('delete-pose-status', [\App\Http\Controllers\Autre\ProtheseTravauxStatusController::class, 'deleteProtheseTravauxStatus']);
+
+    Route::get('liste-travaux', [\App\Http\Controllers\Autre\InfoChequeTravauxDevisController::class, 'showTravauxDevis']);
+    Route::get('liste-situation-cheque', [\App\Http\Controllers\Autre\InfoChequeSituationChequeController::class, 'showSituationCheque']);
+    Route::get('liste-nature-cheque', [\App\Http\Controllers\Autre\InfoChequeNatureChequeController::class, 'showNatureCheque']);
 
     // section: dashboard
     Route::get('dashboard/overview', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboard'])->name('dashboard');

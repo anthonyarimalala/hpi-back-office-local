@@ -47,6 +47,7 @@ class DossierStatusController extends Controller
 
     public function showDossierStatus(){
         $data['dossier_statuss'] = DossierStatus::where('is_deleted', 0)
+            ->where('status', '!=', '')
             ->get();
         return view('autres/status')->with($data);
     }

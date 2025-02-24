@@ -270,10 +270,13 @@
                                 <li class="nav-item"> <a class="nav-link" href="{{ asset('liste-dossier-status') }}">Status dossier</a></li>
                                 <li class="nav-item"> <a class="nav-link" href="{{ asset('liste-praticiens') }}">Praticiens</a></li>
                                 <li class="nav-item"> <a class="nav-link" href="{{ asset('liste-pose-status') }}">Status pose</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="{{ asset('liste-nature-cheque') }}">Nature de chèque</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="{{ asset('liste-travaux') }}">Travaux sur devis</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="{{ asset('liste-situation-cheque') }}">Situation chèque</a></li>
                             </ul>
                         </div>
                     </li>
-                <li class="nav-item nav-category">Gestion des utilisateurs</li>
+                <li class="nav-item nav-category">Gestion BACK OFFICE</li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ asset('utilisateurs') }}">
                         <i class="mdi mdi-account-multiple menu-icon"></i>

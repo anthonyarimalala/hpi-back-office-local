@@ -5,6 +5,7 @@ namespace App\Models\import;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Mockery\Exception;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class ImportCa extends Model
@@ -14,6 +15,7 @@ class ImportCa extends Model
     protected $fillable = [
         'date_derniere_modif',
         'dossier',
+        'nom_patient',
         'statut',
         'mutuelle',
         'praticien',
@@ -38,6 +40,23 @@ class ImportCa extends Model
         'rac_cb',
         'commentaire',
     ];
+
+    public function makeNumericOrError($num){
+        $formatedNum = trim($num);
+        if (is_numeric($formatedNum))
+            return $formatedNum;
+        else
+            throw new Exception('Format du nombre non conforme');
+    }
+    public function makeDateOrError($date)
+    {
+        $formattedDate = trim($date);
+        if (is_numeric($date))
+            $formattedDate = str_replace("/", "-", $formattedDate);
+        else
+            throw new Exception("Date non conforme");
+        return Date::excelToDateTimeObject((float) $formattedDate)->format('Y-m-d');
+    }
     public function makeDate($date)
     {
         $date = trim($date);

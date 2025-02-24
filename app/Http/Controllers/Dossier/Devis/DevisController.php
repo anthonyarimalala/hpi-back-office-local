@@ -209,7 +209,9 @@ class DevisController extends Controller
         }
 
         // Exécution de la requête avec pagination (20 éléments par page)
-        $data['deviss'] = $query->orderBy('date', 'desc')->paginate(20)->appends([
+        $data['deviss'] = $query->orderBy('date', 'desc')
+            ->where('is_deleted', 0)
+            ->paginate(20)->appends([
             'date_devis_debut' => $date_devis_debut,
             'date_devis_fin' => $date_devis_fin,
             'montant_min' => $montant_min,
@@ -218,6 +220,7 @@ class DevisController extends Controller
             'praticiens' => $praticiens
         ]);
         $data['praticiens'] = Praticien::all();
+        $data['devis_etats'] = DevisEtat::all();
 
         return view('devis/liste-devis-2')->with($data)
             ->with([

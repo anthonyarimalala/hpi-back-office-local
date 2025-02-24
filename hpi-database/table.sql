@@ -317,6 +317,7 @@ CREATE TABLE import_ca_actes_reglements(
     id SERIAL PRIMARY KEY,
     date_derniere_modif TEXT,
     dossier TEXT,
+    nom_patient TEXT,
     statut TEXT,
     mutuelle  TEXT,
     praticien TEXT,

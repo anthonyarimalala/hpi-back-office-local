@@ -1,25 +1,5 @@
 @extends('layouts.app')
 @section('content')
-    <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-            Sélectionner des options
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <li class="dropdown-item">
-                <input type="checkbox" name="options[]" value="Option 1" id="option1">
-                <label for="option1">Option 1</label>
-            </li>
-            <li class="dropdown-item">
-                <input type="checkbox" name="options[]" value="Option 2" id="option2">
-                <label for="option2">Option 2</label>
-            </li>
-            <li class="dropdown-item">
-                <input type="checkbox" name="options[]" value="Option 3" id="option3">
-                <label for="option3">Option 3</label>
-            </li>
-        </ul>
-    </div>
-
     <div class="row">
         <div class="col-lg-12 d-flex flex-column">
             <div class="row flex-grow">
@@ -420,7 +400,7 @@
         </div>
     </div>
     <div class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalFormLabel">Recherche Spécifique</h5>
@@ -430,50 +410,530 @@
                     <form action="" method="GET">
                         @csrf
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="date_devis_debut" class="form-label">Date début</label>
-                                <input type="date" id="date_devis_debut" name="date_devis_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="date_devis_fin" class="form-label">Date fin</label>
-                                <input type="date" id="date_devis_fin" name="date_devis_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="montant_min" class="form-label">Montant min</label>
-                                <input type="number" id="montant_min" name="montant_min" class="form-control" min="0" step="0.01" value="{{ $inp_montant_min }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="montant_max" class="form-label">Montant max</label>
-                                <input type="number" id="montant_max" name="montant_max" class="form-control" min="0" step="0.01" value="{{ $inp_montant_max }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="devis_signe" class="form-label">Devis signé</label>
-                                <select id="devis_signe" name="devis_signe" class="form-control">
-                                    <option value="">Tout</option>
-                                    <option value="oui" @if($inp_devis_signe=="oui") selected @endif>Oui</option>
-                                    <option value="non" @if($inp_devis_signe=="non") selected @endif>Non</option>
-                                </select>
-                            </div>
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label">Praticiens</label><br>
-                                <!-- Boucle Blade pour générer les checkboxes -->
-                                @foreach ($praticiens as $praticien)
-                                    <div class="form-check form-check-inline">
-                                        <label class="form-check-label" for="praticien_{{ $praticien->praticien }}">
-                                            <input type="checkbox" class="form-check-input" id="praticien_{{ $praticien->praticien }}" name="praticiens[]" value="{{ $praticien->praticien }}" @if (is_null($inp_praticiens) || count($inp_praticiens) === 0 || in_array($praticien->praticien, $inp_praticiens)) checked @endif>
-                                            {{ $praticien->praticien }}
-                                        </label>
+                            <div class="row col-md-6">
+                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Etats</h4>
+                                <div class="col-md-12 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Etats
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            @foreach ($devis_etats as $de)
+                                                <li class="dropdown-item" style="background-color: {{ $de->couleur }}">
+                                                    <input type="checkbox" class="form-check-input" name="devis_etats[]" value="{{ $de->id }}" checked>
+                                                    {{ $de->etat }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
                                     </div>
-                                @endforeach
+                                </div>
+                            </div>
+                            <div class="row col-md-6">
+                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">INFO DEVIS</h4>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_devis_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_devis_debut" name="date_devis_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_devis_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_devis_fin" name="date_devis_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Montant
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="montant_min" class="form-label">Montant min</label>
+                                                <input type="number" id="montant_min" name="montant_min" class="form-control" min="0" step="0.01" value="{{ $inp_montant_min }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="montant_max" class="form-label">Montant max</label>
+                                                <input type="number" id="montant_max" name="montant_max" class="form-control" min="0" step="0.01" value="{{ $inp_montant_max }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Praticiens
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            @foreach ($praticiens as $praticien)
+                                                <li class="dropdown-item">
+                                                    <input type="checkbox" class="form-check-input" id="praticien_{{ $praticien->praticien }}" name="praticiens[]" value="{{ $praticien->praticien }}" @if (is_null($inp_praticiens) || count($inp_praticiens) === 0 || in_array($praticien->praticien, $inp_praticiens)) checked @endif>
+                                                    {{ $praticien->praticien }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Devis signé
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <input type="radio" class="form-check-input" id="devis_signe" name="devis_signe" value="" checked>
+                                                Tout
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <input type="radio" class="form-check-input" id="devis_signe" name="devis_signe" value="oui" @if($inp_devis_signe=="oui") checked @endif>
+                                                Oui
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <input type="radio" class="form-check-input" id="devis_signe" name="devis_signe" value="non" @if($inp_devis_signe=="non") checked @endif>
+                                                Non
+                                            </li>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row col-md-6">
+                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">INFO ACCORD PEC</h4>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date envoie PEC
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_envoi_pec_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_envoi_pec_debut" name="date_envoi_pec_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_envoi_pec_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_envoi_pec_fin" name="date_envoi_pec_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date fin validité PEC
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_fin_validite_pec_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_fin_validite_pec_debut" name="date_fin_validite_pec_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_fin_validite_pec_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_fin_validite_pec_fin" name="date_fin_validite_pec_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Part mutuelle
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="part_mutuelle_min" class="form-label">Montant min</label>
+                                                <input type="number" id="part_mutuelle_min" name="part_mutuelle_min" class="form-control" min="0" step="0.01" value="{{ $inp_montant_min }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="part_mutuelle_max" class="form-label">Montant max</label>
+                                                <input type="number" id="part_mutuelle_max" name="part_mutuelle_max" class="form-control" min="0" step="0.01" value="{{ $inp_montant_max }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Part RAC
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="part_rac_min" class="form-label">Montant min</label>
+                                                <input type="number" id="part_rac_min" name="part_rac_min" class="form-control" min="0" step="0.01" value="{{ $inp_montant_min }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="part_rac_max" class="form-label">Montant max</label>
+                                                <input type="number" id="part_rac_max" name="part_rac_max" class="form-control" min="0" step="0.01" value="{{ $inp_montant_max }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-md-6">
+                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Appels et Mails</h4>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date 1er appel
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_1er_appel_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_1er_appel_debut" name="date_1er_appel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_1er_appel_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_1er_appel_fin" name="date_1er_appel_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date 2eme appel
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_2eme_appel_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_2eme_appel_debut" name="date_2eme_appel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_2eme_appel_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_2eme_appel_fin" name="date_2eme_appel_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date 3eme appel
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_3eme_appel_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_3eme_appel_debut" name="date_3eme_appel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_3eme_appel_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_3eme_appel_fin" name="date_3eme_appel_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date envoi mail
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_envoi_mail_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_envoi_mail_debut" name="date_envoi_mail_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_envoi_mail_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_envoi_mail_fin" name="date_envoi_mail_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-md-6">
+                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Info Empreinte</h4>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date d'empreinte
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_empreinte_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_empreinte_debut" name="date_empreinte_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_empreinte_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_empreinte_fin" name="date_empreinte_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date d'envoi au labo
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_envoi_labo_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_envoi_labo_debut" name="date_envoi_labo_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_envoi_labo_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_envoi_labo_fin" name="date_envoi_labo_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-md-6">
+                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Retour labo</h4>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date livraison
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_livraison_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_livraison_debut" name="date_livraison_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_livraison_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_livraison_fin" name="date_livraison_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            numero suivi colis de retour
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="numero_suivi" class="form-label">numero suivi colis de retour + société de livraison</label>
+                                                <input type="text" id="numero_suivi" name="numero_suivi" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            N° Facture Labo
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="numero_facture_labo" class="form-label">N° Facture Labo</label>
+                                                <input type="text" id="numero_facture_labo" name="numero_facture_labo" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-md-6">
+                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Pose</h4>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date de pose prévue
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_prevue_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_pose_prevue_debut" name="date_pose_prevue_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_prevue_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_pose_prevue_fin" name="date_pose_prevue_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Statut
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <input type="checkbox" class="form-check-input" name="id_pose_statuts[]" value="Status 1">
+                                                Status 1
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <input type="checkbox" class="form-check-input" name="id_pose_statuts[]" value="Status 1">
+                                                Status 2
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <input type="checkbox" class="form-check-input" name="id_pose_statuts[]" value="Status 1">
+                                                Status 3
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            N° Facture Labo
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="numero_facture_labo" class="form-label">N° Facture Labo</label>
+                                                <input type="text" id="numero_facture_labo" name="numero_facture_labo" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-md-6">
+                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Travaux cloture</h4>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date de pose réel
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_reel_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_pose_reel_fin" name="date_pose_reel_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Montant encaissé
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="montant_encaisse_debut" class="form-label">Montant encaissé</label>
+                                                <input type="number" step="1" id="montant_encaisse_debut" name="montant_encaisse_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            date controle paiement
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_prevue_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_pose_prevue_debut" name="date_pose_prevue_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_prevue_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_pose_prevue_fin" name="date_pose_prevue_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-md-12">
+                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">INFO CHEQUES</h4>
+                                <div class="col-md-4 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Numéro de chèque
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
+                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Montant du chèque
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
+                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date d'encaissement chq
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
+                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date de 1er L'acte
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
+                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Nature du chèque
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
+                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Tavaux Sur le Devis
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
+                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Situation chèque
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
+                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Rechercher</button>
+                        <button type="submit" class="btn btn-success" style="color: whitesmoke">Rechercher</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
     <script>
         function toggleColumnVisibility() {
             const columns = [

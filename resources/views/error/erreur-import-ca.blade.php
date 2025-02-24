@@ -12,10 +12,7 @@
                         <blockquote class="blockquote blockquote-danger">
                             <header class="blockquote-header">Dossier: {{ $err->dossier }} [{{ \Carbon\Carbon::parse($err->date)->format('d/m/Y') }}]</header>
                             <header class="blockquote-header">{{ $err->categorie }}</header>
-                            <p class="card-description">
-                                <code>{{ $err->error_message }}</code>
-                            </p>
-                            <p class="mb-0">{!! nl2br($err->description) !!}</p>
+                            <p class="mb-0"><code>{{ $err->error_message }}</code><br> {!! nl2br($err->description) !!} </p>
 
                         </blockquote>
                     @endforeach
