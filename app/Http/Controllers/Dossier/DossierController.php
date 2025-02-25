@@ -30,7 +30,7 @@ class DossierController extends Controller
         $mutuelle = $request->input('mutuelle');
 
         Dossier::modifierDossier($i_dossier, $i_nom, $i_status, $mutuelle);
-        return back()->with('success', 'Le dossier "'.$i_dossier.'" a été mis à jour.');
+        return redirect('dossiers');
     }
     public function showModifierDossier($dossier)
     {

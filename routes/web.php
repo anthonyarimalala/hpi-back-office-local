@@ -45,6 +45,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     // section: devis
     Route::post('modifier-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'modifierDevis']);
     Route::get('{dossier}/devis/{id_devis}/modifier', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showModifierDevis']);
+    Route::get('getFilterListeDevis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getFilterListeDevis']);
+    Route::get('reinitializeFilterListeDevis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'reinitializeFilterListeDevis']);
     Route::get('liste/devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getAllListeDevis']);
     Route::get('{dossier}/devis/{id_devis}/detail', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getDevis'])->name('devis.detail');;
     Route::get('{dossier}/nouveau-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'nouveauDevis']);

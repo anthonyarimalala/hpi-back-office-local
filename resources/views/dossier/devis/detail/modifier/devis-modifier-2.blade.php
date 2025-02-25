@@ -166,7 +166,7 @@
         <div class="col-md-4 grid-margin stretch-card">
             <div class="card">
                 <div class="card-header text-white">
-                    <h4 class="card-title mb-0" style="color: whitesmoke">Règlements</h4>
+                    <h4 class="card-title mb-0" style="color: whitesmoke">Appels & Mails</h4>
                 </div>
                 <div class="card-body">
                     <div class="list-wrapper">

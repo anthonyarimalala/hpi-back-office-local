@@ -21,6 +21,7 @@ use App\Models\error\ErrorImport;
 use App\Models\import\ImportCa;
 use App\Models\import\ImportDevis;
 use App\Models\praticien\Praticien;
+use App\Models\views\V_Devis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -518,6 +519,8 @@ class ImportsController extends Controller
                 $m_error_import->save();
             }
         }
+        $m_v_devis = new V_Devis();
+        $m_v_devis->makeSessionListeDevis();
         return back()->with('success', 'Fichier importé avec succès!');
     }
     public function showImports(){

@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Dossier\Devis;
 
 use App\Http\Controllers\Controller;
+use App\Models\devis\cheque\InfoChequeNatureCheque;
+use App\Models\devis\cheque\InfoChequeSituationCheque;
+use App\Models\devis\cheque\InfoChequeTravauxDevis;
 use App\Models\devis\Devis;
 use App\Models\devis\DevisAccordPec;
 use App\Models\devis\DevisAppelsEtMail;
 use App\Models\devis\DevisEtat;
 use App\Models\devis\DevisReglement;
+use App\Models\devis\prothese\ProtheseTravauxStatus;
 use App\Models\dossier\Dossier;
 use App\Models\dossier\DossierStatus;
 use App\Models\hist\H_Devis;
@@ -68,6 +72,9 @@ class DevisController extends Controller
             $m_h_devis->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;
             $m_h_devis->dossier = $m_devis->dossier;
             $m_h_devis->save();
+            // mets la liste de devis dans la session
+            $m_v_devis = new V_Devis();
+            $m_v_devis->makeSessionListeDevis();
             return redirect()->route('devis.detail', [
                 'dossier' => $m_devis->dossier,    // Remplacez par la valeur réelle de $dossier
                 'id_devis' => $id_devis      // Remplacez par la valeur réelle de $id_devis
@@ -166,71 +173,115 @@ class DevisController extends Controller
         return view('devis/nouveau/nouveau-devis')->with($data);
     }
 
-    /*
-    public function getAllListeDevis(Request $request){
-        $query = V_Devis::query();
-        $data['deviss'] = $query->orderBy('date', 'desc')->paginate(20);
-        //print($query->toSql());
-        $data['praticiens'] = Praticien::all();
-        return view('devis/liste-devis-2')->with($data);
-    }
-    */
-
-
-    public function getAllListeDevis(Request $request){
-        $date_devis_debut = $request->input('date_devis_debut');
-        $date_devis_fin = $request->input('date_devis_fin');
-        $montant_min = $request->input('montant_min');
-        $montant_max = $request->input('montant_max');
-        $devis_signe = $request->input('devis_signe');
-        $praticiens = $request->input('praticiens');
-
-        // Création de la requête de base
-        $query = V_Devis::query(); // Crée une requête de base
-
-        // Applique les filtres de date
-        if ($date_devis_debut) {
-            $query->where('date', '>=', $date_devis_debut);
-        }
-        if ($date_devis_fin) {
-            $query->where('date', '<=', $date_devis_fin);
-        }
-        if ($montant_min) {
-            $query->where('montant', '>=', $montant_min);
-        }
-        if ($montant_max) {
-            $query->where('montant', '<=', $montant_max);
-        }
-        if ($devis_signe != '' || $devis_signe) {
-            $query->where('devis_signe', $devis_signe);
-        }
-        if ($praticiens && count($praticiens) > 0) {
-            $query->whereIn('praticien', $praticiens); // Exclut les praticiens présents dans le tableau
-        }
-
-        // Exécution de la requête avec pagination (20 éléments par page)
-        $data['deviss'] = $query->orderBy('date', 'desc')
+    public function reinitializeFilterListeDevis(){
+        session()->forget('devis_filters');
+        $m_v_deviss = V_Devis::orderBy('date', 'desc')
             ->where('is_deleted', 0)
-            ->paginate(20)->appends([
-            'date_devis_debut' => $date_devis_debut,
-            'date_devis_fin' => $date_devis_fin,
-            'montant_min' => $montant_min,
-            'montant_max' => $montant_max,
-            'devis_signe' => $devis_signe,
-            'praticiens' => $praticiens
-        ]);
+            ->paginate(20);
+        session()->put('deviss', $m_v_deviss);
+        return back();
+    }
+    public function getFilterListeDevis(Request $request){
+        $filters = [
+            'id_devis_etats' => $request->input('id_devis_etats'),
+            'date_devis_debut' => $request->input('date_devis_debut'),
+            'date_devis_fin' => $request->input('date_devis_fin'),
+            'montant_min' => $request->input('montant_min'),
+            'montant_max' => $request->input('montant_max'),
+            'praticiens' => $request->input('praticiens'),
+            'devis_signe' => $request->input('devis_signe'),
+            'date_envoi_pec_debut' => $request->input('date_envoi_pec_debut'),
+            'date_envoi_pec_fin' => $request->input('date_envoi_pec_fin'),
+            'date_envoi_pec_null' => $request->input('date_envoi_pec_null'),
+            'date_fin_validite_pec_debut' => $request->input('date_fin_validite_pec_debut'),
+            'date_fin_validite_pec_fin' => $request->input('date_fin_validite_pec_fin'),
+            'date_fin_validite_pec_null' => $request->input('date_fin_validite_pec_null'),
+            'part_mutuelle_min' => $request->input('part_mutuelle_min'),
+            'part_mutuelle_max' => $request->input('part_mutuelle_max'),
+            'part_mutuelle_null' => $request->input('part_mutuelle_max'),
+            'part_rac_min' => $request->input('part_rac_min'),
+            'part_rac_max' => $request->input('part_rac_max'),
+            'part_rac_null' => $request->input('part_rac_null'),
+            'date_1er_appel_debut' => $request->input('date_1er_appel_debut'),
+            'date_1er_appel_fin' => $request->input('date_1er_appel_fin'),
+            'date_1er_appel_null' => $request->input('date_1er_appel_null'),
+            'date_2eme_appel_debut' => $request->input('date_2eme_appel_debut'),
+            'date_2eme_appel_fin' => $request->input('date_2eme_appel_fin'),
+            'date_2eme_appel_null' => $request->input('date_2eme_appel_null'),
+            'date_3eme_appel_debut' => $request->input('date_3eme_appel_debut'),
+            'date_3eme_appel_fin' => $request->input('date_3eme_appel_fin'),
+            'date_3eme_appel_null' => $request->input('date_3eme_appel_null'),
+            'date_envoi_mail_debut' => $request->input('date_envoi_mail_debut'),
+            'date_envoi_mail_fin' => $request->input('date_envoi_mail_fin'),
+            'date_envoi_mail_null' => $request->input('date_envoi_mail_null'),
+            'date_empreinte_debut' => $request->input('date_empreinte_debut'),
+            'date_empreinte_fin' => $request->input('date_empreinte_fin'),
+            'date_empreinte_null' => $request->input('date_empreinte_null'),
+            'date_envoi_labo_debut' => $request->input('date_envoi_labo_debut'),
+            'date_envoi_labo_fin' => $request->input('date_envoi_labo_fin'),
+            'date_envoi_labo_null' => $request->input('date_envoi_labo_null'),
+            'date_livraison_debut' => $request->input('date_livraison_debut'),
+            'date_livraison_fin' => $request->input('date_livraison_fin'),
+            'date_livraison_null' => $request->input('date_livraison_null'),
+            'numero_suivi' => $request->input('numero_suivi'),
+            'numero_suivi_null' => $request->input('numero_suivi_null'),
+            'numero_facture_labo' => $request->input('numero_facture_labo'),
+            'numero_facture_labo_null' => $request->input('numero_facture_null'),
+            'date_pose_prevue_debut' => $request->input('date_pose_prevue_debut'),
+            'date_pose_prevue_fin' => $request->input('date_pose_prevue_fin'),
+            'date_pose_prevue_null' => $request->input('date_pose_prevue_null'),
+            'id_pose_statuts' => $request->input('id_pose_statuts'),
+            'date_pose_reel_debut' => $request->input('date_pose_reel_debut'),
+            'date_pose_reel_fin' => $request->input('date_pose_reel_fin'),
+            'date_pose_reel_null' => $request->input('date_pose_reel_null'),
+            'montant_encaisse_min' => $request->input('montant_encaisse_min'),
+            'montant_encaisse_max' => $request->input('montant_encaisse_max'),
+            'montant_encaisse_null' => $request->input('montant_encaisse_null'),
+            'date_controle_paiement_debut' => $request->input('date_date_controle_paiement_debut'),
+            'date_controle_paiement_fin' => $request->input('date_date_controle_paiement_fin'),
+            'date_controle_paiement_null' => $request->input('date_controle_paiement_null'),
+            'numero_cheque' => $request->input('numero_cheque'),
+            'numero_cheque_null' => $request->input('numero_cheque_null'),
+            'montant_cheque_min' => $request->input('montant_cheque_min'),
+            'montant_cheque_max' => $request->input('montant_cheque_max'),
+            'montant_cheque_null' => $request->input('montant_cheque_null'),
+            'date_encaissement_cheque_debut' => $request->input('date_encaissement_cheque_debut'),
+            'date_encaissement_cheque_fin' => $request->input('date_encaissement_cheque_fin'),
+            'date_encaissement_cheque_null' => $request->input('date_encaissement_cheque_fin'),
+            'date_1er_acte_debut' => $request->input('date_1er_acte_debut'),
+            'date_1er_acte_fin' => $request->input('date_1er_acte_fin'),
+            'date_1er_acte_null' => $request->input('date_1er_acte_null'),
+            'nature_cheques' => $request->input('nature_cheques'),
+            'travaux_sur_devis' => $request->input('travaux_sur_devis'),
+            'situation_cheques' => $request->input('situation_cheques'),
+            'stringFilters' => [],
+        ];
+
+        $m_v_devis = new V_Devis();
+        $query = V_Devis::query(); // Crée une requête de base
+        $m_v_devis->scopeFiltrer($query, $filters);
+        $m_v_deviss = $query->orderBy('date', 'desc')
+            ->where('is_deleted', 0)
+            ->paginate(20);
+        session()->put('deviss', $m_v_deviss);
+        session()->put('devis_filters', $filters);
+        return redirect('liste/devis');
+    }
+
+    public function getAllListeDevis(Request $request){
+        $m_v_devis = new V_Devis();
+        $filters = session()->get('devis_filters', []);
+        if (!session()->has('deviss')) $m_v_devis->makeSessionListeDevis();
+        $data['deviss'] = session()->get('deviss');
         $data['praticiens'] = Praticien::all();
         $data['devis_etats'] = DevisEtat::all();
+        $data['pose_status'] = ProtheseTravauxStatus::all();
+        $data['nature_cheques'] = InfoChequeNatureCheque::all();
+        $data['travaux_sur_devis'] = InfoChequeTravauxDevis::all();
+        $data['situation_cheques'] = InfoChequeSituationCheque::all();
+        $data['filters'] = $filters;
 
-        return view('devis/liste-devis-2')->with($data)
-            ->with([
-            'inp_date_devis_debut' => $date_devis_debut,
-            'inp_date_devis_fin' => $date_devis_fin,
-            'inp_montant_min' => $montant_min,
-            'inp_montant_max' => $montant_max,
-            'inp_devis_signe' => $devis_signe,
-            'inp_praticiens' => $praticiens
-        ]);
+        return view('devis/liste-devis-2')->with($data);
     }
 
 }

@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Str; @endphp
 @extends('layouts.app')
 @section('content')
     <div class="row">
@@ -10,16 +11,22 @@
                                 <div>
                                     <h4 class="card-title card-title-dash">Liste des devis</h4>
                                 </div>
+                                @php
+                                    $dev = session()->get('deviss');
+                                    // dump($filters);
+                                @endphp
                                 @if (session('success'))
                                     <div class="alert alert-success" role="alert">
                                         {{ session('success') }}
                                     </div>
                                 @endif
                                 <div>
-                                    <a href="#" class="btn btn-primary text-white me-0" data-bs-toggle="modal" data-bs-target="#fileModal">
+                                    <a href="#" class="btn btn-primary text-white me-0" data-bs-toggle="modal"
+                                       data-bs-target="#fileModal">
                                         <i class="icon-upload"></i> Import
                                     </a>
-                                    <a href="#" class="btn btn-primary text-white me-0" data-bs-toggle="modal" data-bs-target="#dateModal">
+                                    <a href="#" class="btn btn-primary text-white me-0" data-bs-toggle="modal"
+                                       data-bs-target="#dateModal">
                                         <i class="icon-download"></i> Export
                                     </a>
                                     <a href="{{ asset('devis/nouveau') }}" class="text-primary">
@@ -30,17 +37,34 @@
 
                             <div class="col-6">
                                 <label for="searchInput1" class="form-label"></label>
-                                <input type="text" id="searchInput1" onkeyup="searchTable('searchInput1', 'myTable')" placeholder="Rechercher..." class="form-control">
+                                <input type="text" id="searchInput1" onkeyup="searchTable('searchInput1', 'myTable')"
+                                       placeholder="Rechercher..." class="form-control">
                             </div>
                             <div class="col-6">
-                                <button class="btn btn-primary" style="color: whitesmoke" data-bs-toggle="modal" data-bs-target="#modalForm">
-                                    Recherche spécifique
+                                <button class="btn btn-primary" style="color: whitesmoke" data-bs-toggle="modal"
+                                        data-bs-target="#modalForm">
+                                    Recherche par filtre <i class="mdi mdi-magnify"></i>
                                 </button>
+                                @if($filters && isset($filters['stringFilters']))
+                                    <button class="btn btn-primary" type="button" id="dropdownMenuButton"
+                                            data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke">
+                                        Voir les filtres appliqués <i class="mdi mdi-chevron-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                                        @foreach($filters['stringFilters'] as $sf)
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_prevue_debut" class="form-label"
+                                                       style="background-color: #F2CED5">{{ $sf }}</label>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
                             </div>
                             <div class="col-6">
-                                <form action="">
-                                    <button class="btn btn-primary" style="color: whitesmoke">
-                                        Tout
+                                <form action="{{ asset('reinitializeFilterListeDevis') }}" method="GET">
+                                    <button class="btn btn-primary" style="color: whitesmoke" type="submit">
+                                        Tous
                                     </button>
                                 </form>
                             </div>
@@ -51,29 +75,36 @@
                                         <label><input type="checkbox" checked disabled> INFO DEVIS</label>
                                     </div>
                                     <div class="col-md-2">
-                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()"> INFO ACCORD PEC</label>
+                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()"> INFO
+                                            ACCORD PEC</label>
                                     </div>
                                     <div class="col-md-2">
-                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()"> APPELS & MAIL</label>
+                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()"> APPELS
+                                            & MAIL</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()"> INFO D'EMPREINTE</label>
+                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()"> INFO
+                                            D'EMPREINTE</label>
                                     </div>
                                     <div class="col-md-2">
-                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()"> RETOUR LABO</label>
+                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()"> RETOUR
+                                            LABO</label>
                                     </div>
                                     <div class="col-md-2">
-                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()"> POSE</label>
+                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()">
+                                            POSE</label>
                                     </div>
                                     <div class="col-md-3">
-                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()"> TRAVAUX CLOTURE</label>
+                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()">
+                                            TRAVAUX CLOTURE</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()"> INFO CHEQUES</label>
+                                        <label><input type="checkbox" checked onclick="toggleColumnVisibility()"> INFO
+                                            CHEQUES</label>
                                     </div>
                                 </div>
                             </div>
@@ -85,61 +116,106 @@
                                     <thead>
                                     <!-- Section INFO DEVIS -->
                                     <tr>
-                                        <th class="infoCheques" colspan="8" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO DEVIS</th>
-                                        <th class="infoCheques" colspan="1" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;"></th>
-                                        <th class="infoAccordPec" colspan="4" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO ACCORD PEC</th>
-                                        <th class="appelsMail" colspan="7" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">APPELS & MAIL</th>
-                                        <th class="infoEmpreinte" colspan="6" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO D'EMPREINTE</th>
-                                        <th class="retourLabo" colspan="3" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">RETOUR LABO</th>
-                                        <th class="pose" colspan="2" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">POSE</th>
-                                        <th class="travauxCloture" colspan="4" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">TRAVAUX CLOTURE</th>
-                                        <th class="infoCheques" colspan="9" style="background-color: #f8f9fa; text-align: center;">INFO CHEQUES</th>
+                                        <th class="infoCheques" colspan="8"
+                                            style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">
+                                            INFO DEVIS
+                                        </th>
+                                        <th class="infoCheques" colspan="1"
+                                            style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;"></th>
+                                        <th class="infoAccordPec" colspan="4"
+                                            style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">
+                                            INFO ACCORD PEC
+                                        </th>
+                                        <th class="appelsMail" colspan="7"
+                                            style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">
+                                            APPELS & MAIL
+                                        </th>
+                                        <th class="infoEmpreinte" colspan="6"
+                                            style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">
+                                            INFO D'EMPREINTE
+                                        </th>
+                                        <th class="retourLabo" colspan="3"
+                                            style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">
+                                            RETOUR LABO
+                                        </th>
+                                        <th class="pose" colspan="2"
+                                            style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">
+                                            POSE
+                                        </th>
+                                        <th class="travauxCloture" colspan="4"
+                                            style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">
+                                            TRAVAUX CLOTURE
+                                        </th>
+                                        <th class="infoCheques" colspan="9"
+                                            style="background-color: #f8f9fa; text-align: center;">INFO CHEQUES
+                                        </th>
                                     </tr>
                                     <tr>
                                         <!-- INFO DEVIS -->
                                         <!-- triTableau(tableId, columnIndex, isText = true, isNumber = false, isDate = false) -->
                                         <!-- 0 -->
-                                        <th onclick="sortTableByString('myTable', 0)" class="infoCheques">Dossier<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 0)" class="infoCheques">Dossier<span
+                                                id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 1 -->
-                                        <th onclick="sortTableByString('myTable', 1)" class="infoCheques">Patient<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 1)" class="infoCheques">Patient<span
+                                                id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 2 -->
-                                        <th onclick="sortTableByString('myTable', 2)" class="infoCheques">Mutuelle<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 2)" class="infoCheques">Mutuelle<span
+                                                id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 3 -->
-                                        <th onclick="sortTableByString('myTable', 3)" class="infoCheques">Status<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 3)" class="infoCheques">Status<span
+                                                id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 4 -->
-                                        <th onclick="sortTableByDate('myTable', 4)" class="infoCheques">Date<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 4)" class="infoCheques">Date<span
+                                                id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 5 -->
-                                        <th onclick="sortTableByNumber('myTable', 5)" class="infoCheques">Montant<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByNumber('myTable', 5)" class="infoCheques">Montant<span
+                                                id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 6 -->
-                                        <th onclick="sortTableByString('myTable', 6)" class="infoCheques">Devis signé<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 6)" class="infoCheques">Devis
+                                            signé<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 7 -->
-                                        <th onclick="sortTableByString('myTable', 7)" style="border-right: 2px solid #000;" class="infoCheques">Praticien<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 7)"
+                                            style="border-right: 2px solid #000;" class="infoCheques">Praticien<span
+                                                id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 8 -->
-                                        <th onclick="sortTableByString('myTable', 8)" style="border-right: 2px solid #000;" class="infoCheques">Observation<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByString('myTable', 8)"
+                                            style="border-right: 2px solid #000;" class="infoCheques">Observation<span
+                                                id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- INFO ACCORD PEC -->
                                         <!-- 9 -->
-                                        <th onclick="sortTableByDate('myTable', 9)" class="infoAccordPec">Date envoie PEC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 9)" class="infoAccordPec">Date envoie
+                                            PEC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 10 -->
-                                        <th onclick="sortTableByDate('myTable', 10)" class="infoAccordPec">Date fin validité PEC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 10)" class="infoAccordPec">Date fin
+                                            validité PEC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 11 -->
-                                        <th onclick="sortTableByNumber('myTable', 11)" class="infoAccordPec">Part mutuelle<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByNumber('myTable', 11)" class="infoAccordPec">Part
+                                            mutuelle<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 12 -->
-                                        <th onclick="sortTableByNumber('myTable', 12)" style="border-right: 2px solid #000;" class="infoAccordPec">Part RAC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByNumber('myTable', 12)"
+                                            style="border-right: 2px solid #000;" class="infoAccordPec">Part RAC<span
+                                                id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- APPELS & MAIL -->
                                         <!-- 13 -->
-                                        <th onclick="sortTableByDate('myTable', 13)" class="appelsMail">Date 1er appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 13)" class="appelsMail">Date 1er
+                                            appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 14 -->
                                         <th class="appelsMail">Note 1er appel</th>
                                         <!-- 15 -->
-                                        <th onclick="sortTableByDate('myTable', 15)" class="appelsMail">Date 2ème appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 15)" class="appelsMail">Date 2ème
+                                            appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 16 -->
                                         <th class="appelsMail">Note 2ème appel</th>
                                         <!-- 17 -->
-                                        <th onclick="sortTableByDate('myTable', 17)" class="appelsMail">Date 3ème appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 17)" class="appelsMail">Date 3ème
+                                            appel<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 18 -->
                                         <th class="appelsMail">Note 3ème appel</th>
                                         <!-- 19 -->
-                                        <th onclick="sortTableByDate('myTable', 19)" style="border-right: 2px solid #000;" class="appelsMail">Date envoi mail<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                        <th onclick="sortTableByDate('myTable', 19)"
+                                            style="border-right: 2px solid #000;" class="appelsMail">Date envoi
+                                            mail<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                         <!-- 20 -->
                                         <th class="infoEmpreinte">Laboratoire</th>
                                         <!-- 21 -->
@@ -151,25 +227,30 @@
                                         <!-- 24 -->
                                         <th class="infoEmpreinte">N° dent</th>
                                         <!-- 25 -->
-                                        <th  style="border-right: 2px solid #000;" class="infoEmpreinte">Observations</th>
+                                        <th style="border-right: 2px solid #000;" class="infoEmpreinte">Observations
+                                        </th>
                                         <!-- 26 -->
                                         <th class="retourLabo">Date livraison</th>
                                         <!-- 27 -->
-                                        <th class="retourLabo">numero suivi colis de retour<br>+ société de livraison</th>
+                                        <th class="retourLabo">numero suivi colis de retour<br>+ société de livraison
+                                        </th>
                                         <!-- 27 -->
-                                        <th style="border-right: 2px solid #000;" class="retourLabo">N° Facture Labo</th>
+                                        <th style="border-right: 2px solid #000;" class="retourLabo">N° Facture Labo
+                                        </th>
                                         <!-- 28 -->
                                         <th class="pose">Date de pose prévue</th>
                                         <!-- 29 -->
                                         <th style="border-right: 2px solid #000;" class="pose">Statut</th>
                                         <!-- 30 -->
-                                        <th class="pose">Date de pose réelle</th>
+                                        <th class="travauxCloture">Date de pose réelle</th>
                                         <!-- 31 -->
                                         <th class="travauxCloture">organisme payeur</th>
                                         <!-- 32 -->
                                         <th class="travauxCloture">Montant encaissé</th>
                                         <!-- 33 -->
-                                        <th style="border-right: 2px solid #000;" class="travauxCloture">date ou vous devez <br>controler paiement</th>
+                                        <th style="border-right: 2px solid #000;" class="travauxCloture">date ou vous
+                                            devez <br>controler paiement
+                                        </th>
                                         <th class="infoCheques">Numéro de chèque</th>
                                         <th class="infoCheques">Montant du chèque</th>
                                         <th class="infoCheques">Nom document</th>
@@ -184,147 +265,245 @@
                                     </thead>
                                     <tbody>
                                     @foreach($deviss as $devis)
-                                        <tr style="background-color: {{ $devis->couleur }};" onmouseover="this.style.backgroundColor='#d3d3d3';" onmouseout="this.style.backgroundColor='{{ $devis->couleur }}';">
+                                        <tr style="background-color: {{ $devis->couleur }};"
+                                            onmouseover="this.style.backgroundColor='#d3d3d3';"
+                                            onmouseout="this.style.backgroundColor='{{ $devis->couleur }}';">
                                             <!-- INFO DEVIS -->
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 <strong>{{ $devis->dossier }}</strong>
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer; word-wrap: break-word; max-width: 150px; overflow: hidden; text-overflow: ellipsis;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer; word-wrap: break-word; max-width: 150px; overflow: hidden; text-overflow: ellipsis;">
                                                 {{ $devis->nom }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->mutuelle }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->status }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate() }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getMontant() }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 @if($devis->devis_signe == 'oui')
                                                     <label class="badge badge-info">Oui</label>
                                                 @else
                                                     Non
                                                 @endif
                                             </td>
-                                            <td class="infoCheques" style="border-right: 2px solid #000;" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques" style="border-right: 2px solid #000;"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->praticien }}
                                             </td>
-                                            <td class="infoCheques" style="border-right: 2px solid #000;" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
-                                                {{ \Illuminate\Support\Str::limit($devis->devis_observation, 50, '...') }}
+                                            <td class="infoCheques" style="border-right: 2px solid #000;"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ Str::limit($devis->devis_observation, 50) }}
                                             </td>
 
                                             <!-- INFO ACCORD PEC -->
-                                            <td class="infoAccordPec" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoAccordPec"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate_envoi_pec() }}
                                             </td>
-                                            <td class="infoAccordPec" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoAccordPec"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate_fin_validite_pec() }}
                                             </td>
-                                            <td class="infoAccordPec" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoAccordPec"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getPart_mutuelle() }}
                                             </td>
-                                            <td class="infoAccordPec" style="border-right: 2px solid #000;" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoAccordPec" style="border-right: 2px solid #000;"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getPart_rac() }}
                                             </td>
 
                                             <!-- APPELS & MAIL -->
-                                            <td class="appelsMail" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="appelsMail"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate_1er_appel() }}
                                             </td>
-                                            <td class="appelsMail" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
+                                            <td class="appelsMail"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
                                                 {{ $devis->getNote_1er_appel() }}
                                             </td>
-                                            <td class="appelsMail" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="appelsMail"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate_2eme_appel() }}
                                             </td>
-                                            <td class="appelsMail" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
+                                            <td class="appelsMail"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
                                                 {{ $devis->getNote_2eme_appel() }}
                                             </td>
-                                            <td class="appelsMail" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="appelsMail"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate_3eme_appel() }}
                                             </td>
-                                            <td class="appelsMail" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
+                                            <td class="appelsMail"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
                                                 {{ $devis->getNote_3eme_appel() }}
                                             </td>
-                                            <td class="appelsMail" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer; border-right: 2px solid #000;">
+                                            <td class="appelsMail"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer; border-right: 2px solid #000;">
                                                 {{ $devis->getDate_envoi_mail() }}
                                             </td>
-                                            <td class="infoEmpreinte" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoEmpreinte"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getLaboratoire() }}
                                             </td>
-                                            <td class="infoEmpreinte" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoEmpreinte"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate_empreinte() }}
                                             </td>
-                                            <td class="infoEmpreinte" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoEmpreinte"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate_envoi_labo() }}
                                             </td>
-                                            <td class="infoEmpreinte" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoEmpreinte"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getTravail_demande() }}
                                             </td>
-                                            <td class="infoEmpreinte" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoEmpreinte"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getNumero_dent() }}
                                             </td>
-                                            <td class="infoEmpreinte" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer; border-right: 2px solid #000;">
-                                                @if($devis->empreinte_observation) {{ \Illuminate\Support\Str::limit($devis->empreinte_observation, 50, '...') }} @else ... @endif
+                                            <td class="infoEmpreinte"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer; border-right: 2px solid #000;">
+                                                @if($devis->empreinte_observation)
+                                                    {{ Str::limit($devis->empreinte_observation, 50) }}
+                                                @else
+                                                    ...
+                                                @endif
                                             </td>
-                                            <td class="retourLabo" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="retourLabo"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate_livraison() }}
                                             </td>
-                                            <td class="retourLabo" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="retourLabo"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getNumero_suivi() }}
                                             </td>
-                                            <td class="retourLabo" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer; border-right: 2px solid #000;">
+                                            <td class="retourLabo"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer; border-right: 2px solid #000;">
                                                 {{ $devis->getNumero_facture_labo() }}
                                             </td>
-                                            <td class="pose" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="pose"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate_pose_prevue() }}
                                             </td>
-                                            <td class="pose" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer; border-right: 2px solid #000;">
+                                            <td class="pose"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer; border-right: 2px solid #000;">
                                                 {{ $devis->getPoseStatut() }}
                                             </td>
-                                            <td class="pose" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="travauxCloture"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate_pose_reel() }}
                                             </td>
-                                            <td class="travauxCloture" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="travauxCloture"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getOrganisme_payeur() }}
                                             </td>
-                                            <td class="travauxCloture" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="travauxCloture"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getMontant_encaisse() }}
                                             </td>
-                                            <td class="travauxCloture" style="border-right: 2px solid #000;" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="travauxCloture" style="border-right: 2px solid #000;"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate_controle_paiement() }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getNumero_cheque() }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getMontant_cheque() }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getNom_document() }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate_encaissement_cheque() }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getDate_1er_acte() }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getNature_cheque() }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getTravaux_sur_devis() }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getSituation_cheque() }}
                                             </td>
-                                            <td class="infoCheques" onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';" style="cursor:pointer;">
-                                                @if($devis->cheque_observation) {{ \Illuminate\Support\Str::limit($devis->cheque_observation, 50, '...') }} @else ... @endif
+                                            <td class="infoCheques"
+                                                onclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                @if($devis->cheque_observation)
+                                                    {{ Str::limit($devis->cheque_observation, 50) }}
+                                                @else
+                                                    ...
+                                                @endif
                                             </td>
 
                                         </tr>
@@ -348,7 +527,8 @@
                     <h5 class="modal-title" id="fileModalLabel">Sélectionner un fichier .xslx</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="importForm" action="{{ asset('devis/import') }}" method="POST" class="forms-sample" enctype="multipart/form-data">
+                <form id="importForm" action="{{ asset('devis/import') }}" method="POST" class="forms-sample"
+                      enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="row">
@@ -381,11 +561,11 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="date_devis_debut" class="form-label">Date début</label>
-                                <input type="date" id="date_devis_debut" name="date_devis_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                <input type="date" id="date_devis_debut" name="date_devis_debut" class="form-control">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="date_devis_fin" class="form-label">Date fin</label>
-                                <input type="date" id="date_devis_fin" name="date_devis_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                <input type="date" id="date_devis_fin" name="date_devis_fin" class="form-control">
                             </div>
                         </div>
 
@@ -407,20 +587,30 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="" method="GET">
+                    <form action="{{ asset('getFilterListeDevis') }}" method="GET">
                         @csrf
                         <div class="row">
                             <div class="row col-md-6">
-                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Etats</h4>
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Etats</h4>
                                 <div class="col-md-12 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Etats
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @foreach ($devis_etats as $de)
                                                 <li class="dropdown-item" style="background-color: {{ $de->couleur }}">
-                                                    <input type="checkbox" class="form-check-input" name="devis_etats[]" value="{{ $de->id }}" checked>
+                                                    <label>
+                                                        <input type="checkbox" class="form-check-input"
+                                                               name="id_devis_etats[]" value="{{ $de->id }}"
+                                                               @if($filters && isset($filters['id_devis_etats']) && in_array($de->id, $filters['id_devis_etats']))
+                                                                   checked
+                                                            @endif
+                                                        >
+                                                    </label>
                                                     {{ $de->etat }}
                                                 </li>
                                             @endforeach
@@ -429,50 +619,73 @@
                                 </div>
                             </div>
                             <div class="row col-md-6">
-                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">INFO DEVIS</h4>
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">INFO DEVIS</h4>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
                                                 <label for="date_devis_debut" class="form-label">Date début</label>
-                                                <input type="date" id="date_devis_debut" name="date_devis_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <input type="date" id="date_devis_debut" name="date_devis_debut"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_devis_debut'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="date_devis_fin" class="form-label">Date fin</label>
-                                                <input type="date" id="date_devis_fin" name="date_devis_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                                <input type="date" id="date_devis_fin" name="date_devis_fin"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_devis_fin'] }}" @endif>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Montant
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
                                                 <label for="montant_min" class="form-label">Montant min</label>
-                                                <input type="number" id="montant_min" name="montant_min" class="form-control" min="0" step="0.01" value="{{ $inp_montant_min }}">
+                                                <input type="number" id="montant_min" name="montant_min"
+                                                       class="form-control" min="0" step="0.01"
+                                                       @if($filters) value="{{ $filters['montant_min'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="montant_max" class="form-label">Montant max</label>
-                                                <input type="number" id="montant_max" name="montant_max" class="form-control" min="0" step="0.01" value="{{ $inp_montant_max }}">
+                                                <input type="number" id="montant_max" name="montant_max"
+                                                       class="form-control" min="0" step="0.01"
+                                                       @if($filters) value="{{ $filters['montant_max'] }}" @endif>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Praticiens
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             @foreach ($praticiens as $praticien)
                                                 <li class="dropdown-item">
-                                                    <input type="checkbox" class="form-check-input" id="praticien_{{ $praticien->praticien }}" name="praticiens[]" value="{{ $praticien->praticien }}" @if (is_null($inp_praticiens) || count($inp_praticiens) === 0 || in_array($praticien->praticien, $inp_praticiens)) checked @endif>
+                                                    <label
+                                                        for="praticien_{{ $praticien->praticien }}"></label><input
+                                                        type="checkbox" class="form-check-input"
+                                                        id="praticien_{{ $praticien->praticien }}" name="praticiens[]"
+                                                        value="{{ $praticien->praticien }}"
+                                                        @if($filters && isset($filters['praticiens']) && in_array($praticien->praticien, $filters['praticiens']))
+                                                            checked
+                                                        @endif
+                                                    >
                                                     {{ $praticien->praticien }}
                                                 </li>
                                             @endforeach
@@ -481,22 +694,35 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Devis signé
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
-                                                <input type="radio" class="form-check-input" id="devis_signe" name="devis_signe" value="" checked>
+                                                <label for="devis_signe"></label><label
+                                                    for="devis_signe"></label><input type="radio"
+                                                                                     class="form-check-input"
+                                                                                     id="devis_signe" name="devis_signe"
+                                                                                     value="" checked>
                                                 Tout
                                             </li>
                                             <li class="dropdown-item">
-                                                <input type="radio" class="form-check-input" id="devis_signe" name="devis_signe" value="oui" @if($inp_devis_signe=="oui") checked @endif>
+                                                <input type="radio" class="form-check-input" id="devis_signe"
+                                                       name="devis_signe" value="oui"
+                                                       @if($filters && isset($filters['devis_signe']) && $filters['devis_signe'] == 'oui')
+                                                           checked
+                                                    @endif>
                                                 Oui
                                             </li>
                                             <li class="dropdown-item">
-                                                <input type="radio" class="form-check-input" id="devis_signe" name="devis_signe" value="non" @if($inp_devis_signe=="non") checked @endif>
+                                                <input type="radio" class="form-check-input" id="devis_signe"
+                                                       name="devis_signe" value="non"
+                                                       @if($filters && isset($filters['devis_signe']) && $filters['devis_signe'] == 'non')
+                                                           checked
+                                                    @endif>
                                                 Non
-                                            </li>
                                             </li>
                                         </ul>
                                     </div>
@@ -504,424 +730,727 @@
                             </div>
 
                             <div class="row col-md-6">
-                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">INFO ACCORD PEC</h4>
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">INFO ACCORD PEC</h4>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date envoie PEC
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
                                                 <label for="date_envoi_pec_debut" class="form-label">Date début</label>
-                                                <input type="date" id="date_envoi_pec_debut" name="date_envoi_pec_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <input type="date" id="date_envoi_pec_debut" name="date_envoi_pec_debut"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_envoi_pec_debut'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="date_envoi_pec_fin" class="form-label">Date fin</label>
-                                                <input type="date" id="date_envoi_pec_fin" name="date_envoi_pec_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                                <input type="date" id="date_envoi_pec_fin" name="date_envoi_pec_fin"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_envoi_pec_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_envoi_pec_null[]" value="sans_valeur" @if($filters && isset($filters['date_envoi_pec_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date fin validité PEC
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
-                                                <label for="date_fin_validite_pec_debut" class="form-label">Date début</label>
-                                                <input type="date" id="date_fin_validite_pec_debut" name="date_fin_validite_pec_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <label for="date_fin_validite_pec_debut" class="form-label">Date
+                                                    début</label>
+                                                <input type="date" id="date_fin_validite_pec_debut"
+                                                       name="date_fin_validite_pec_debut" class="form-control"
+                                                       @if($filters) value="{{ $filters['date_fin_validite_pec_debut'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
-                                                <label for="date_fin_validite_pec_fin" class="form-label">Date fin</label>
-                                                <input type="date" id="date_fin_validite_pec_fin" name="date_fin_validite_pec_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                                <label for="date_fin_validite_pec_fin" class="form-label">Date
+                                                    fin</label>
+                                                <input type="date" id="date_fin_validite_pec_fin"
+                                                       name="date_fin_validite_pec_fin" class="form-control"
+                                                       @if($filters) value="{{ $filters['date_fin_validite_pec_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_fin_validite_pec_null[]" value="sans_valeur" @if($filters && isset($filters['date_fin_validite_pec_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Part mutuelle
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
                                                 <label for="part_mutuelle_min" class="form-label">Montant min</label>
-                                                <input type="number" id="part_mutuelle_min" name="part_mutuelle_min" class="form-control" min="0" step="0.01" value="{{ $inp_montant_min }}">
+                                                <input type="number" id="part_mutuelle_min" name="part_mutuelle_min"
+                                                       class="form-control" min="0" step="0.01"
+                                                       @if($filters) value="{{ $filters['part_mutuelle_min'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="part_mutuelle_max" class="form-label">Montant max</label>
-                                                <input type="number" id="part_mutuelle_max" name="part_mutuelle_max" class="form-control" min="0" step="0.01" value="{{ $inp_montant_max }}">
+                                                <input type="number" id="part_mutuelle_max" name="part_mutuelle_max"
+                                                       class="form-control" min="0" step="0.01"
+                                                       @if($filters) value="{{ $filters['part_mutuelle_max'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="part_mutuelle_null[]" value="sans_valeur" @if($filters && isset($filters['part_mutuelle_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Part RAC
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
                                                 <label for="part_rac_min" class="form-label">Montant min</label>
-                                                <input type="number" id="part_rac_min" name="part_rac_min" class="form-control" min="0" step="0.01" value="{{ $inp_montant_min }}">
+                                                <input type="number" id="part_rac_min" name="part_rac_min"
+                                                       class="form-control" min="0" step="0.01"
+                                                       @if($filters) value="{{ $filters['part_rac_min'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="part_rac_max" class="form-label">Montant max</label>
-                                                <input type="number" id="part_rac_max" name="part_rac_max" class="form-control" min="0" step="0.01" value="{{ $inp_montant_max }}">
+                                                <input type="number" id="part_rac_max" name="part_rac_max"
+                                                       class="form-control" min="0" step="0.01"
+                                                       @if($filters) value="{{ $filters['part_rac_max'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="part_rac_null[]" value="sans_valeur" @if($filters && isset($filters['part_rac_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                             <div class="row col-md-6">
-                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Appels et Mails</h4>
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Appels et Mails</h4>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date 1er appel
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
                                                 <label for="date_1er_appel_debut" class="form-label">Date début</label>
-                                                <input type="date" id="date_1er_appel_debut" name="date_1er_appel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <input type="date" id="date_1er_appel_debut" name="date_1er_appel_debut"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_1er_appel_debut'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="date_1er_appel_fin" class="form-label">Date fin</label>
-                                                <input type="date" id="date_1er_appel_fin" name="date_1er_appel_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                                <input type="date" id="date_1er_appel_fin" name="date_1er_appel_fin"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_1er_appel_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_1er_appel_null[]" value="sans_valeur" @if($filters && isset($filters['date_1er_appel_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date 2eme appel
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
                                                 <label for="date_2eme_appel_debut" class="form-label">Date début</label>
-                                                <input type="date" id="date_2eme_appel_debut" name="date_2eme_appel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <input type="date" id="date_2eme_appel_debut"
+                                                       name="date_2eme_appel_debut" class="form-control"
+                                                       @if($filters) value="{{ $filters['date_2eme_appel_debut'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="date_2eme_appel_fin" class="form-label">Date fin</label>
-                                                <input type="date" id="date_2eme_appel_fin" name="date_2eme_appel_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                                <input type="date" id="date_2eme_appel_fin" name="date_2eme_appel_fin"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_2eme_appel_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_2eme_appel_null[]" value="sans_valeur" @if($filters && isset($filters['date_2eme_appel_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date 3eme appel
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
                                                 <label for="date_3eme_appel_debut" class="form-label">Date début</label>
-                                                <input type="date" id="date_3eme_appel_debut" name="date_3eme_appel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <input type="date" id="date_3eme_appel_debut"
+                                                       name="date_3eme_appel_debut" class="form-control"
+                                                       @if($filters) value="{{ $filters['date_3eme_appel_debut'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="date_3eme_appel_fin" class="form-label">Date fin</label>
-                                                <input type="date" id="date_3eme_appel_fin" name="date_3eme_appel_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                                <input type="date" id="date_3eme_appel_fin" name="date_3eme_appel_fin"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_3eme_appel_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_3eme_appel_null[]" value="sans_valeur" @if($filters && isset($filters['date_3eme_appel_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"  style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date envoi mail
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
                                                 <label for="date_envoi_mail_debut" class="form-label">Date début</label>
-                                                <input type="date" id="date_envoi_mail_debut" name="date_envoi_mail_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <input type="date" id="date_envoi_mail_debut"
+                                                       name="date_envoi_mail_debut" class="form-control"
+                                                       @if($filters) value="{{ $filters['date_envoi_mail_debut'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="date_envoi_mail_fin" class="form-label">Date fin</label>
-                                                <input type="date" id="date_envoi_mail_fin" name="date_envoi_mail_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                                <input type="date" id="date_envoi_mail_fin" name="date_envoi_mail_fin"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_envoi_mail_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_envoi_mail_null[]" value="sans_valeur" @if($filters && isset($filters['date_envoi_mail_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                             <div class="row col-md-6">
-                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Info Empreinte</h4>
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Info Empreinte</h4>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date d'empreinte
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
                                                 <label for="date_empreinte_debut" class="form-label">Date début</label>
-                                                <input type="date" id="date_empreinte_debut" name="date_empreinte_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <input type="date" id="date_empreinte_debut" name="date_empreinte_debut"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_empreinte_debut'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="date_empreinte_fin" class="form-label">Date fin</label>
-                                                <input type="date" id="date_empreinte_fin" name="date_empreinte_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                                <input type="date" id="date_empreinte_fin" name="date_empreinte_fin"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_empreinte_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_empreinte_null[]" value="sans_valeur" @if($filters && isset($filters['date_empreinte_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date d'envoi au labo
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
                                                 <label for="date_envoi_labo_debut" class="form-label">Date début</label>
-                                                <input type="date" id="date_envoi_labo_debut" name="date_envoi_labo_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <input type="date" id="date_envoi_labo_debut"
+                                                       name="date_envoi_labo_debut" class="form-control"
+                                                       @if($filters) value="{{ $filters['date_envoi_labo_debut'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="date_envoi_labo_fin" class="form-label">Date fin</label>
-                                                <input type="date" id="date_envoi_labo_fin" name="date_envoi_labo_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                                <input type="date" id="date_envoi_labo_fin" name="date_envoi_labo_fin"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_envoi_labo_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_envoi_labo_null[]" value="sans_valeur" @if($filters && isset($filters['date_envoi_labo_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                             <div class="row col-md-6">
-                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Retour labo</h4>
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Retour labo</h4>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date livraison
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
                                                 <label for="date_livraison_debut" class="form-label">Date début</label>
-                                                <input type="date" id="date_livraison_debut" name="date_livraison_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <input type="date" id="date_livraison_debut" name="date_livraison_debut"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_livraison_debut'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="date_livraison_fin" class="form-label">Date fin</label>
-                                                <input type="date" id="date_livraison_fin" name="date_livraison_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                                <input type="date" id="date_livraison_fin" name="date_livraison_fin"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_livraison_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_livraison_null[]" value="sans_valeur" @if($filters && isset($filters['date_livraison_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             numero suivi colis de retour
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
-                                                <label for="numero_suivi" class="form-label">numero suivi colis de retour + société de livraison</label>
-                                                <input type="text" id="numero_suivi" name="numero_suivi" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <label for="numero_suivi" class="form-label">numero suivi colis de
+                                                    retour + société de livraison</label>
+                                                <input type="text" id="numero_suivi" name="numero_suivi"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['numero_suivi'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="numero_suivi_null[]" value="sans_valeur" @if($filters && isset($filters['numero_suivi_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             N° Facture Labo
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
-                                                <label for="numero_facture_labo" class="form-label">N° Facture Labo</label>
-                                                <input type="text" id="numero_facture_labo" name="numero_facture_labo" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <label for="numero_facture_labo" class="form-label">N° Facture
+                                                    Labo</label>
+                                                <input type="text" id="numero_facture_labo" name="numero_facture_labo"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['numero_facture_labo'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="numero_facture_null[]" value="sans_valeur" @if($filters && isset($filters['numero_facture_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                             <div class="row col-md-6">
-                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Pose</h4>
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Pose</h4>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date de pose prévue
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
-                                                <label for="date_pose_prevue_debut" class="form-label">Date début</label>
-                                                <input type="date" id="date_pose_prevue_debut" name="date_pose_prevue_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <label for="date_pose_prevue_debut" class="form-label">Date
+                                                    début</label>
+                                                <input type="date" id="date_pose_prevue_debut"
+                                                       name="date_pose_prevue_debut" class="form-control"
+                                                       @if($filters) value="{{ $filters['date_pose_prevue_debut'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="date_pose_prevue_fin" class="form-label">Date fin</label>
-                                                <input type="date" id="date_pose_prevue_fin" name="date_pose_prevue_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                                <input type="date" id="date_pose_prevue_fin" name="date_pose_prevue_fin"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_pose_prevue_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_pose_prevue_null[]" value="sans_valeur" @if($filters && isset($filters['date_pose_prevue_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Statut
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li class="dropdown-item">
-                                                <input type="checkbox" class="form-check-input" name="id_pose_statuts[]" value="Status 1">
-                                                Status 1
-                                            </li>
-                                            <li class="dropdown-item">
-                                                <input type="checkbox" class="form-check-input" name="id_pose_statuts[]" value="Status 1">
-                                                Status 2
-                                            </li>
-                                            <li class="dropdown-item">
-                                                <input type="checkbox" class="form-check-input" name="id_pose_statuts[]" value="Status 1">
-                                                Status 3
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
-                                            N° Facture Labo
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li class="dropdown-item">
-                                                <label for="numero_facture_labo" class="form-label">N° Facture Labo</label>
-                                                <input type="text" id="numero_facture_labo" name="numero_facture_labo" class="form-control" value="{{ $inp_date_devis_debut }}">
-                                            </li>
+                                            @foreach($pose_status as $ps)
+                                                <li class="dropdown-item">
+                                                    <label>
+                                                        <input type="checkbox" class="form-check-input"
+                                                               name="id_pose_statuts[]" value="{{ $ps->id }}"
+                                                               @if($filters && isset($filters['id_pose_statuts']) && in_array($ps->id, $filters['id_pose_statuts']))
+                                                                   checked
+                                                            @endif
+                                                        >
+                                                    </label>
+                                                    {{ $ps->travaux_status }}
+                                                </li>
+                                            @endforeach
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                             <div class="row col-md-6">
-                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Travaux cloture</h4>
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Travaux cloture</h4>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date de pose réel
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
                                                 <label for="date_pose_reel_debut" class="form-label">Date début</label>
-                                                <input type="date" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <input type="date" id="date_pose_reel_debut" name="date_pose_reel_debut"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_pose_reel_debut'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
                                                 <label for="date_pose_reel_fin" class="form-label">Date fin</label>
-                                                <input type="date" id="date_pose_reel_fin" name="date_pose_reel_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                                <input type="date" id="date_pose_reel_fin" name="date_pose_reel_fin"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_pose_reel_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_pose_reel_null[]" value="sans_valeur" @if($filters && isset($filters['date_pose_reel_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Montant encaissé
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
-                                                <label for="montant_encaisse_debut" class="form-label">Montant encaissé</label>
-                                                <input type="number" step="1" id="montant_encaisse_debut" name="montant_encaisse_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <label for="montant_encaisse_min" class="form-label">Montant min</label>
+                                                <input type="number" step="1" id="montant_encaisse_min"
+                                                       name="montant_encaisse_min" class="form-control"
+                                                       @if($filters) value="{{ $filters['montant_encaisse_min'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="montant_encaisse_max" class="form-label">Montant max</label>
+                                                <input type="number" step="1" id="montant_encaisse_max"
+                                                       name="montant_encaisse_max" class="form-control"
+                                                       @if($filters) value="{{ $filters['montant_encaisse_max'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="montant_encaisse_null[]" value="sans_valeur" @if($filters && isset($filters['montant_encaisse_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             date controle paiement
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
-                                                <label for="date_pose_prevue_debut" class="form-label">Date début</label>
-                                                <input type="date" id="date_pose_prevue_debut" name="date_pose_prevue_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <label for="date_controle_paiement_debut" class="form-label">Date
+                                                    début</label>
+                                                <input type="date" id="date_controle_paiement_debut"
+                                                       name="date_controle_paiement_debut" class="form-control"
+                                                       @if($filters) value="{{ $filters['date_controle_paiement_debut'] }}" @endif>
                                             </li>
                                             <li class="dropdown-item">
-                                                <label for="date_pose_prevue_fin" class="form-label">Date fin</label>
-                                                <input type="date" id="date_pose_prevue_fin" name="date_pose_prevue_fin" class="form-control" value="{{ $inp_date_devis_fin }}">
+                                                <label for="date_controle_paiement_fin" class="form-label">Date
+                                                    fin</label>
+                                                <input type="date" id="date_controle_paiement_fin"
+                                                       name="date_controle_paiement_fin" class="form-control"
+                                                       @if($filters) value="{{ $filters['date_controle_paiement_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_controle_paiement_null[]" value="sans_valeur" @if($filters && isset($filters['date_controle_paiement_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                             <div class="row col-md-12">
-                                <h4 class="text-center mb-4" style="font-size: 24px; color: #2f8ab9; font-weight: bold;">INFO CHEQUES</h4>
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">INFO CHEQUES</h4>
                                 <div class="col-md-4 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Numéro de chèque
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
-                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
-                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <label for="numero_cheque" class="form-label">Numéro de chèque</label>
+                                                <input type="text" id="numero_cheque" name="numero_cheque"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['numero_cheque'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="numero_cheque_null[]" value="sans_valeur" @if($filters && isset($filters['numero_cheque_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Montant du chèque
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
-                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
-                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <label for="montant_cheque_min" class="form-label">Montant min</label>
+                                                <input type="number" step="0.01" id="montant_cheque_min"
+                                                       name="montant_cheque_min" class="form-control"
+                                                       @if($filters) value="{{ $filters['montant_cheque_min'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="montant_cheque_max" class="form-label">Montant max</label>
+                                                <input type="number" step="0.01" id="montant_cheque_max"
+                                                       name="montant_cheque_max" class="form-control"
+                                                       @if($filters) value="{{ $filters['montant_cheque_max'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="montant_cheque_null[]" value="sans_valeur" @if($filters && isset($filters['montant_cheque_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date d'encaissement chq
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
-                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
-                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <label for="date_encaissement_cheque_debut" class="form-label">Date
+                                                    début</label>
+                                                <input type="date" id="date_encaissement_cheque_debut"
+                                                       name=date_encaissement_cheque_debut" class="form-control"
+                                                       @if($filters) value="{{ $filters['date_encaissement_cheque_debut'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_encaissement_cheque_fin" class="form-label">Date
+                                                    fin</label>
+                                                <input type="date" id="date_encaissement_cheque_fin"
+                                                       name=date_encaissement_cheque_fin" class="form-control"
+                                                       @if($filters) value="{{ $filters['date_encaissement_cheque_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_encaissement_cheque_null[]" value="sans_valeur" @if($filters && isset($filters['date_encaissement_cheque_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Date de 1er L'acte
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li class="dropdown-item">
-                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
-                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
+                                                <label for="date_1er_acte_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_1er_acte_debut" name="date_1er_acte_debut"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_1er_acte_debut'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_1er_acte_fin" class="form-label">Date début</label>
+                                                <input type="date" id="date_1er_acte_fin" name="date_1er_acte_fin"
+                                                       class="form-control"
+                                                       @if($filters) value="{{ $filters['date_1er_acte_fin'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="date_1er_acte_null[]" value="sans_valeur" @if($filters && isset($filters['date_1er_acte_null'])) checked @endif>
+                                                </label> Sans valeurs
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Nature du chèque
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li class="dropdown-item">
-                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
-                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
-                                            </li>
+                                            @foreach($nature_cheques as $nc)
+                                                <li class="dropdown-item">
+                                                    <label>
+                                                        <input type="checkbox" class="form-check-input"
+                                                               name="nature_cheques[]" value="{{ $nc->nature_cheque }}"
+                                                               @if($filters && isset($filters['nature_cheques']) && in_array($nc->nature_cheque, $filters['nature_cheques']))
+                                                                   checked
+                                                            @endif
+                                                        >
+                                                    </label>
+                                                    {{ $nc->nature_cheque }}
+                                                </li>
+                                            @endforeach
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Tavaux Sur le Devis
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li class="dropdown-item">
-                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
-                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
-                                            </li>
+                                            @foreach($travaux_sur_devis as $tsd)
+                                                <li class="dropdown-item">
+                                                    <label>
+                                                        <input type="checkbox" class="form-check-input"
+                                                               name="travaux_sur_devis[]"
+                                                               value="{{ $tsd->travaux_sur_devis }}"
+                                                               @if($filters && isset($filters['travaux_sur_devis']) && in_array($tsd->travaux_sur_devis, $filters['travaux_sur_devis']))
+                                                                   checked
+                                                            @endif
+                                                        >
+                                                    </label>
+                                                    {{ $tsd->travaux_sur_devis }}
+                                                </li>
+                                            @endforeach
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <div class="dropdown">
-                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke; background-color: #2f8ab9;">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
                                             Situation chèque
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li class="dropdown-item">
-                                                <label for="date_pose_reel_debut" class="form-label">Date début</label>
-                                                <input type="text" id="date_pose_reel_debut" name="date_pose_reel_debut" class="form-control" value="{{ $inp_date_devis_debut }}">
-                                            </li>
+                                            @foreach($situation_cheques as $sc)
+                                                <li class="dropdown-item">
+                                                    <label>
+                                                        <input type="checkbox" class="form-check-input"
+                                                               name="situation_cheques[]"
+                                                               value="{{ $sc->situation_cheque }}"
+                                                               @if($filters && isset($filters['situation_cheques']) && in_array($sc->situation_cheque, $filters['situation_cheques']))
+                                                                   checked
+                                                            @endif
+                                                        >
+                                                    </label>
+                                                    {{ $sc->situation_cheque }}
+                                                </li>
+                                            @endforeach
                                         </ul>
                                     </div>
                                 </div>
@@ -937,14 +1466,14 @@
     <script>
         function toggleColumnVisibility() {
             const columns = [
-                { className: 'infoCheques', index: 0 },
-                { className: 'infoAccordPec', index: 1 },
-                { className: 'appelsMail', index: 2 },
-                { className: 'infoEmpreinte', index: 3 },
-                { className: 'retourLabo', index: 4 },
-                { className: 'pose', index: 5 },
-                { className: 'travauxCloture', index: 6 },
-                { className: 'infoCheques', index: 7 }
+                {className: 'infoCheques', index: 0},
+                {className: 'infoAccordPec', index: 1},
+                {className: 'appelsMail', index: 2},
+                {className: 'infoEmpreinte', index: 3},
+                {className: 'retourLabo', index: 4},
+                {className: 'pose', index: 5},
+                {className: 'travauxCloture', index: 6},
+                {className: 'infoCheques', index: 7}
             ];
 
             const checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -1032,7 +1561,7 @@
             // Fonction pour convertir le format "number_format" en un nombre JavaScript
             const parseNumber = (numberString) => {
                 // Supprimer les espaces comme séparateurs de milliers et remplacer les virgules par des points
-                return parseFloat(numberString.replace(/\s/g, '').replace(',', '.').replace('...','0'));
+                return parseFloat(numberString.replace(/\s/g, '').replace(',', '.').replace('...', '0'));
             };
 
             // Trier les lignes selon les nombres
@@ -1073,8 +1602,5 @@
             rows.forEach(row => tbody.appendChild(row));
         }
     </script>
-
-
-
 
 @endsection
