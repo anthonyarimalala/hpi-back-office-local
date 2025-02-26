@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function() {
     });
 });
 
-Route::middleware(['auth', 'role:user'])->group(function () {
+Route::middleware(['auth', 'role:admin,user'])->group(function () {
     // Recherche
     Route::get('/search', [\App\Http\Controllers\GlobalController::class, 'search'])->name('search');
     Route::get('/search-dossier', [\App\Http\Controllers\GlobalController::class, 'searchDossier'])->name('search.dossier');
@@ -91,11 +91,6 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
 
 
-    // section: gestion
-        //utilisateur
-        Route::get('utilisateurs',[\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'showListeUtilisateurs']);
-        Route::post('creer-utilisateur', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'creerUtilisateur']);
-        Route::get('effacer-utilisateur/{code_u}', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'effacerUtilisateur']);
 
     // section: historique
     Route::get('historiques/modif-chq', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistCheque']);
@@ -125,6 +120,14 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('erreur-import-2', [\App\Http\Controllers\Error\ErrorImportController::class, 'showCaErrorImports']);
 
     Route::get('import-ca-view', function (){ return view('export-ca'); });
+
+});
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    // section: gestion
+    //utilisateur
+    Route::get('utilisateurs',[\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'showListeUtilisateurs']);
+    Route::post('creer-utilisateur', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'creerUtilisateur']);
+    Route::get('effacer-utilisateur/{code_u}', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'effacerUtilisateur']);
 
 });
 

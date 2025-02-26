@@ -294,6 +294,7 @@ class ImportsController extends Controller
         $request->validate([
             'devisFile' => 'required|file|mimes:xlsx,xls',
         ]);
+        $withErrors = false;
         $file = $request->file('devisFile');
 
         DB::delete('DELETE FROM import_devis');
@@ -316,6 +317,7 @@ class ImportsController extends Controller
             try {
                 $m_dossier->save();
                     }catch (\Exception $e){
+                        $withErrors = true;
                         $m_error_import = new ErrorImport();
                         $m_error_import->type = 1; // ne change pas
                         $m_error_import->date = $mid->date; // ne change pas
@@ -340,6 +342,7 @@ class ImportsController extends Controller
             try {
                 $m_devis->save();
                     }catch (\Exception $e){
+                $withErrors = true;
                         $m_error_import = new ErrorImport();
                         $m_error_import->type = 1; // ne change pas
                         $m_error_import->date = $mid->date; // ne change pas
@@ -361,6 +364,7 @@ class ImportsController extends Controller
             try {
                 $m_devis_accord_pec->save();
                     } catch (\Exception $e){
+                        $withErrors = true;
                         $m_error_import = new ErrorImport();
                         $m_error_import->type = 1; // ne change pas
                         $m_error_import->date = $mid->date; // ne change pas
@@ -385,6 +389,7 @@ class ImportsController extends Controller
             try {
                 $m_devis_appels_et_mails->save();
                     } catch (\Exception $e){
+                $withErrors = true;
                         $m_error_import = new ErrorImport();
                         $m_error_import->type = 1; // ne change pas
                         $m_error_import->date = $mid->date; // ne change pas
@@ -410,6 +415,7 @@ class ImportsController extends Controller
             try {
                 $m_devis_reglements->save();
                     }catch (\Exception $e){
+                $withErrors = true;
                         $m_error_import = new ErrorImport();
                         $m_error_import->type = 1; // ne change pas
                         $m_error_import->date = $mid->date; // ne change pas
@@ -432,6 +438,7 @@ class ImportsController extends Controller
             try {
                 $m_prothese_empreintes->save();
                     }catch (\Exception $e){
+                $withErrors = true;
                         $m_error_import = new ErrorImport();
                         $m_error_import->type = 1; // ne change pas
                         $m_error_import->date = $mid->date; // ne change pas
@@ -453,6 +460,7 @@ class ImportsController extends Controller
             try {
                 $m_prothese_retour_labos->save();
                     }catch (\Exception $e){
+                $withErrors = true;
                         $m_error_import = new ErrorImport();
                         $m_error_import->type = 1; // ne change pas
                         $m_error_import->date = $mid->date; // ne change pas
@@ -474,6 +482,7 @@ class ImportsController extends Controller
             try {
                 $m_prothese_travaux->save();
                     } catch (\Exception $e){
+                $withErrors = true;
                         $m_error_import = new ErrorImport();
                         $m_error_import->type = 1; // ne change pas
                         $m_error_import->date = $mid->date; // ne change pas
@@ -501,6 +510,7 @@ class ImportsController extends Controller
             try {
                 $m_info_cheques->save();
             }catch (\Exception $e){
+                $withErrors = true;
                 $m_error_import = new ErrorImport();
                 $m_error_import->type = 1; // ne change pas
                 $m_error_import->date = $mid->date; // ne change pas
@@ -519,9 +529,10 @@ class ImportsController extends Controller
                 $m_error_import->save();
             }
         }
-        $m_v_devis = new V_Devis();
-        $m_v_devis->makeSessionListeDevis();
-        return back()->with('success', 'Fichier importé avec succès!');
+        if (!$withErrors)
+            return back()->with('success', 'Fichier importé avec succès');
+        else
+            return back()->with('warning', 'Données importées mais contiennent des erreurs');
     }
     public function showImports(){
         return view('imports/imports');

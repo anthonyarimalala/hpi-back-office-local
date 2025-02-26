@@ -60,8 +60,12 @@ class CaController extends Controller
     }
     public function showNouveauCa()
     {
-        $data['status'] = DossierStatus::where('is_deleted', 0)->get();
-        $data['praticiens'] = Praticien::where('is_deleted', 0)->get();
+        $data['status'] = DossierStatus::where('is_deleted', 0)
+            ->where('status','!=', '')
+            ->get();
+        $data['praticiens'] = Praticien::where('is_deleted', 0)
+            ->where('praticien', '!=', '')
+            ->get();
         return view('ca/nouveau/nouveau-ca')->with($data);
     }
     public function showModifierCa($id_ca, $dossier)

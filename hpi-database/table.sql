@@ -196,6 +196,7 @@
         rac_especes DECIMAL(10, 2),
         rac_cb DECIMAL(10, 2),
         commentaire TEXT,
+        is_deleted INTEGER DEFAULT 0,
         created_at TIMESTAMP,
         updated_at TIMESTAMP
     );

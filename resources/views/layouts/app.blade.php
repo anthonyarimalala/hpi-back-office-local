@@ -234,6 +234,13 @@
 
                     <li class="nav-item nav-category">Information</li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ asset('ajouter-dossier') }}">
+                            <i class="mdi mdi-account-plus menu-icon"></i>
+                            <span class="menu-title">Nouveau patient</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link" href="{{asset('dossiers')}}">
                             <i class="mdi mdi-folder-open menu-icon"></i>
                             <span class="menu-title">Dossiers</span>
@@ -249,13 +256,6 @@
                         <a class="nav-link" href="{{ asset('liste-ca') }}">
                             <i class="mdi mdi-cash-multiple menu-icon"></i>
                             <span class="menu-title">CA</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ asset('ajouter-dossier') }}">
-                            <i class="mdi mdi-account-plus menu-icon"></i>
-                            <span class="menu-title">Nouveau patient</span>
                         </a>
                     </li>
 
@@ -277,12 +277,14 @@
                         </div>
                     </li>
                 <li class="nav-item nav-category">Gestion BACK OFFICE</li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('utilisateurs') }}">
-                        <i class="mdi mdi-account-multiple menu-icon"></i>
-                        <span class="menu-title">Utilisateurs</span>
-                    </a>
-                </li>
+                @if(\Illuminate\Support\Facades\Auth::user()->role == 'admin')
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ asset('utilisateurs') }}">
+                            <i class="mdi mdi-account-multiple menu-icon"></i>
+                            <span class="menu-title">Utilisateurs</span>
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#historiques" aria-expanded="false" aria-controls="ui-basic">
                         <i class="menu-icon mdi mdi-history"></i>

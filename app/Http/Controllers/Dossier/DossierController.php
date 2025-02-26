@@ -71,6 +71,7 @@ class DossierController extends Controller
     public function showInsertDossier(Request $request){
         $data['statuss'] = DossierStatus::orderBy('ordre', 'desc')
             ->orderBy('status', 'asc')
+            ->where('status', '!=', '')
             ->where('is_deleted', 0)
             ->get();
         return view('dossier/nouveau-dossier')->with($data);

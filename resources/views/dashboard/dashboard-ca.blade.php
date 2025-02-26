@@ -12,6 +12,21 @@
                 <a class="nav-link" href="{{ asset('dashboard/rappels') }}" role="tab" aria-selected="false">Rappels</a>
             </li>
         </ul>
+        <div>
+            <form action="#">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <input type="date" name="dashboard_ca_date_debut" value="{{ \Carbon\Carbon::parse($date_ca_debut)->format('Y-m-d') }}" class="form-control">
+                    </li>
+                    <li class="nav-item">
+                        <input type="date" name="dashboard_ca_date_fin" value="{{ \Carbon\Carbon::parse($date_ca_fin)->format('Y-m-d') }}" class="form-control">
+                    </li>
+                    <li class="nav-item">
+                        <button type="submit" class="btn btn-primary text-white me-0"><i class="icon-eye"></i> Aperçu</button>
+                    </li>
+                </ul>
+            </form>
+        </div>
     </div>
     <div class="tab-content tab-content-basic">
         <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview">
@@ -22,7 +37,7 @@
                             <div class="card card-rounded">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-between mb-3">
-                                        <h4 class="card-title card-title-dash">CA</h4>
+                                        <h4 class="card-title card-title-dash">CA entre date de dernière modif: [{{ \Carbon\Carbon::parse($date_ca_debut)->format('d/m/Y') }} et {{ \Carbon\Carbon::parse($date_ca_fin)->format('d/m/Y') }}]</h4>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table">

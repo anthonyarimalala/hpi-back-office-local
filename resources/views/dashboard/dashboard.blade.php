@@ -86,6 +86,31 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-6 grid-margin stretch-card">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h4 class="card-title">Prothese Status</h4>
+                                                <p class="card-description">
+                                                    {{ \Carbon\Carbon::parse($date_debut)->format('d-m-Y') }} -> {{ \Carbon\Carbon::parse($date_fin)->format('d-m-Y') }}
+                                                </p>
+                                                <div style="display: flex; align-items: center; gap: 20px; width: 100%;">
+                                                    <!-- Conteneur du Canvas -->
+                                                    <div style="width: 300px; height: 300px; position: relative;">
+                                                        <canvas
+                                                            style="width: 100%; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"
+                                                            id="myPieChart"></canvas>
+                                                    </div>
+                                                    <!-- Conteneur des écritures -->
+                                                    <div style="flex: 1;">
+                                                        <ul id="chartLegend" style="list-style: none; padding: 0; margin: 0; font-family: Arial, sans-serif;">
+                                                            <!-- Les légendes des états seront insérées ici dynamiquement -->
+                                                        </ul>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +129,7 @@
             var colors = [];
 
             v_stat_devis_etats.forEach(function(item) {
-                //labels.push(item.etat);               // Ajoute l'état au tableau des labels
+                // labels.push(item.etat);               // Ajoute l'état au tableau des labels
                 data.push(item.nbr_devis);            // Ajoute le nombre de devis au tableau des données
                 colors.push(item.couleur);            // Ajoute la couleur associée à chaque état
             });

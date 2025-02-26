@@ -11,18 +11,6 @@ class V_Devis extends Model
     use HasFactory;
     protected $table = 'v_devis';
 
-    public function makeSessionListeDevis()
-    {
-        $filters = session()->get('devis_filters', []);
-        $m_v_devis = new V_Devis();
-        $query = V_Devis::query(); // Crée une requête de base
-        if ($filters)
-            $m_v_devis->scopeFiltrer($query, $filters);
-        $m_v_deviss = $query->orderBy('date', 'desc')
-            ->where('is_deleted', 0)
-            ->paginate(20);
-        session()->put('deviss', $m_v_deviss);
-    }
     public function scopeFiltrer($query, &$filters){
         // 'id_devis_etats' => $request->input('id_devis_etats'),
 

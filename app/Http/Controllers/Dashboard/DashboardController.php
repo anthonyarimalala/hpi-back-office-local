@@ -16,9 +16,17 @@ use Illuminate\Support\Facades\DB;
 class DashboardController extends Controller
 {
     //
-    public function showDashboardCa(){
+    public function showDashboardCa(Request $request){
         $m_dash = new Dashboard();
-        $data['bilan_financier'] = $m_dash->getCaBilanFincancier();
+        $date_ca_debut = $request->input('dashboard_ca_date_debut');
+        $date_ca_fin = $request->input('dashboard_ca_date_fin');
+
+        if (!$date_ca_debut || $date_ca_debut == '') $date_ca_debut = Carbon::now()->startOfMonth()->toDateString();
+        if (!$date_ca_fin || $date_ca_fin=='') $date_ca_fin = Carbon::today()->format('Y-m-d');
+
+        $data['date_ca_debut'] = $date_ca_debut;
+        $data['date_ca_fin'] = $date_ca_fin;
+        $data['bilan_financier'] = $m_dash->getCaBilanFincancier($date_ca_debut, $date_ca_fin);
         $data['ca_praticiens'] = $m_dash->getCaPraticiens();
         return view('dashboard/dashboard-ca')->with($data);
     }

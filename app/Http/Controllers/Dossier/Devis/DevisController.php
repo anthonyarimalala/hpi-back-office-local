@@ -72,9 +72,6 @@ class DevisController extends Controller
             $m_h_devis->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;
             $m_h_devis->dossier = $m_devis->dossier;
             $m_h_devis->save();
-            // mets la liste de devis dans la session
-            $m_v_devis = new V_Devis();
-            $m_v_devis->makeSessionListeDevis();
             return redirect()->route('devis.detail', [
                 'dossier' => $m_devis->dossier,    // Remplacez par la valeur réelle de $dossier
                 'id_devis' => $id_devis      // Remplacez par la valeur réelle de $id_devis
@@ -269,10 +266,15 @@ class DevisController extends Controller
     }
 
     public function getAllListeDevis(Request $request){
-        $m_v_devis = new V_Devis();
         $filters = session()->get('devis_filters', []);
-        if (!session()->has('deviss')) $m_v_devis->makeSessionListeDevis();
-        $data['deviss'] = session()->get('deviss');
+        $m_v_devis = new V_Devis();
+        $query = $m_v_devis->query(); // Crée une requête de base
+        if ($filters)
+            $m_v_devis->scopeFiltrer($query, $filters);
+        $m_v_deviss = $query->orderBy('date', 'desc')
+            ->where('is_deleted', 0)
+            ->paginate(20);
+        $data['deviss'] = $m_v_deviss;
         $data['praticiens'] = Praticien::all();
         $data['devis_etats'] = DevisEtat::all();
         $data['pose_status'] = ProtheseTravauxStatus::all();

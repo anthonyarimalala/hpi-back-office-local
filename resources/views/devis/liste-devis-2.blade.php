@@ -20,6 +20,11 @@
                                         {{ session('success') }}
                                     </div>
                                 @endif
+                                @if (session('warning'))
+                                    <div class="alert alert-warning" role="alert">
+                                        {{ session('warning') }}
+                                    </div>
+                                @endif
                                 <div>
                                     <a href="#" class="btn btn-primary text-white me-0" data-bs-toggle="modal"
                                        data-bs-target="#fileModal">

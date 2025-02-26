@@ -117,7 +117,6 @@
                                             <td class="text-end" style="border-right: 2px solid #000;">@if($ca->rac_cb){{ number_format($ca->rac_cb, 2, ',', ' ') }}@endif</td>
                                             <td>{{ $ca->commentaire ?: 'Aucun commentaire' }}</td>
                                         </tr>
-
                                     @endforeach
                                     </tbody>
                                 </table>
@@ -156,9 +155,7 @@
                                     <label for="nouveau">Nouveau</label>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
