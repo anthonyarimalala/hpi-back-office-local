@@ -61,6 +61,17 @@ class Dashboard extends Model
         ", [$date_ca_debut, $date_ca_fin]);
         return $datas[0];
     }
+    public function getTotalPoseStatus($date_debut, $date_fin){
+        $total = DB::select("
+            SELECT
+                COUNT(pose_statut) AS nbr_pose_status,
+                pose_statut
+            FROM v_devis
+            WHERE date >= ? AND date <= ?
+            GROUP BY pose_statut;
+        ", [$date_debut, $date_fin]);
+        return $total;
+    }
     public function getTotalDevisEtats($date_debut, $date_fin)
     {
         $total = DB::select("
@@ -87,6 +98,7 @@ class Dashboard extends Model
         ", [$date_debut, $date_fin]);
         return $total[0];
     }
+
 
     public function getReglementsAujourdHui()
     {

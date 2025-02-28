@@ -18,11 +18,14 @@ use App\Models\devis\prothese\ProtheseTravaux;
 use App\Models\devis\prothese\ProtheseTravauxStatus;
 use App\Models\dossier\Dossier;
 use App\Models\error\ErrorImport;
+use App\Models\hist\H_Devis;
+use App\Models\hist\H_Prothese;
 use App\Models\import\ImportCa;
 use App\Models\import\ImportDevis;
 use App\Models\praticien\Praticien;
 use App\Models\views\V_Devis;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Mockery\Exception;
@@ -76,7 +79,7 @@ class ImportsController extends Controller
             // dossier
                 $m_ca->dossier = trim($mic->dossier);
             // status
-                $m_ca->statut = trim($mic->status);
+                $m_ca->statut = trim($mic->statut);
             // mutuelle
                 $m_ca->mutuelle = trim($mic->mutuelle);
             // praticien

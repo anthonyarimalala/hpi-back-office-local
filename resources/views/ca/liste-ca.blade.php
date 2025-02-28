@@ -37,6 +37,27 @@
                                     </a>
                                 </div>
                             </div>
+                            <div class="col-6">
+                                <button class="btn btn-primary" style="color: whitesmoke" data-bs-toggle="modal"
+                                        data-bs-target="#modalForm">
+                                    Recherche par filtre <i class="mdi mdi-magnify"></i>
+                                </button>
+                                @if($filters && isset($filters['stringFilters']))
+                                    <button class="btn btn-primary" type="button" id="dropdownMenuButton"
+                                            data-bs-toggle="dropdown" aria-expanded="false" style="color: whitesmoke">
+                                        Voir les filtres appliqués <i class="mdi mdi-chevron-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+                                        @foreach($filters['stringFilters'] as $sf)
+                                            <li class="dropdown-item">
+                                                <label for="date_pose_prevue_debut" class="form-label"
+                                                       style="background-color: #F2CED5">{{ $sf }}</label>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>
                             <div class="d-flex justify-content-center">
                                 {{ $ca_actes_reglements->links('pagination::bootstrap-4') }}
                             </div>
@@ -194,6 +215,107 @@
                     </div>
                 </form>
 
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalFormLabel">Recherche Par Filtre</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ asset('getFilterCa') }}" method="GET">
+                        @csrf
+                        <div class="row">
+                            <div class="row col-md-6">
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Date de dernière modification</h4>
+                                <div class="col-md-12 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date de dèrnière modification
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_derniere_modif_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_derniere_modif_debut" name="date_derniere_modif_debut"
+                                                       class="form-control" @if($filters) value="{{ $filters['date_derniere_modif_debut'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_derniere_modif_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_derniere_modif_fin" name="date_derniere_modif_fin"
+                                                       class="form-control" @if($filters) value="{{ $filters['date_derniere_modif_fin'] }}" @endif>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-md-6">
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Status</h4>
+                                <div class="col-md-12 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Status
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            @foreach ($dossier_statuss as $st)
+                                                <li class="dropdown-item">
+                                                    <label
+                                                        for="status"></label><input
+                                                        type="checkbox" class="form-check-input"
+                                                        id="status" name="status[]"
+                                                        value="{{ $st->status }}"
+                                                        @if($filters && isset($filters['status']) && in_array($st->status, $filters['status']))
+                                                            checked
+                                                        @endif
+                                                    >
+                                                    {{ $st->status }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-md-6">
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Praticiens</h4>
+                                <div class="col-md-12 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Praticiens
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            @foreach ($praticiens as $pr)
+                                                <li class="dropdown-item">
+                                                    <label
+                                                        for="praticien"></label><input
+                                                        type="checkbox" class="form-check-input"
+                                                        id="praticien" name="praticiens[]"
+                                                        value="{{ $pr->praticien }}"
+                                                        @if($filters && isset($filters['praticiens']) && in_array($pr->praticien, $filters['praticiens']))
+                                                            checked
+                                                        @endif
+                                                    >
+                                                    {{ $pr->praticien }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success" style="color: whitesmoke">Rechercher</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

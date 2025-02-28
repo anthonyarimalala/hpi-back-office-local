@@ -98,11 +98,11 @@
                                                     <div style="width: 300px; height: 300px; position: relative;">
                                                         <canvas
                                                             style="width: 100%; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"
-                                                            id="myPieChart"></canvas>
+                                                            id="myPoseStatusChart"></canvas>
                                                     </div>
                                                     <!-- Conteneur des écritures -->
                                                     <div style="flex: 1;">
-                                                        <ul id="chartLegend" style="list-style: none; padding: 0; margin: 0; font-family: Arial, sans-serif;">
+                                                        <ul id="chartPoseStatusLegend" style="list-style: none; padding: 0; margin: 0; font-family: Arial, sans-serif;">
                                                             <!-- Les légendes des états seront insérées ici dynamiquement -->
                                                         </ul>
                                                     </div>
@@ -119,6 +119,88 @@
             </div>
         </div>
         <script src="{{ asset('chart.js/Chart.min.js') }}"></script>
+        <script>
+            // Récupère les données envoyées depuis le backend et les convertit en objet JSON
+            var v_stat_pose_status = @json($v_stat_pose_status);
+
+            // Prépare les données pour le graphique
+            var labels = [];
+            var data = [];
+            var colors = [
+                '#FF0000', // Rouge
+                '#00FF00', // Vert
+                '#0000FF', // Bleu
+                '#808000', // Olive
+                '#FFFF00', // Jaune
+                '#FF00FF', // Magenta
+                '#00FFFF', // Cyan
+                '#800080', // Violet
+                '#800000', // Marron
+                '#008080'  // Bleu-vert
+            ];
+
+
+            v_stat_pose_status.forEach(function(item) {
+                // labels.push(item.etat);               // Ajoute l'état au tableau des labels
+                data.push(item.nbr_pose_status);            // Ajoute le nombre de devis au tableau des données
+            });
+
+            // Récupère le contexte du canvas pour dessiner le graphique
+            var ctx = document.getElementById('myPoseStatusChart').getContext('2d');
+
+            // Crée le graphique circulaire
+            var myPieChart = new Chart(ctx, {
+                type: 'pie', // Type du graphique : Circulaire
+                data: {
+                    labels: labels, // Labels : états des devis
+                    datasets: [{
+                        data: data, // Données : nombre de devis par état
+                        backgroundColor: colors, // Couleurs associées à chaque état
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false // On désactive la légende intégrée de Chart.js
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    // Affiche le nombre de devis et l'état dans l'info-bulle
+                                    return tooltipItem.label + ': ' + tooltipItem.raw + ' devis';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Génère les légendes à droite
+            var legendContainer = document.getElementById('chartPoseStatusLegend');
+            v_stat_pose_status.forEach(function(item, index) {
+                var legendItem = document.createElement('li');
+                legendItem.style.display = 'flex';
+                legendItem.style.alignItems = 'center';
+                legendItem.style.marginBottom = '8px';
+
+                var colorBox = document.createElement('span');
+                colorBox.style.width = '20px';
+                colorBox.style.height = '20px';
+                colorBox.style.backgroundColor = colors[index];
+                colorBox.style.marginRight = '10px';
+                colorBox.style.borderRadius = '50%';
+
+                var labelText = document.createElement('span');
+                labelText.textContent = `${item.nbr_pose_status} - ${item.pose_statut} `;
+
+                legendItem.appendChild(colorBox);
+                legendItem.appendChild(labelText);
+                legendContainer.appendChild(legendItem);
+            });
+        </script>
         <script>
             // Récupère les données envoyées depuis le backend et les convertit en objet JSON
             var v_stat_devis_etats = @json($v_stat_devis_etats);

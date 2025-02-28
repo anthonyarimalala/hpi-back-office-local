@@ -42,6 +42,7 @@ class DashboardController extends Controller
         $data['date_fin'] = $date_fin;
         $data['v_stat_devis_mens'] = $m_dash->getTotalDevisSigne($date_debut, $date_fin);
         $data['v_stat_devis_etats'] = $m_dash->getTotalDevisEtats($date_debut, $date_fin);
+        $data['v_stat_pose_status'] = $m_dash->getTotalPoseStatus($date_debut, $date_fin);
         return view('dashboard/dashboard')->with($data);
     }
     public function showDashboardRappels(){

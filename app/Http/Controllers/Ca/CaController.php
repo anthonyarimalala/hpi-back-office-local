@@ -80,9 +80,28 @@ class CaController extends Controller
         if(!$data['v_ca_actes_reglement']) return back();
         return view('ca/modifier/modifier-ca')->with($data);
     }
+    public function getFilterCa(Request $request){
+        $filters = [
+            'date_derniere_modif_debut' => $request->input('date_derniere_modif_debut'),
+            'date_derniere_modif_fin' => $request->input('date_derniere_modif_fin'),
+            'status' => $request->input('status'),
+            'praticiens' => $request->input('praticiens')
+        ];
+        session()->put('ca_filters', $filters);
+        return redirect('liste-ca');
+    }
     public function showListeCa(Request $request){
-        $data['ca_actes_reglements'] = V_CaActesReglement::orderBy('created_at', 'desc')
+        $filters = session()->get('ca_filters', []);
+        $m_v_ca = new V_CaActesReglement();
+        $query = $m_v_ca->query();
+        if ($filters) $m_v_ca->scopeFilter($query, $filters);
+        $m_v_cas = $query->orderBy('created_at', 'desc')
+            ->where('is_deleted', 0)
             ->paginate(20);
+        $data['ca_actes_reglements'] = $m_v_cas;
+        $data['filters'] = $filters;
+        $data['dossier_statuss'] = DossierStatus::where('is_deleted', 0)->get();
+        $data['praticiens'] = Praticien::where('is_deleted', 0)->get();
         return view('ca/liste-ca')->with($data);
     }
 }

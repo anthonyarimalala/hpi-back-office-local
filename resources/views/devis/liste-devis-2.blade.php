@@ -585,7 +585,7 @@
         </div>
     </div>
     <div class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalFormLabel">Recherche Spécifique</h5>

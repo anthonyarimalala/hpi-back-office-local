@@ -254,13 +254,6 @@ class DevisController extends Controller
             'stringFilters' => [],
         ];
 
-        $m_v_devis = new V_Devis();
-        $query = V_Devis::query(); // Crée une requête de base
-        $m_v_devis->scopeFiltrer($query, $filters);
-        $m_v_deviss = $query->orderBy('date', 'desc')
-            ->where('is_deleted', 0)
-            ->paginate(20);
-        session()->put('deviss', $m_v_deviss);
         session()->put('devis_filters', $filters);
         return redirect('liste/devis');
     }

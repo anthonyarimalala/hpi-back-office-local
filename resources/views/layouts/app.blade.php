@@ -297,7 +297,6 @@
                             <li class="nav-item"> <a class="nav-link" href="{{ asset('historiques/modif-pro') }}">Prothèse</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ asset('historiques/modif-chq') }}">Chèques</a></li>
                             <li class="nav-item"> <a class="nav-link" href="{{ asset('historiques/modif-ca') }}">CA</a></li>
-                            <li class="nav-item"> <a class="nav-link" href="{{ asset('') }}">Autres</a></li>
                         </ul>
                     </div>
                 </li>

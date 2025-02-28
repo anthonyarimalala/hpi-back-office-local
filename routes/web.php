@@ -99,6 +99,7 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::get('historiques/modif-ca', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistCa']);
 
     // section: ca
+    Route::get('getFilterCa', [\App\Http\Controllers\Ca\CaController::class, 'getFilterCa']);
     Route::get('liste-ca', [\App\Http\Controllers\Ca\CaController::class, 'showListeCa'])->name('liste.ca');
     Route::get('ca/{id_ca}/{dossier}/modifier', [\App\Http\Controllers\Ca\CaController::class, 'showModifierCa']);
     Route::post('ca/modifier', [\App\Http\Controllers\Ca\CaController::class, 'updateCa']);
