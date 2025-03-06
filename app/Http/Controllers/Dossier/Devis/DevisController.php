@@ -60,18 +60,24 @@ class DevisController extends Controller
             $m_h_devis->code_u = Auth::user()->code_u;
             $m_h_devis->id_devis = $id_devis;
 
+            // Obtenir tous les clés primaires pour éviter de faire trop de requetes vers la base de donnée
+            $m_devis_etatsS = DevisEtat::all();
 
-            //print($date_envoi_mail);
+            $m_devis_ancien = Devis::find($id_devis);
+            $m_devis_nouveau = clone $m_devis_ancien;
+            $m_devis_nouveau->devis_signe = $devis_signe;
+            $m_devis_nouveau->observation = $observation;
+            $m_devis_nouveau->id_devis_etat = $id_devis_etat;
 
-            $m_devis = Devis::updateDevis($m_h_devis, $id_devis, $devis_signe, $observation, $id_devis_etat);
-            DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_mutuelle, $part_rac);
-            DevisReglement::createDevisReglement($m_h_devis, $id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac);
-            DevisAppelsEtMail::createDevisAppelsEtMail($m_h_devis, $id_devis, $date_1er_appel, $note_1er_appel, $date_2eme_appel, $note_2eme_appel, $date_3eme_appel, $note_3eme_appel, $date_envoi_mail);
+            $m_devis = Devis::updateDevis($m_h_devis, $m_devis_etatsS, $m_devis_ancien, $m_devis_nouveau, $withChange);
+            DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_mutuelle, $part_rac, $withChange);
+            DevisReglement::createDevisReglement($m_h_devis, $id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac, $withChange);
+            DevisAppelsEtMail::createDevisAppelsEtMail($m_h_devis, $id_devis, $date_1er_appel, $note_1er_appel, $date_2eme_appel, $note_2eme_appel, $date_3eme_appel, $note_3eme_appel, $date_envoi_mail, $withChange);
 
             // mettre le numero de dossier dans l'historique: dénormalisation
             $m_h_devis->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;
             $m_h_devis->dossier = $m_devis->dossier;
-            $m_h_devis->save();
+            if ($withChange) $m_h_devis->save();
             return redirect()->route('devis.detail', [
                 'dossier' => $m_devis->dossier,    // Remplacez par la valeur réelle de $dossier
                 'id_devis' => $id_devis      // Remplacez par la valeur réelle de $id_devis

@@ -57,24 +57,28 @@ class Devis extends Model
         // Retourne l'ID du devis créé
         return $devis->id;
     }
-    public static function updateDevis($m_h_devis, $id_devis, $devis_signe, $observation, $id_devis_etat){
-        $m_devis = Devis::find($id_devis);
-        if ($m_devis->devis_signe != $devis_signe) {
-            $m_h_devis->action .= "<strong>Devis signé:</strong> " . $m_devis->devis_signe . " => " . $devis_signe . "\n";
-            $m_devis->devis_signe = $devis_signe;
-        }
 
-        if ($m_devis->observation != $observation) {
-            $m_h_devis->action .= "<strong>Observation:</strong> " . $m_devis->observation . " => " . $observation . "\n";
-            $m_devis->observation = $observation;
+    public static function updateDevis($m_h_devis, $m_devis_etats, $m_devis_ancien, $m_devis_nouveau, &$withChange = false){
+        if ($m_devis_ancien->devis_signe != $m_devis_nouveau->devis_signe){
+            $m_h_devis->action .= "<strong>Devis signé:</strong> " . $m_devis_ancien->devis_signe . " => " . $m_devis_nouveau->devis_signe . "\n";
+            $withChange = true;
         }
-
-        if ($m_devis->id_devis_etat != $id_devis_etat) {
-            $m_h_devis->action .= "<strong>État du devis:</strong> " . $m_devis->id_devis_etat . " => " . $id_devis_etat . "\n";
-            $m_devis->id_devis_etat = $id_devis_etat;
+        if ($m_devis_ancien->observation != $m_devis_nouveau->observation){
+            $m_h_devis->action .= "<strong>Observation:</strong> " . $m_devis_ancien->observation . " => " . $m_devis_nouveau->observation . "\n";
+            $withChange = true;
         }
-        $m_devis->save();
-        return $m_devis;
+        if ($m_devis_ancien->id_devis_etat != $m_devis_nouveau->id_devis_etat){
+            $etat_ancien = '';
+            $etat_nouveau = '';
+            foreach ($m_devis_etats as $de){
+                if ($de->id == $m_devis_ancien->id_devis_etat) $etat_ancien = $de->etat;
+                if ($de->id == $m_devis_nouveau->id_devis_etat) $etat_nouveau = $de->etat;
+            }
+            $m_h_devis->action .= "<strong>État du devis:</strong> " . $etat_ancien . " => " . $etat_nouveau . "\n";
+            $withChange = true;
+        }
+        $m_devis_nouveau->save();
+        return $m_devis_nouveau;
     }
 
     public function getDate(){

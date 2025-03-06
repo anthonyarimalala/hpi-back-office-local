@@ -35,11 +35,14 @@ class CaController extends Controller
     public function saveCa(Request $request)
     {
         $m_ca = new CaActesReglement();
+        //echo ('input: '.$request->input('date_derniere_modif'). '<br>');
         $m_ca->saveCa($request);
+
         $dossier = $request->input('dossiers');
         $m_dossier = Dossier::where('dossier', $dossier)->first();
         if(!$m_dossier) return back()->withErrors('Le dossier "' . $dossier . '" n\'existe pas.')->withInput();
         return redirect()->route('liste.ca');
+
     }
     public function updateCa(Request $request)
     {

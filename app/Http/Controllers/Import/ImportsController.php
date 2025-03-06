@@ -18,6 +18,7 @@ use App\Models\devis\prothese\ProtheseTravaux;
 use App\Models\devis\prothese\ProtheseTravauxStatus;
 use App\Models\dossier\Dossier;
 use App\Models\error\ErrorImport;
+use App\Models\hist\H_Cheque;
 use App\Models\hist\H_Devis;
 use App\Models\hist\H_Prothese;
 use App\Models\import\ImportCa;
@@ -290,8 +291,11 @@ class ImportsController extends Controller
         else
             return back()->with('warning', 'Données importées mais contiennent des erreurs');
     }
+
     public function importerDevis(Request $request)
     {
+
+
         $imp_devis = new ImportDevis();
         // Validation du fichier
         $request->validate([
@@ -309,10 +313,15 @@ class ImportsController extends Controller
 
         // step-2: mise à jour et insertion des données, celà peut prendre un certain moment
         $m_import_deviss = ImportDevis::all();
+        // Obtenir tous les clés primaires pour éviter de faire trop de requetes vers la base de donnée
+        $m_protheseTravauxStatusS = ProtheseTravauxStatus::all()->keyBy('travaux_status');
+        $m_devis_etatsS = DevisEtat::all()->keyBy('couleur');
         foreach ($m_import_deviss as $mid){
+            // déclaration de nouvelle variable d'historique
 
-            $m_protheseTravauxStatus = ProtheseTravauxStatus::where('travaux_status', trim($mid->pose_statut))->first();
-            $m_devis_etats = DevisEtat::where('couleur', trim($mid->couleur))->get();
+
+            $m_protheseTravauxStatus = $m_protheseTravauxStatusS->get(trim($mid->pose_statut));
+            $m_devis_etat = $m_devis_etatsS->get(trim($mid->couleur));
             $m_dossier = Dossier::firstOrNew(['dossier' => trim($mid->dossier)]);
             $m_dossier->nom = trim($mid->nom);
             $m_dossier->status = trim($mid->status);
@@ -336,14 +345,26 @@ class ImportsController extends Controller
             $m_devis->status = trim($mid->status);
             $m_devis->mutuelle = trim($mid->mutuelle);
             $m_devis->date = $imp_devis->makeDate($mid->date);
-            if ($mid->montant && $mid->montant != '') $m_devis->montant = $mid->montant;
-            $m_devis->devis_signe = $imp_devis->makeDevisSigne($mid->devis_signe) ;
+            $m_devis->montant = $mid->montant;
             $m_devis->praticien = trim($mid->praticien);
-            $m_devis->observation = $mid->devis_observation;
-            foreach ($m_devis_etats as $m_devis_etat){$m_devis->id_devis_etat = $m_devis_etat->id;}
-            if($m_devis->id_devis_etat == null) $m_devis->id_devis_etat = 1;
+            $m_devis->save();
+            $m_devis_nouveau = clone $m_devis;
+            $m_devis_nouveau->devis_signe = $imp_devis->makeDevisSigne($mid->devis_signe) ;
+            $m_devis_nouveau->observation = $mid->devis_observation;
+            if($m_devis_etat) $m_devis_nouveau->id_devis_etat = $m_devis_etat->id; else $m_devis_nouveau->id_devis_etat = 1;
+
+
+            $m_h_devis = new H_Devis();
+            $m_h_devis->code_u = Auth::user()->code_u;
+            $m_h_devis->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;
+            $m_h_devis->dossier = $m_dossier->dossier;
+            $m_h_devis->id_devis = $m_devis->id;
+            $m_h_devis->action .= "Données importés: " . "\n";
+
             try {
-                $m_devis->save();
+                $withChange = false;
+                Devis::updateDevis($m_h_devis, $m_devis_etatsS, $m_devis, $m_devis_nouveau, $withChange);
+
                     }catch (\Exception $e){
                 $withErrors = true;
                         $m_error_import = new ErrorImport();
@@ -359,13 +380,17 @@ class ImportsController extends Controller
                         $m_error_import->description .= "<strong>Observation: </strong>".$mid->devis_observation."\n";
                         $m_error_import->save();
                     }
+
+            /*
             $m_devis_accord_pec = DevisAccordPec::firstOrNew(['id_devis' => $m_devis->id]);
             $m_devis_accord_pec->date_envoi_pec = $imp_devis->makeDate($mid->date_envoi_pec);
             $m_devis_accord_pec->date_fin_validite_pec = $imp_devis->makeDate($mid->date_fin_validite_pec);
-            if ($mid->part_mutuelle && $mid->part_mutuelle != '') $m_devis_accord_pec->part_mutuelle = $mid->part_mutuelle;
-            if ($mid->part_rac && $mid->part_rac != '') $m_devis_accord_pec->part_rac = $mid->part_rac;
+            $m_devis_accord_pec->part_mutuelle = $mid->part_mutuelle;
+            $m_devis_accord_pec->part_rac = $mid->part_rac;
+            */
             try {
-                $m_devis_accord_pec->save();
+                DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $m_devis_nouveau->id, $imp_devis->makeDate($mid->date_envoi_pec), $imp_devis->makeDate($mid->date_fin_validite_pec), $mid->part_mutuelle, $mid->part_rac, $withChange);
+                // $m_devis_accord_pec->save();
                     } catch (\Exception $e){
                         $withErrors = true;
                         $m_error_import = new ErrorImport();
@@ -381,6 +406,7 @@ class ImportsController extends Controller
                         $m_error_import->save();
                     }
 
+            /*
             $m_devis_appels_et_mails = DevisAppelsEtMail::firstOrNew(['id_devis' => $m_devis->id]);
             $m_devis_appels_et_mails->date_1er_appel = $imp_devis->makeDate($mid->date_1er_appel);
             $m_devis_appels_et_mails->note_1er_appel = $mid->note_1er_appel;
@@ -389,8 +415,20 @@ class ImportsController extends Controller
             $m_devis_appels_et_mails->date_3eme_appel = $imp_devis->makeDate($mid->date_3eme_appel);
             $m_devis_appels_et_mails->note_3eme_appel = $mid->note_3eme_appel;
             $m_devis_appels_et_mails->date_envoi_mail = $imp_devis->makeDate($mid->date_envoi_mail);
+            */
             try {
-                $m_devis_appels_et_mails->save();
+                DevisAppelsEtMail::createDevisAppelsEtMailDate_Non_Automatic(
+                    $m_h_devis,
+                    $m_devis_nouveau->id,
+                    $imp_devis->makeDate($mid->date_1er_appel),
+                    $mid->note_1er_appel,
+                    $imp_devis->makeDate($mid->date_2eme_appel),
+                    $mid->note_2eme_appel,
+                    $imp_devis->makeDate($mid->date_3eme_appel),
+                    $mid->note_3eme_appel,
+                    $imp_devis->makeDate($mid->date_envoi_mail),
+                    $withChange);
+                // $m_devis_appels_et_mails->save();
                     } catch (\Exception $e){
                 $withErrors = true;
                         $m_error_import = new ErrorImport();
@@ -410,13 +448,16 @@ class ImportsController extends Controller
                     }
 
 
+            /*
             $m_devis_reglements = DevisReglement::firstOrNew(['id_devis' => $m_devis->id]);
             $m_devis_reglements->date_paiement_cb_ou_esp = $imp_devis->makeDate($mid->date_paiement_cb_ou_esp);
             $m_devis_reglements->date_depot_chq_pec = $imp_devis->makeDate($mid->date_depot_chq_pec);
             $m_devis_reglements->date_depot_chq_part_mut = $imp_devis->makeDate($mid->date_depot_chq_part_mut);
             $m_devis_reglements->date_depot_chq_rac = $imp_devis->makeDate($mid->date_depot_chq_rac);
+            */
             try {
-                $m_devis_reglements->save();
+                DevisReglement::createDevisReglement($m_h_devis, $m_devis_nouveau->id, $imp_devis->makeDate($mid->date_paiement_cb_ou_esp), $imp_devis->makeDate($mid->date_depot_chq_pec), $imp_devis->makeDate($mid->date_depot_chq_part_mut), $imp_devis->makeDate($mid->date_depot_chq_rac), $withChange);
+                // $m_devis_reglements->save();
                     }catch (\Exception $e){
                 $withErrors = true;
                         $m_error_import = new ErrorImport();
@@ -431,6 +472,15 @@ class ImportsController extends Controller
                         $m_error_import->description .= "<strong>Date dépôt CHQ RAC: </strong>".$mid->date_depot_chq_rac."\n";
                         $m_error_import->save();
                     }
+            $m_h_prothese = new H_Prothese();
+            $m_h_prothese->code_u = Auth::user()->code_u;
+            $m_h_prothese->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;
+            $m_h_prothese->dossier = $m_dossier->dossier;
+            $m_h_prothese->id_devis = $m_devis->id;
+            $m_h_prothese->action .= "Données importés: (Date devis: ". $m_devis_nouveau->date .")" . "\n";
+            $withChangeProthese = false;
+
+            /*
             $m_prothese_empreintes = ProtheseEmpreinte::firstOrNew(['id_devis' => $m_devis->id]);
             $m_prothese_empreintes->laboratoire = trim($mid->laboratoire);
             $m_prothese_empreintes->date_empreinte = $imp_devis->makeDate($mid->date_empreinte);
@@ -438,8 +488,19 @@ class ImportsController extends Controller
             $m_prothese_empreintes->travail_demande = $mid->travail_demande;
             $m_prothese_empreintes->numero_dent = trim($mid->numero_dent);
             $m_prothese_empreintes->observations = $mid->empreinte_observation;
+            */
             try {
-                $m_prothese_empreintes->save();
+                ProtheseEmpreinte::createOrUpdateEmpreinte(
+                    $m_h_prothese,
+                    $m_devis_nouveau->id,
+                    trim($mid->laboratoire),
+                    $imp_devis->makeDate($mid->date_empreinte),
+                    $imp_devis->makeDate($mid->date_envoi_labo),
+                    $mid->travail_demande,
+                    trim($mid->numero_dent),
+                    $mid->empreinte_observation,
+                    $withChangeProthese);
+                // $m_prothese_empreintes->save();
                     }catch (\Exception $e){
                 $withErrors = true;
                         $m_error_import = new ErrorImport();
@@ -456,12 +517,15 @@ class ImportsController extends Controller
                         $m_error_import->description .= "<strong>Observations: </strong>".$mid->empreinte_observation."\n";
                         $m_error_import->save();
                     }
+                    /*
             $m_prothese_retour_labos = ProtheseRetourLabo::firstOrNew(['id_devis' => $m_devis->id]);
             $m_prothese_retour_labos->date_livraison = $imp_devis->makeDate($mid->date_livraison);
             $m_prothese_retour_labos->numero_suivi = trim($mid->numero_suivi);
             $m_prothese_retour_labos->numero_facture_labo = trim($mid->numero_facture_labo);
+                    */
             try {
-                $m_prothese_retour_labos->save();
+                ProtheseRetourLabo::createOrUpdateEmpreinte($m_h_prothese, $m_devis_nouveau->id, $imp_devis->makeDate($mid->date_livraison), trim($mid->numero_suivi), trim($mid->numero_facture_labo), $withChangeProthese);
+                // $m_prothese_retour_labos->save();
                     }catch (\Exception $e){
                 $withErrors = true;
                         $m_error_import = new ErrorImport();
@@ -475,15 +539,27 @@ class ImportsController extends Controller
                         $m_error_import->description .= "<strong>N° Facture Labo: </strong>".$mid->numero_facture_labo."\n";
                         $m_error_import->save();
                     }
+            /*
             $m_prothese_travaux = ProtheseTravaux::firstOrNew(['id_devis' => $m_devis->id]);
             $m_prothese_travaux->date_pose_prevue = $imp_devis->makeDate($mid->date_pose_prevue);
-/*-------*/ if ($m_protheseTravauxStatus) $m_prothese_travaux->id_pose_statut = $m_protheseTravauxStatus->id;
+            if ($m_protheseTravauxStatus) $m_prothese_travaux->id_pose_statut = $m_protheseTravauxStatus->id;
             $m_prothese_travaux->date_pose_reel = $imp_devis->makeDate($mid->date_pose_reel);
             $m_prothese_travaux->organisme_payeur = trim($mid->organisme_payeur);
             if ($mid->montant_encaisse && $mid->montant_encaisse != '') $m_prothese_travaux->montant_encaisse = trim($mid->montant_encaisse);
             $m_prothese_travaux->date_controle_paiement = $imp_devis->makeDate($mid->date_controle_paiement);
+            */
             try {
-                $m_prothese_travaux->save();
+                ProtheseTravaux::createOrUpdateTravaux(
+                    $m_h_prothese,
+                    $m_devis_nouveau->id,
+                    $imp_devis->makeDate($mid->date_pose_prevue),
+                    $m_protheseTravauxStatus->id,
+                    $imp_devis->makeDate($mid->date_pose_reel),
+                    trim($mid->organisme_payeur),
+                    trim($mid->montant_encaisse),
+                    $imp_devis->makeDate($mid->date_controle_paiement),
+                    $withChangeProthese);
+                // $m_prothese_travaux->save();
                     } catch (\Exception $e){
                 $withErrors = true;
                         $m_error_import = new ErrorImport();
@@ -500,9 +576,19 @@ class ImportsController extends Controller
                         $m_error_import->description .= "<strong>Date ou vous devez contrôler paiement: </strong>".$mid->date_controle_paiement."\n";
                         $m_error_import->save();
                     }
+
+            $m_h_cheque = new H_Cheque();
+            $m_h_cheque->code_u = Auth::user()->code_u;
+            $m_h_cheque->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;
+            $m_h_cheque->dossier = $m_dossier->dossier;
+            $m_h_cheque->id_devis = $m_devis->id;
+            $m_h_cheque->action .= "Données importés: (Date devis: ". $m_devis_nouveau->date .")" . "\n";
+            $withChangeCheque = false;
+
+            /*
             $m_info_cheques = InfoCheque::firstOrNew(['id_devis' => $m_devis->id]);
             $m_info_cheques->numero_cheque = trim($mid->numero_cheque);
-/*-nombre-*/if ($mid->montant_cheque && $mid->montant_cheque != '') $m_info_cheques->montant_cheque = trim($mid->montant_cheque);
+            if ($mid->montant_cheque && $mid->montant_cheque != '') $m_info_cheques->montant_cheque = trim($mid->montant_cheque);
             $m_info_cheques->nom_document = trim($mid->nom_document);
             $m_info_cheques->date_encaissement_cheque = $imp_devis->makeDate($mid->date_encaissement_cheque);
             $m_info_cheques->date_1er_acte = $imp_devis->makeDate($mid->date_1er_acte);
@@ -510,8 +596,22 @@ class ImportsController extends Controller
             $m_info_cheques->travaux_sur_devis = trim($mid->travaux_sur_devis);
             $m_info_cheques->situation_cheque = trim($mid->situation_cheque);
             $m_info_cheques->observation = $mid->cheque_observation;
+            */
             try {
-                $m_info_cheques->save();
+                // $m_info_cheques->save();
+                InfoCheque::modifierCheque(
+                    $m_h_cheque,
+                    $m_devis_nouveau->id,
+                    trim($mid->numero_cheque),
+                    trim($mid->montant_cheque),
+                    trim($mid->nom_document),
+                    $imp_devis->makeDate($mid->date_encaissement_cheque),
+                    $imp_devis->makeDate($mid->date_1er_acte),
+                    trim($mid->nature_cheque),
+                    trim($mid->travaux_sur_devis),
+                    trim($mid->situation_cheque),
+                    $mid->cheque_observation,
+                    $withChangeCheque);
             }catch (\Exception $e){
                 $withErrors = true;
                 $m_error_import = new ErrorImport();
@@ -530,6 +630,15 @@ class ImportsController extends Controller
                 $m_error_import->description .= "<strong>Situation chèque: </strong>".$mid->situation_cheque."\n";
                 $m_error_import->description .= "<strong>Observation: </strong>".$mid->cheque_observation."\n";
                 $m_error_import->save();
+            }
+            if ($withChangeCheque){
+                $m_h_cheque->save();
+            }
+            if ($withChangeProthese){
+                $m_h_prothese->save();
+            }
+            if ($withChange){
+                $m_h_devis->save();
             }
         }
         if (!$withErrors)

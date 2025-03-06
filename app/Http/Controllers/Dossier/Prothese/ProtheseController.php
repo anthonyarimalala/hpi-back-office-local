@@ -39,13 +39,15 @@ class ProtheseController extends Controller
         $m_h_prothese->code_u = Auth::user()->code_u;
         $m_h_prothese->id_devis = $id_devis;
 
-        ProtheseEmpreinte::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $numeroDent, $observations);
-        ProtheseRetourLabo::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $dateLivraison, $numeroSuivi, $numeroFactureLabo);
-        ProtheseTravaux::createOrUpdateTravaux($m_h_prothese, $id_devis, $datePosePrevue, $id_pose_statut, $datePoseReel, $organismePayeur, $montantEncaisse, $dateControlePaiement);
+        ProtheseEmpreinte::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $numeroDent, $observations, $withChangeProthese);
+        ProtheseRetourLabo::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $dateLivraison, $numeroSuivi, $numeroFactureLabo, $withChangeProthese);
+        ProtheseTravaux::createOrUpdateTravaux($m_h_prothese, $id_devis, $datePosePrevue, $id_pose_statut, $datePoseReel, $organismePayeur, $montantEncaisse, $dateControlePaiement, $withChangeProthese);
 
         $m_h_prothese->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;
         $m_h_prothese->dossier = $dossier;
-        $m_h_prothese->save();
+        if($withChangeProthese){
+            $m_h_prothese->save();
+        }
         return redirect()->to($dossier."/prothese/".$id_devis."/detail");
 
     }
