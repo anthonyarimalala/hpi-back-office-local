@@ -122,6 +122,10 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
 
     Route::get('import-ca-view', function (){ return view('export-ca'); });
 
+
+    Route::get('showDevisExportView', [\App\Http\Controllers\Export\ExportsController::class, 'showDevisExportView']);
+    Route::get('showCaExportView', [\App\Http\Controllers\Export\ExportsController::class, 'showCaExportView']);
+
 });
 Route::middleware(['auth', 'role:admin'])->group(function () {
     // section: gestion

@@ -1,5 +1,4 @@
 <table style="border-collapse: collapse; width: 100%;">
-    <tbody>
     <tr>
         <td style="background-color: #ffff00;"></td>
         <td>à relancer</td>
@@ -41,8 +40,6 @@
         <td>Devis implant</td>
     </tr>
     <tr></tr>
-    </tbody>
-    <thead>
     <tr>
         <th colspan="4" style="background-color: #b4a7d6; text-align: center; font-weight: bold; border: 1px solid black;"> PATIENTS</th>
         <th colspan="20" style="border: 1px solid black; background-color: #ffd966; text-align: center; font-weight: bold;">DEVIS</th>
@@ -70,8 +67,6 @@
         <th colspan="4" style="border: 1px solid black; background-color: #FFFF00; text-align: center; font-weight: bold;">TRAVAUX CLOTURE</th>
         <th colspan="9" style="border: 1px solid black; background-color: #EA9999; text-align: center; font-weight: bold;">INFO CHEQUES</th>
     </tr>
-    </thead>
-    <thead>
     <tr>
         <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold;">Dossier</th>
         <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 150px;">Patient</th>
@@ -122,7 +117,6 @@
         <th style="border: 1px solid black; background-color: #EA9999; font-weight: bold;">Situation chèque</th>
         <th style="border: 1px solid black; background-color: #EA9999; font-weight: bold; width: 200px;">Observation</th>
     </tr>
-    </thead>
     <tbody>
     @foreach($data as $order)
         <tr>

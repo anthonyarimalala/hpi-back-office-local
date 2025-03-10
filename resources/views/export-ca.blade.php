@@ -47,11 +47,20 @@
     <tr>
         <th rowspan="2" style="writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; vertical-align: middle; background-color: #fbbc04; color: whitesmoke; font-size: 8px;">CA</th>
         <th style="background-color: #fbbc04; font-size: 8px; font-weight: bold;">CA Global</th>
-        <th style="background-color: #fbbc04; color: whitesmoke; text-align: right"></th>
+        @foreach($praticiens as $pm)
+            <th style="background-color: #fbbc04; color: whitesmoke; text-align: right">{{ $pm->praticien }}</th>
+        @endforeach
     </tr>
     <tr>
         <td style="text-align: right">=SUM(C2:C4)</td>
-
+        @php
+            $colonnes = range('C', 'Z'); // Liste des colonnes possibles
+            $index = 0;
+        @endphp
+        @foreach($praticiens as $pm)
+            <td style="text-align: right">=SUMIF($F:$F,{{ $colonnes[$index] }}6,$H:$H)</td>
+            @php $index++; @endphp
+        @endforeach
     </tr>
     <tr>
         <th colspan="5" style="background-color: #666666; color: whitesmoke; border-right: 2px solid #000; font-size: 10px;">INFOS PATIENTS</th>

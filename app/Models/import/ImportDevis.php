@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Mockery\Exception;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class ImportDevis extends Model
@@ -74,18 +75,44 @@ class ImportDevis extends Model
         'cheque_observation'
     ];
 
-    public function makeNumber($number){
-        if ($number){
-            $cleanedNumber = preg_replace('/[^0-9\-]/', '', $number);
-            try {
-                return $cleanedNumber;
-            } catch (\Exception $e) {
-                return null;
+
+    public function makeNumericOrError($num){
+        $formatedNum = trim($num);
+        if (is_numeric($formatedNum))
+            return $formatedNum;
+        else
+            throw new Exception('Format du nombre non conforme');
+    }
+    public function makeDateOrError($date)
+    {
+        $formattedDate = trim($date);
+
+        // Si la date est au format texte déjà valide (YYYY-MM-DD)
+        if (strtotime($formattedDate)) {
+            return date('Y-m-d', strtotime($formattedDate));
+        }
+
+        // Si la date est une valeur numérique (format Excel)
+        if (is_numeric($formattedDate)) {
+            return Date::excelToDateTimeObject((float) $formattedDate)->format('Y-m-d');
+        }
+
+        // Gestion du format DD/MM/YYYY ou similaire
+        $dateParts = preg_split('/[\/.-]/', $formattedDate);
+        if (count($dateParts) === 3) {
+            $day = $dateParts[0];
+            $month = $dateParts[1];
+            $year = $dateParts[2];
+
+            if (checkdate($month, $day, $year)) {
+                return "$year-$month-$day";
             }
         }
-        return $number;
+
+        throw new Exception("Date non conforme : $date");
     }
 
+    /*
     public function makeDate($date)
     {
         $date = trim($date);
@@ -106,6 +133,7 @@ class ImportDevis extends Model
         }
         return null ;
     }
+    */
 
     public function makeDevisSigne($devis_signe)
     {

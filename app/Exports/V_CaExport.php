@@ -15,9 +15,11 @@ class V_CaExport implements FromView, WithEvents
     * @return \Illuminate\Support\Collection
     */
     protected $data;
-    public function __construct($data)
+    protected $praticiens;
+    public function __construct($data, $praticiens)
     {
         $this->data = $data;
+        $this->praticiens = $praticiens;
     }
 
     public function view(): View
@@ -25,6 +27,7 @@ class V_CaExport implements FromView, WithEvents
         //
         return view('export-ca', [
             'data' => $this->data,
+            'praticiens' => $this->praticiens,
         ]);
     }
     public function registerEvents(): array
@@ -51,8 +54,6 @@ class V_CaExport implements FromView, WithEvents
                 $sheet->setCellValue('D4', '=SUM(V:V)-SUM(W:Y)');
                 */
 
-
-
                 $sheet->setCellValue('E5', '=H2/B7');
                 $sheet->getStyle('E5')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_PERCENTAGE_00);
 
@@ -70,6 +71,7 @@ class V_CaExport implements FromView, WithEvents
                 foreach ($columns as $column) {
                     $sheet->getColumnDimension($column)->setWidth(11.89);
                 }
+                $event->sheet->getDelegate()->freezePane('A11');
             },
         ];
     }

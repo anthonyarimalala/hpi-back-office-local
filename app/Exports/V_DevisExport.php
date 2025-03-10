@@ -12,6 +12,8 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class V_DevisExport implements FromView, WithEvents
@@ -91,17 +93,33 @@ class V_DevisExport implements FromView, WithEvents
 
 
                 $sheet = $event->sheet->getDelegate();
+                $highestRow = $sheet->getHighestRow();
                 $colNumbers = ['F', 'L', 'M', 'AL', 'AO'];
                 foreach ($colNumbers as $col) {
-                    $sheet->getStyle($col . '16:' . $col . $sheet->getHighestRow())
+                    $sheet->getStyle($col . '16:' . $col . $highestRow)
                         ->getNumberFormat()
                         ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
                 }
                 $colDates = ['E', 'J', 'K', 'N', 'O', 'P', 'Q', 'R', 'T', 'V', 'X', 'Z', 'AA', 'AE', 'AH', 'AJ', 'AM', 'AQ', 'AR'];
                 foreach ($colDates as $col){
-                    $sheet->getStyle($col . '16:' . $col . $sheet->getHighestRow())
+                    $sheet->getStyle($col . '16:' . $col . $highestRow)
                         ->getNumberFormat()
                         ->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                }
+
+                $event->sheet->getDelegate()->freezePane('A16');
+
+
+                // Appliquer une bordure épaisse sur la ligne verticale entre D et E
+                for ($row = 14; $row <= $highestRow; $row++) {
+                    $columns = ["E", "I", "J", "N", "R", "Y", "AD", "AE", "AH", "AJ", "AN"];
+
+                    foreach ($columns as $col) {
+                        $event->sheet->getDelegate()->getStyle("$col$row")
+                            ->getBorders()->getLeft()
+                            ->setBorderStyle(Border::BORDER_MEDIUM)
+                            ->setColor(new Color(Color::COLOR_BLACK));
+                    }
                 }
 
             },

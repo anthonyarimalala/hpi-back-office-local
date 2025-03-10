@@ -7,6 +7,9 @@ use App\Imports\CaImport;
 use App\Imports\DevisImport;
 use App\Models\ca\CaActesReglement;
 use App\Models\devis\cheque\InfoCheque;
+use App\Models\devis\cheque\InfoChequeNatureCheque;
+use App\Models\devis\cheque\InfoChequeSituationCheque;
+use App\Models\devis\cheque\InfoChequeTravauxDevis;
 use App\Models\devis\Devis;
 use App\Models\devis\DevisAccordPec;
 use App\Models\devis\DevisAppelsEtMail;
@@ -17,6 +20,7 @@ use App\Models\devis\prothese\ProtheseRetourLabo;
 use App\Models\devis\prothese\ProtheseTravaux;
 use App\Models\devis\prothese\ProtheseTravauxStatus;
 use App\Models\dossier\Dossier;
+use App\Models\dossier\DossierStatus;
 use App\Models\error\ErrorImport;
 use App\Models\hist\H_Cheque;
 use App\Models\hist\H_Devis;
@@ -295,13 +299,13 @@ class ImportsController extends Controller
     public function importerDevis(Request $request)
     {
 
-
+        $withErrorsAll = false;
         $imp_devis = new ImportDevis();
         // Validation du fichier
         $request->validate([
             'devisFile' => 'required|file|mimes:xlsx,xls',
         ]);
-        $withErrors = false;
+
         $file = $request->file('devisFile');
 
         DB::delete('DELETE FROM import_devis');
@@ -313,40 +317,86 @@ class ImportsController extends Controller
 
         // step-2: mise à jour et insertion des données, celà peut prendre un certain moment
         $m_import_deviss = ImportDevis::all();
+
         // Obtenir tous les clés primaires pour éviter de faire trop de requetes vers la base de donnée
         $m_protheseTravauxStatusS = ProtheseTravauxStatus::all()->keyBy('travaux_status');
         $m_devis_etatsS = DevisEtat::all()->keyBy('couleur');
+        $m_dossier_statusS = DossierStatus::all()->keyBy('status');
+        $m_praticienS = Praticien::all()->keyBy('praticien');
+        $m_nature_chequeS = InfoChequeNatureCheque::all()->keyBy('nature_cheque');
+        $m_travaux_sur_devisS = InfoChequeTravauxDevis::all()->keyBy('travaux_sur_devis');
+        $m_situation_chequeS = InfoChequeSituationCheque::all()->keyBy('situation_cheque');
+
         foreach ($m_import_deviss as $mid){
             // déclaration de nouvelle variable d'historique
 
+            /*
+            $m_error_import = new ErrorImport();
+            $m_error_import->type = 1; // ne change pas
+            $m_error_import->date = $mid->date; // ne change pas
+            $m_error_import->dossier = $mid->dossier;
+            $m_error_import->error_message = $e->getMessage();
+            $m_error_import->categorie = "INFO DEVIS";
+            $m_error_import->description .= "<strong>Date: </strong>".$mid->date."\n";
+            $m_error_import->description .= "<strong>Montant: </strong>".$mid->montant."\n";
+            $m_error_import->description .= "<strong>Devis signé: </strong>".$mid->devis_signe."\n";
+            $m_error_import->description .= "<strong>Praticien: </strong>".$mid->praticien."\n";
+            $m_error_import->description .= "<strong>Observation: </strong>".$mid->devis_observation."\n";
+            $m_error_import->save();
+            */
+            $withErrors = false;
+            $m_error_import = new ErrorImport();
+            $m_error_import->type = 1;
+            $m_error_import->dossier = trim($mid->dossier);
 
-            $m_protheseTravauxStatus = $m_protheseTravauxStatusS->get(trim($mid->pose_statut));
-            $m_devis_etat = $m_devis_etatsS->get(trim($mid->couleur));
+        // Step 1: dossier
             $m_dossier = Dossier::firstOrNew(['dossier' => trim($mid->dossier)]);
+            $m_devis_etat = $m_devis_etatsS->get(trim($mid->couleur));
             $m_dossier->nom = trim($mid->nom);
-            $m_dossier->status = trim($mid->status);
+            $m_dossier->status = $m_dossier_statusS->get(trim($mid->status));
+            if (!$m_dossier->status){
+                $m_error_import->error_message = "Le status ". trim($mid->status) . "n'est pas encore dans la base de donnée";
+                $m_dossier->status = '';
+                $withErrors = true;
+            }else{
+                $m_dossier->status = $m_dossier->status->status;
+            }
             $m_dossier->mutuelle = trim($mid->mutuelle);
-            try {
-                $m_dossier->save();
-                    }catch (\Exception $e){
-                        $withErrors = true;
-                        $m_error_import = new ErrorImport();
-                        $m_error_import->type = 1; // ne change pas
-                        $m_error_import->date = $mid->date; // ne change pas
-                        $m_error_import->dossier = $mid->dossier;
-                        $m_error_import->error_message = $e->getMessage();
-                        $m_error_import->categorie = "INFO PATIENT";
-                        $m_error_import->description .= "<strong>Patient: </strong>".$mid->nom."\n";
-                        $m_error_import->description .= "<strong>Mutuelle: </strong>".$mid->mutuelle."\n";
-                        $m_error_import->description .= "<strong>Patient C2S: </strong>".$mid->status."\n";
-                        $m_error_import->save();
-                    }
-            $m_devis = Devis::firstOrNew(['dossier' => $mid->dossier, 'date' => $mid->date]);
-            $m_devis->status = trim($mid->status);
+            $m_dossier->save();
+
+        //  Step 2: devis
+            $date_devis = null;
+            if ($mid->date && $mid->date != ''){
+                try {
+                    $date_devis = $mid->makeDateOrError($mid->date);
+                }
+                catch (\Exception $e){
+                    $m_error_import->error_message .= 'Date non conforme, ';
+                    $m_error_import->description.= "<strong>Date: </strong>".$mid->date."\n";
+                    $withErrors = true;
+                }
+            }
+            $m_devis = Devis::firstOrNew(['dossier' => $mid->dossier, 'date' => $date_devis]);
+            $m_devis->status = $m_dossier->status;
             $m_devis->mutuelle = trim($mid->mutuelle);
-            $m_devis->date = $imp_devis->makeDate($mid->date);
-            $m_devis->montant = $mid->montant;
-            $m_devis->praticien = trim($mid->praticien);
+            if ($mid->montant && $mid->montant != ''){
+                try {
+                    $m_devis->montant = $mid->makeNumericOrError($mid->montant);
+                }
+                catch (\Exception $e){
+                    $m_error_import->error_message .= 'Montant non conforme, ';
+                    $m_error_import->description.= "<strong>Montant: </strong>".$mid->montant."\n";
+                    $withErrors = true;
+                }
+            }
+            $m_devis->praticien = $m_praticienS->get(strtoupper(trim($mid->praticien)));
+            if (!$m_devis->praticien){
+                $m_error_import->error_message = "Le praticien ". trim($mid->praticien) . "n'est pas encore dans la base de donnée";
+                $m_dossier->praticien = '';
+                $withErrors = true;
+            }else{
+                $m_devis->praticien = $m_devis->praticien->praticien;
+            }
             $m_devis->save();
             $m_devis_nouveau = clone $m_devis;
             $m_devis_nouveau->devis_signe = $imp_devis->makeDevisSigne($mid->devis_signe) ;
@@ -361,117 +411,171 @@ class ImportsController extends Controller
             $m_h_devis->id_devis = $m_devis->id;
             $m_h_devis->action .= "Données importés: " . "\n";
 
-            try {
-                $withChange = false;
-                Devis::updateDevis($m_h_devis, $m_devis_etatsS, $m_devis, $m_devis_nouveau, $withChange);
 
-                    }catch (\Exception $e){
-                $withErrors = true;
-                        $m_error_import = new ErrorImport();
-                        $m_error_import->type = 1; // ne change pas
-                        $m_error_import->date = $mid->date; // ne change pas
-                        $m_error_import->dossier = $mid->dossier;
-                        $m_error_import->error_message = $e->getMessage();
-                        $m_error_import->categorie = "INFO DEVIS";
-                        $m_error_import->description .= "<strong>Date: </strong>".$mid->date."\n";
-                        $m_error_import->description .= "<strong>Montant: </strong>".$mid->montant."\n";
-                        $m_error_import->description .= "<strong>Devis signé: </strong>".$mid->devis_signe."\n";
-                        $m_error_import->description .= "<strong>Praticien: </strong>".$mid->praticien."\n";
-                        $m_error_import->description .= "<strong>Observation: </strong>".$mid->devis_observation."\n";
-                        $m_error_import->save();
-                    }
+            $withChange = false;
+            Devis::updateDevis($m_h_devis, $m_devis_etatsS, $m_devis, $m_devis_nouveau, $withChange);
 
-            /*
-            $m_devis_accord_pec = DevisAccordPec::firstOrNew(['id_devis' => $m_devis->id]);
-            $m_devis_accord_pec->date_envoi_pec = $imp_devis->makeDate($mid->date_envoi_pec);
-            $m_devis_accord_pec->date_fin_validite_pec = $imp_devis->makeDate($mid->date_fin_validite_pec);
-            $m_devis_accord_pec->part_mutuelle = $mid->part_mutuelle;
-            $m_devis_accord_pec->part_rac = $mid->part_rac;
-            */
-            try {
-                DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $m_devis_nouveau->id, $imp_devis->makeDate($mid->date_envoi_pec), $imp_devis->makeDate($mid->date_fin_validite_pec), $mid->part_mutuelle, $mid->part_rac, $withChange);
-                // $m_devis_accord_pec->save();
-                    } catch (\Exception $e){
-                        $withErrors = true;
-                        $m_error_import = new ErrorImport();
-                        $m_error_import->type = 1; // ne change pas
-                        $m_error_import->date = $mid->date; // ne change pas
-                        $m_error_import->dossier = $mid->dossier;
-                        $m_error_import->error_message = $e->getMessage();
-                        $m_error_import->categorie = "INFO ACCORD PEC";
-                        $m_error_import->description .= "<strong>Date d'envoi PEC: </strong>".$mid->date_envoi_pec."\n";
-                        $m_error_import->description .= "<strong>Date fin validité PEC: </strong>".$mid->date_fin_validite_pec."\n";
-                        $m_error_import->description .= "<strong>Part mutuelle: </strong>".$mid->part_mutuelle."\n";
-                        $m_error_import->description .= "<strong>Part RAC: </strong>".$mid->part_rac."\n";
-                        $m_error_import->save();
-                    }
+        //  Step 3: Info Accord Pec
+            $date_envoie_pec = null;
+            $date_fin_validite_pec = null;
+            $part_mutuelle = null;
+            $part_rac = null;
 
-            /*
-            $m_devis_appels_et_mails = DevisAppelsEtMail::firstOrNew(['id_devis' => $m_devis->id]);
-            $m_devis_appels_et_mails->date_1er_appel = $imp_devis->makeDate($mid->date_1er_appel);
-            $m_devis_appels_et_mails->note_1er_appel = $mid->note_1er_appel;
-            $m_devis_appels_et_mails->date_2eme_appel = $imp_devis->makeDate($mid->date_2eme_appel);
-            $m_devis_appels_et_mails->note_2eme_appel = $mid->note_2eme_appel;
-            $m_devis_appels_et_mails->date_3eme_appel = $imp_devis->makeDate($mid->date_3eme_appel);
-            $m_devis_appels_et_mails->note_3eme_appel = $mid->note_3eme_appel;
-            $m_devis_appels_et_mails->date_envoi_mail = $imp_devis->makeDate($mid->date_envoi_mail);
-            */
-            try {
-                DevisAppelsEtMail::createDevisAppelsEtMailDate_Non_Automatic(
-                    $m_h_devis,
-                    $m_devis_nouveau->id,
-                    $imp_devis->makeDate($mid->date_1er_appel),
-                    $mid->note_1er_appel,
-                    $imp_devis->makeDate($mid->date_2eme_appel),
-                    $mid->note_2eme_appel,
-                    $imp_devis->makeDate($mid->date_3eme_appel),
-                    $mid->note_3eme_appel,
-                    $imp_devis->makeDate($mid->date_envoi_mail),
-                    $withChange);
-                // $m_devis_appels_et_mails->save();
-                    } catch (\Exception $e){
-                $withErrors = true;
-                        $m_error_import = new ErrorImport();
-                        $m_error_import->type = 1; // ne change pas
-                        $m_error_import->date = $mid->date; // ne change pas
-                        $m_error_import->dossier = $mid->dossier;
-                        $m_error_import->error_message = $e->getMessage();
-                        $m_error_import->categorie = "APPELS & MAIL";
-                        $m_error_import->description .= "<strong>Date 1er Appel: </strong>".$mid->date_1er_appel."\n";
-                        $m_error_import->description .= "<strong>Note 1er Appel: </strong>".$mid->note_1er_appel."\n";
-                        $m_error_import->description .= "<strong>Date 2ème Appel (2j ap. 1er app): </strong>".$mid->date_2eme_appel."\n";
-                        $m_error_import->description .= "<strong>Note 2ème Appel: </strong>".$mid->note_2eme_appel."\n";
-                        $m_error_import->description .= "<strong>Date 3ème Appel (3j ap. 2e app): </strong>".$mid->date_3eme_appel."\n";
-                        $m_error_import->description .= "<strong>Note 3ème Appel: </strong>".$mid->note_3eme_appel."\n";
-                        $m_error_import->description .= "<strong>Date envoi de mail (même j 3e app): </strong>".$mid->date_envoi_mail."\n";
-                        $m_error_import->save();
-                    }
+            if ($mid->date_envoi_pec && $mid->date_envoi_pec!=''){
+                try {
+                    $date_envoie_pec = $mid->makeDateOrError($mid->date_envoi_pec);
+                }
+                catch (\Exception $e){
+                    $m_error_import->error_message .= "Date d'envoi PEC non conforme, ";
+                    $m_error_import->description.= "<strong>Date d'envoi PEC: </strong>".$mid->date_envoi_pec."\n";
+                    $withErrors = true;
+                }
+            }
+            if ($mid->date_fin_validite_pec && $mid->date_fin_validite_pec != '') {
+                try {
+                    $date_fin_validite_pec = $mid->makeDateOrError($mid->date_fin_validite_pec);
+                }
+                catch (\Exception $e){
+                    $m_error_import->error_message .= "Date de fin de validité PEC non conforme, ";
+                    $m_error_import->description .= "<strong>Date de fin de validité PEC: </strong>".$mid->date_fin_validite_pec."\n";
+                    $withErrors = true;
+                }
+            }
+            if ($mid->part_mutuelle && $mid->part_mutuelle != ''){
+                try {
+                    $part_mutuelle = $mid->makeNumericOrError($mid->part_mutuelle);
+                }
+                catch (\Exception $e){
+                    $m_error_import->error_message .= "Part mutuelle non conforme, ";
+                    $m_error_import->description.= "<strong>Part mutuelle: </strong>".$mid->part_mutuelle."\n";
+                    $withErrors = true;
+                }
+            }
+            if ($mid->part_rac && $mid->part_rac != '') {
+                try {
+                    $part_rac = $mid->makeNumericOrError($mid->part_rac);
+                }
+                catch (\Exception $e){
+                    $m_error_import->error_message .= "Part RAC non conforme, ";
+                    $m_error_import->description .= "<strong>Part RAC: </strong>".$mid->part_rac."\n";
+                    $withErrors = true;
+                }
+            }
+
+            DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $m_devis_nouveau->id, $date_envoie_pec, $date_fin_validite_pec, $part_mutuelle, $part_rac, $withChange);
+
+        // step 4: devis appels et mail
+            $date_1er_appel = null;
+            $note_1er_appel = $mid->note_1er_appel;
+            $date_2eme_appel = null;
+            $note_2eme_appel = $mid->note_2eme_appel;
+            $date_3eme_appel = null;
+            $note_3eme_appel = $mid->note_3eme_appel;
+            $date_envoi_mail = null;
+            if ($mid->date_1er_appel && $mid->date_1er_appel != '') {
+                try {
+                    $date_1er_appel = $imp_devis->makeDateOrError($mid->date_1er_appel);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date 1er appel non conforme, ";
+                    $m_error_import->description .= "<strong>Date 1er appel: </strong>" . $mid->date_1er_appel . "\n";
+                    $withErrors = true;
+                }
+            }
+            if ($mid->date_2eme_appel && $mid->date_2eme_appel != '') {
+                try {
+                    $date_2eme_appel = $imp_devis->makeDateOrError($mid->date_2eme_appel);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date 2ème appel non conforme, ";
+                    $m_error_import->description .= "<strong>Date 2ème appel: </strong>" . $mid->date_2eme_appel . "\n";
+                    $withErrors = true;
+                }
+            }
+            if ($mid->date_3eme_appel && $mid->date_3eme_appel != '') {
+                try {
+                    $date_3eme_appel = $imp_devis->makeDateOrError($mid->date_3eme_appel);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date 3ème appel non conforme, ";
+                    $m_error_import->description .= "<strong>Date 3ème appel: </strong>" . $mid->date_3eme_appel . "\n";
+                    $withErrors = true;
+                }
+            }
+            if ($mid->date_envoi_mail && $mid->date_envoi_mail != '') {
+                try {
+                    $date_envoi_mail = $imp_devis->makeDateOrError($mid->date_envoi_mail);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date d'envoi mail non conforme, ";
+                    $m_error_import->description .= "<strong>Date envoi mail: </strong>" . $mid->date_envoi_mail . "\n";
+                    $withErrors = true;
+                }
+            }
+
+            DevisAppelsEtMail::createDevisAppelsEtMailDate_Non_Automatic(
+                $m_h_devis,
+                $m_devis_nouveau->id,
+                $date_1er_appel,
+                $note_1er_appel,
+                $date_2eme_appel,
+                $note_2eme_appel,
+                $date_3eme_appel,
+                $note_3eme_appel,
+                $date_envoi_mail,
+                $withChange);
 
 
-            /*
-            $m_devis_reglements = DevisReglement::firstOrNew(['id_devis' => $m_devis->id]);
-            $m_devis_reglements->date_paiement_cb_ou_esp = $imp_devis->makeDate($mid->date_paiement_cb_ou_esp);
-            $m_devis_reglements->date_depot_chq_pec = $imp_devis->makeDate($mid->date_depot_chq_pec);
-            $m_devis_reglements->date_depot_chq_part_mut = $imp_devis->makeDate($mid->date_depot_chq_part_mut);
-            $m_devis_reglements->date_depot_chq_rac = $imp_devis->makeDate($mid->date_depot_chq_rac);
-            */
-            try {
-                DevisReglement::createDevisReglement($m_h_devis, $m_devis_nouveau->id, $imp_devis->makeDate($mid->date_paiement_cb_ou_esp), $imp_devis->makeDate($mid->date_depot_chq_pec), $imp_devis->makeDate($mid->date_depot_chq_part_mut), $imp_devis->makeDate($mid->date_depot_chq_rac), $withChange);
-                // $m_devis_reglements->save();
-                    }catch (\Exception $e){
-                $withErrors = true;
-                        $m_error_import = new ErrorImport();
-                        $m_error_import->type = 1; // ne change pas
-                        $m_error_import->date = $mid->date; // ne change pas
-                        $m_error_import->dossier = $mid->dossier;
-                        $m_error_import->error_message = $e->getMessage();
-                        $m_error_import->categorie = "APPELS & MAIL";
-                        $m_error_import->description .= "<strong>Date paiement par CB ou Esp: </strong>".$mid->date_paiement_cb_ou_esp."\n";
-                        $m_error_import->description .= "<strong>Date dépôt CHQ PEC: </strong>".$mid->date_depot_chq_pec."\n";
-                        $m_error_import->description .= "<strong>Date dépôt CHQ Part MUT: </strong>".$mid->date_depot_chq_part_mut."\n";
-                        $m_error_import->description .= "<strong>Date dépôt CHQ RAC: </strong>".$mid->date_depot_chq_rac."\n";
-                        $m_error_import->save();
-                    }
+        // step 4: Devis Reglement
+            $date_paiement_cb_ou_esp = null;
+            $date_depot_chq_pec = null;
+            $date_depot_chq_part_mut = null;
+            $date_depot_chq_rac = null;
+            if ($mid->date_paiement_cb_ou_esp && $mid->date_paiement_cb_ou_esp != '') {
+                try {
+                    $date_paiement_cb_ou_esp = $imp_devis->makeDateOrError($mid->date_paiement_cb_ou_esp);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date paiement CB ou ESP non conforme, ";
+                    $m_error_import->description .= "<strong>Date paiement CB ou ESP: </strong>" . $mid->date_paiement_cb_ou_esp . "\n";
+                    $withErrors = true;
+                }
+            }
+
+            if ($mid->date_depot_chq_pec && $mid->date_depot_chq_pec != '') {
+                try {
+                    $date_depot_chq_pec = $imp_devis->makeDateOrError($mid->date_depot_chq_pec);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date dépôt chèque PEC non conforme, ";
+                    $m_error_import->description .= "<strong>Date dépôt chèque PEC: </strong>" . $mid->date_depot_chq_pec . "\n";
+                    $withErrors = true;
+                }
+            }
+
+            if ($mid->date_depot_chq_part_mut && $mid->date_depot_chq_part_mut != '') {
+                try {
+                    $date_depot_chq_part_mut = $imp_devis->makeDateOrError($mid->date_depot_chq_part_mut);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date dépôt chèque part mutuelle non conforme, ";
+                    $m_error_import->description .= "<strong>Date dépôt chèque part mutuelle: </strong>" . $mid->date_depot_chq_part_mut . "\n";
+                    $withErrors = true;
+                }
+            }
+
+            if ($mid->date_depot_chq_rac && $mid->date_depot_chq_rac != '') {
+                try {
+                    $date_depot_chq_rac = $imp_devis->makeDateOrError($mid->date_depot_chq_rac);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date dépôt chèque RAC non conforme, ";
+                    $m_error_import->description .= "<strong>Date dépôt chèque RAC: </strong>" . $mid->date_depot_chq_rac . "\n";
+                    $withErrors = true;
+                }
+            }
+
+            DevisReglement::createDevisReglement(
+                $m_h_devis,
+                $m_devis_nouveau->id,
+                $date_paiement_cb_ou_esp,
+                $date_depot_chq_pec,
+                $date_depot_chq_part_mut,
+                $date_depot_chq_rac,
+                $withChange);
+
             $m_h_prothese = new H_Prothese();
             $m_h_prothese->code_u = Auth::user()->code_u;
             $m_h_prothese->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;
@@ -480,102 +584,133 @@ class ImportsController extends Controller
             $m_h_prothese->action .= "Données importés: (Date devis: ". $m_devis_nouveau->date .")" . "\n";
             $withChangeProthese = false;
 
-            /*
-            $m_prothese_empreintes = ProtheseEmpreinte::firstOrNew(['id_devis' => $m_devis->id]);
-            $m_prothese_empreintes->laboratoire = trim($mid->laboratoire);
-            $m_prothese_empreintes->date_empreinte = $imp_devis->makeDate($mid->date_empreinte);
-            $m_prothese_empreintes->date_envoi_labo = $imp_devis->makeDate($mid->date_envoi_labo);
-            $m_prothese_empreintes->travail_demande = $mid->travail_demande;
-            $m_prothese_empreintes->numero_dent = trim($mid->numero_dent);
-            $m_prothese_empreintes->observations = $mid->empreinte_observation;
-            */
-            try {
-                ProtheseEmpreinte::createOrUpdateEmpreinte(
-                    $m_h_prothese,
-                    $m_devis_nouveau->id,
-                    trim($mid->laboratoire),
-                    $imp_devis->makeDate($mid->date_empreinte),
-                    $imp_devis->makeDate($mid->date_envoi_labo),
-                    $mid->travail_demande,
-                    trim($mid->numero_dent),
-                    $mid->empreinte_observation,
-                    $withChangeProthese);
-                // $m_prothese_empreintes->save();
-                    }catch (\Exception $e){
+        // step 5: prothese empreinte
+            $laboratoire = trim($mid->laboratoire);
+            $date_empreinte = null;
+            $date_envoi_labo = null;
+            $travail_demande = $mid->travail_demande;
+            $numero_dent = trim($mid->numero_dent);
+            $observation = $mid->empreinte_observation;
+
+            if ($mid->date_empreinte && $mid->date_empreinte != '') {
+                try {
+                    $date_empreinte = $imp_devis->makeDateOrError($mid->date_empreinte);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date empreinte non conforme, ";
+                    $m_error_import->description .= "<strong>Date empreinte: </strong>" . $mid->date_empreinte . "\n";
+                    $withErrors = true;
+                }
+            }
+
+            if ($mid->date_envoi_labo && $mid->date_envoi_labo != '') {
+                try {
+                    $date_envoi_labo = $imp_devis->makeDateOrError($mid->date_envoi_labo);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date envoi labo non conforme, ";
+                    $m_error_import->description .= "<strong>Date envoi labo: </strong>" . $mid->date_envoi_labo . "\n";
+                    $withErrors = true;
+                }
+            }
+            ProtheseEmpreinte::createOrUpdateEmpreinte(
+                $m_h_prothese,
+                $m_devis_nouveau->id,
+                $laboratoire,
+                $date_empreinte,
+                $date_envoi_labo,
+                $travail_demande,
+                $numero_dent,
+                $observation,
+                $withChangeProthese
+            );
+
+        // step 6: prothese retour labo
+            $date_livraison = null;
+            $numero_suivi = trim($mid->numero_suivi);
+            $numero_facture_labo = trim($mid->numero_facture_labo);
+            if ($mid->date_livraison && $mid->date_livraison != '') {
+                try {
+                    $date_livraison = $imp_devis->makeDateOrError($mid->date_livraison);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date livraison non conforme, ";
+                    $m_error_import->description .= "<strong>Date livraison: </strong>" . $mid->date_livraison . "\n";
+                    $withErrors = true;
+                }
+            }
+            ProtheseRetourLabo::createOrUpdateEmpreinte(
+                $m_h_prothese,
+                $m_devis_nouveau->id,
+                $date_livraison,
+                $numero_suivi,
+                $numero_facture_labo,
+                $withChangeProthese
+            );
+
+        // step 7: prothese travaux
+            $m_protheseTravauxStatus = $m_protheseTravauxStatusS->get(trim($mid->pose_statut));
+            $date_pose_prevue = null;
+            $id_pose_status = null;
+            $date_pose_reel = null;
+            $organisme_payeur = trim($mid->organisme_payeur);
+            $montant_encaisse = null;
+            $date_controle_paiement = null;
+            if ($mid->date_pose_prevue && $mid->date_pose_prevue != '') {
+                try {
+                    $date_pose_prevue = $imp_devis->makeDateOrError($mid->date_pose_prevue);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date pose prévue non conforme, ";
+                    $m_error_import->description .= "<strong>Date pose prévue: </strong>" . $mid->date_pose_prevue . "\n";
+                    $withErrors = true;
+                }
+            }
+            if ($m_protheseTravauxStatus){
+                $id_pose_status = $m_protheseTravauxStatus->id;
+            }else{
+                $m_error_import->error_message = "Le status ". trim($mid->pose_statut) . "n'est pas encore dans la base de donnée";
+                $id_pose_status = 1;
                 $withErrors = true;
-                        $m_error_import = new ErrorImport();
-                        $m_error_import->type = 1; // ne change pas
-                        $m_error_import->date = $mid->date; // ne change pas
-                        $m_error_import->dossier = $mid->dossier;
-                        $m_error_import->error_message = $e->getMessage();
-                        $m_error_import->categorie = "INFO D'EMPREINTE";
-                        $m_error_import->description .= "<strong>Laboratoire: </strong>".$mid->laboratoire."\n";
-                        $m_error_import->description .= "<strong>Date D'empreinte: </strong>".$mid->date_empreinte."\n";
-                        $m_error_import->description .= "<strong>Date d'envoi au labo: </strong>".$mid->date_envoi_labo."\n";
-                        $m_error_import->description .= "<strong>Travail demandé: </strong>".$mid->travail_demande."\n";
-                        $m_error_import->description .= "<strong>N° dent: </strong>".$mid->numero_dent."\n";
-                        $m_error_import->description .= "<strong>Observations: </strong>".$mid->empreinte_observation."\n";
-                        $m_error_import->save();
-                    }
-                    /*
-            $m_prothese_retour_labos = ProtheseRetourLabo::firstOrNew(['id_devis' => $m_devis->id]);
-            $m_prothese_retour_labos->date_livraison = $imp_devis->makeDate($mid->date_livraison);
-            $m_prothese_retour_labos->numero_suivi = trim($mid->numero_suivi);
-            $m_prothese_retour_labos->numero_facture_labo = trim($mid->numero_facture_labo);
-                    */
-            try {
-                ProtheseRetourLabo::createOrUpdateEmpreinte($m_h_prothese, $m_devis_nouveau->id, $imp_devis->makeDate($mid->date_livraison), trim($mid->numero_suivi), trim($mid->numero_facture_labo), $withChangeProthese);
-                // $m_prothese_retour_labos->save();
-                    }catch (\Exception $e){
-                $withErrors = true;
-                        $m_error_import = new ErrorImport();
-                        $m_error_import->type = 1; // ne change pas
-                        $m_error_import->date = $mid->date; // ne change pas
-                        $m_error_import->dossier = $mid->dossier;
-                        $m_error_import->error_message = $e->getMessage();
-                        $m_error_import->categorie = "RETOUR LABO";
-                        $m_error_import->description .= "<strong>Date livraison: </strong>".$mid->date_livraison."\n";
-                        $m_error_import->description .= "<strong>Numéro suivi colis de retour + société de livraison: </strong>".$mid->numero_suivi."\n";
-                        $m_error_import->description .= "<strong>N° Facture Labo: </strong>".$mid->numero_facture_labo."\n";
-                        $m_error_import->save();
-                    }
-            /*
-            $m_prothese_travaux = ProtheseTravaux::firstOrNew(['id_devis' => $m_devis->id]);
-            $m_prothese_travaux->date_pose_prevue = $imp_devis->makeDate($mid->date_pose_prevue);
-            if ($m_protheseTravauxStatus) $m_prothese_travaux->id_pose_statut = $m_protheseTravauxStatus->id;
-            $m_prothese_travaux->date_pose_reel = $imp_devis->makeDate($mid->date_pose_reel);
-            $m_prothese_travaux->organisme_payeur = trim($mid->organisme_payeur);
-            if ($mid->montant_encaisse && $mid->montant_encaisse != '') $m_prothese_travaux->montant_encaisse = trim($mid->montant_encaisse);
-            $m_prothese_travaux->date_controle_paiement = $imp_devis->makeDate($mid->date_controle_paiement);
-            */
-            try {
-                ProtheseTravaux::createOrUpdateTravaux(
-                    $m_h_prothese,
-                    $m_devis_nouveau->id,
-                    $imp_devis->makeDate($mid->date_pose_prevue),
-                    $m_protheseTravauxStatus->id,
-                    $imp_devis->makeDate($mid->date_pose_reel),
-                    trim($mid->organisme_payeur),
-                    trim($mid->montant_encaisse),
-                    $imp_devis->makeDate($mid->date_controle_paiement),
-                    $withChangeProthese);
-                // $m_prothese_travaux->save();
-                    } catch (\Exception $e){
-                $withErrors = true;
-                        $m_error_import = new ErrorImport();
-                        $m_error_import->type = 1; // ne change pas
-                        $m_error_import->date = $mid->date; // ne change pas
-                        $m_error_import->dossier = $mid->dossier;
-                        $m_error_import->error_message = $e->getMessage();
-                        $m_error_import->categorie = "POSE & TRAVAUX CLOTURE";
-                        $m_error_import->description .= "<strong>Date pose prévue: </strong>".$mid->date_pose_prevue."\n";
-                        $m_error_import->description .= "<strong>Statut: </strong>".$mid->pose_statut."\n";
-                        $m_error_import->description .= "<strong>Date pose réelle: </strong>".$mid->date_pose_reel."\n";
-                        $m_error_import->description .= "<strong>Organisme payeur: </strong>".$mid->organisme_payeur."\n";
-                        $m_error_import->description .= "<strong>Montant encaissé: </strong>".$mid->montant_encaisse."\n";
-                        $m_error_import->description .= "<strong>Date ou vous devez contrôler paiement: </strong>".$mid->date_controle_paiement."\n";
-                        $m_error_import->save();
-                    }
+            }
+
+            if ($mid->date_pose_reel && $mid->date_pose_reel != '') {
+                try {
+                    $date_pose_reel = $imp_devis->makeDateOrError($mid->date_pose_reel);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date pose réelle non conforme, ";
+                    $m_error_import->description .= "<strong>Date pose réelle: </strong>" . $mid->date_pose_reel . "\n";
+                    $withErrors = true;
+                }
+            }
+            if ($mid->montant_encaisse && $mid->montant_encaisse != '') {
+                try {
+                    $montant_encaisse = $imp_devis->makeNumericOrError($mid->montant_encaisse); // Utilisation d'une méthode pour le montant
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Montant encaissé non conforme, ";
+                    $m_error_import->description .= "<strong>Montant encaissé: </strong>" . $mid->montant_encaisse . "\n";
+                    $withErrors = true;
+                }
+            }
+
+            if ($mid->date_controle_paiement && $mid->date_controle_paiement != '') {
+                try {
+                    $date_controle_paiement = $imp_devis->makeDateOrError($mid->date_controle_paiement); // Utilisation de makeDateOrError pour la date
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date contrôle paiement non conforme, ";
+                    $m_error_import->description .= "<strong>Date contrôle paiement: </strong>" . $mid->date_controle_paiement . "\n";
+                    $withErrors = true;
+                }
+            }
+
+            ProtheseTravaux::createOrUpdateTravaux(
+                $m_h_prothese,
+                $m_devis_nouveau->id,
+                $date_pose_prevue,
+                $id_pose_status,
+                $date_pose_reel,
+                $organisme_payeur,
+                $montant_encaisse,
+                $date_controle_paiement,
+                $withChangeProthese
+            );
+
 
             $m_h_cheque = new H_Cheque();
             $m_h_cheque->code_u = Auth::user()->code_u;
@@ -597,40 +732,84 @@ class ImportsController extends Controller
             $m_info_cheques->situation_cheque = trim($mid->situation_cheque);
             $m_info_cheques->observation = $mid->cheque_observation;
             */
-            try {
-                // $m_info_cheques->save();
-                InfoCheque::modifierCheque(
-                    $m_h_cheque,
-                    $m_devis_nouveau->id,
-                    trim($mid->numero_cheque),
-                    trim($mid->montant_cheque),
-                    trim($mid->nom_document),
-                    $imp_devis->makeDate($mid->date_encaissement_cheque),
-                    $imp_devis->makeDate($mid->date_1er_acte),
-                    trim($mid->nature_cheque),
-                    trim($mid->travaux_sur_devis),
-                    trim($mid->situation_cheque),
-                    $mid->cheque_observation,
-                    $withChangeCheque);
-            }catch (\Exception $e){
-                $withErrors = true;
-                $m_error_import = new ErrorImport();
-                $m_error_import->type = 1; // ne change pas
-                $m_error_import->date = $mid->date; // ne change pas
-                $m_error_import->dossier = $mid->dossier;
-                $m_error_import->error_message = $e->getMessage();
-                $m_error_import->categorie = "INFO CHEQUES";
-                $m_error_import->description .= "<strong>Numéro de chèque: </strong>".$mid->numero_cheque."\n";
-                $m_error_import->description .= "<strong>Montant chèque: </strong>".$mid->montant_cheque."\n";
-                $m_error_import->description .= "<strong>Nom document: </strong>".$mid->nom_document."\n";
-                $m_error_import->description .= "<strong>Date encaissement: </strong>".$mid->date_encaissement_cheque."\n";
-                $m_error_import->description .= "<strong>Date 1er acte: </strong>".$mid->date_1er_acte."\n";
-                $m_error_import->description .= "<strong>Nature chèque: </strong>".$mid->nature_cheque."\n";
-                $m_error_import->description .= "<strong>Travaux sur devis: </strong>".$mid->travaux_sur_devis."\n";
-                $m_error_import->description .= "<strong>Situation chèque: </strong>".$mid->situation_cheque."\n";
-                $m_error_import->description .= "<strong>Observation: </strong>".$mid->cheque_observation."\n";
-                $m_error_import->save();
+        // step 8: cheque
+            $numero_cheque = trim($mid->numero_cheque);
+            $montant_cheque = null;
+            $nom_document = trim($mid->nom_document);
+            $date_encaissement_cheque = null;
+            $date_1er_acte = null;
+            $nature_cheque = $m_nature_chequeS->get(trim($mid->nature_cheque));
+            $travaux_sur_devis = $m_travaux_sur_devisS->get(trim($mid->travaux_sur_devis));
+            $situation_cheque = $m_situation_chequeS->get(trim($mid->situation_cheque));
+            $observation = $mid->cheque_observation;
+
+            if ($mid->montant_cheque && $mid->montant_cheque != '') {
+                try {
+                    $montant_cheque = $imp_devis->makeNumericOrError($mid->montant_cheque); // Utilisation d'une méthode pour vérifier si le montant est numérique
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Montant chèque non conforme, ";
+                    $m_error_import->description .= "<strong>Montant chèque: </strong>" . $mid->montant_cheque . "\n";
+                    $withErrors = true;
+                }
             }
+            if ($mid->date_encaissement_cheque && $mid->date_encaissement_cheque != '') {
+                try {
+                    $date_encaissement_cheque = $imp_devis->makeDateOrError($mid->date_encaissement_cheque);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date d'encaissement chèque non conforme, ";
+                    $m_error_import->description .= "<strong>Date encaissement chèque: </strong>" . $mid->date_encaissement_cheque . "\n";
+                    $withErrors = true;
+                }
+            }
+            if ($mid->date_1er_acte && $mid->date_1er_acte != '') {
+                try {
+                    $date_1er_acte = $imp_devis->makeDateOrError($mid->date_1er_acte);
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Date 1er acte non conforme, ";
+                    $m_error_import->description .= "<strong>Date 1er acte: </strong>" . $mid->date_1er_acte . "\n";
+                    $withErrors = true;
+                }
+            }
+            if($nature_cheque){
+                $nature_cheque = $nature_cheque->nature_cheque;
+            }else{
+                $m_error_import->error_message .= "La nature du cheque ". trim($mid->nature_cheque) . "n'est pas encore dans la base de donnée";
+                $m_error_import->description .= "<strong>Nature Cheque: </strong>" . trim($mid->nature_cheque) . "\n";
+                $nature_cheque = '';
+                $withErrors = true;
+            }
+            if ($travaux_sur_devis) {
+                $travaux_sur_devis = $travaux_sur_devis->travaux_sur_devis;
+            } else {
+                $m_error_import->error_message .= "Les travaux sur devis ".trim($mid->travaux_sur_devis)." n'est pas disponibles dans la base de données.\n";
+                $m_error_import->description .= "<strong>Travaux sur devis: </strong>" . trim($mid->travaux_sur_devis) . "\n";
+                $travaux_sur_devis = '';
+                $withErrors = true;
+            }
+
+            if ($situation_cheque) {
+                $situation_cheque = $situation_cheque->situation_cheque;
+            } else {
+                $m_error_import->error_message .= "La situation du chèque ".trim($mid->situation_cheque)." n'est pas disponible dans la base de données.\n";
+                $m_error_import->description .= "<strong>Situation Chèque: </strong>" . trim($mid->situation_cheque) . "\n";
+                $situation_cheque = '';
+                $withErrors = true;
+            }
+
+            InfoCheque::modifierCheque(
+                $m_h_cheque,
+                $m_devis_nouveau->id,
+                $numero_cheque,
+                $montant_cheque,
+                $nom_document,
+                $date_encaissement_cheque,
+                $date_1er_acte,
+                $nature_cheque,
+                $travaux_sur_devis,
+                $situation_cheque,
+                $observation,
+                $withChangeCheque
+            );
             if ($withChangeCheque){
                 $m_h_cheque->save();
             }
@@ -640,8 +819,11 @@ class ImportsController extends Controller
             if ($withChange){
                 $m_h_devis->save();
             }
+            if ($withErrors){
+                $m_error_import->save();
+            }
         }
-        if (!$withErrors)
+        if (!$withErrorsAll)
             return back()->with('success', 'Fichier importé avec succès');
         else
             return back()->with('warning', 'Données importées mais contiennent des erreurs');

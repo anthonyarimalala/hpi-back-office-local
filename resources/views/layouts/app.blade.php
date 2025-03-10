@@ -260,6 +260,19 @@
                     </li>
 
                     <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#anomalies" aria-expanded="false" aria-controls="ui-basic">
+                            <i class="menu-icon mdi mdi-alert-octagon-outline"></i>
+                            <span class="menu-title">Anomalies</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="anomalies">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" href="{{ asset('') }}">CA</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#autre" aria-expanded="false" aria-controls="ui-basic">
                             <i class="menu-icon mdi mdi-dots-horizontal"></i>
                             <span class="menu-title">Autres</span>
@@ -276,6 +289,7 @@
                             </ul>
                         </div>
                     </li>
+
                 <li class="nav-item nav-category">Gestion BACK OFFICE</li>
                 @if(\Illuminate\Support\Facades\Auth::user()->role == 'admin')
                     <li class="nav-item">
@@ -300,6 +314,7 @@
                         </ul>
                     </div>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#erreurs" aria-expanded="false" aria-controls="ui-basic">
                         <i class="menu-icon mdi mdi-alert-circle"></i>
