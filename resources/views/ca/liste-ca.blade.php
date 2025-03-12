@@ -58,6 +58,13 @@
                                     </ul>
                                 @endif
                             </div>
+                            <div class="col-6">
+                                <form action="{{ asset('reinitializeFilterCa') }}" method="GET">
+                                    <button class="btn btn-primary" style="color: whitesmoke" type="submit">
+                                        Tous
+                                    </button>
+                                </form>
+                            </div>
                             <div class="d-flex justify-content-center">
                                 {{ $ca_actes_reglements->links('pagination::bootstrap-4') }}
                             </div>
@@ -100,6 +107,7 @@
                                         <th style="background-color: #f3f3f3">Espèces</th>
                                         <th style="background-color: #f3f3f3; border-right: 2px solid #000;">CB</th>
                                         <th style="background-color: #f3f3f3">Commentaire</th>
+                                        <th style="background-color: #f3f3f3">Date de création</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -137,6 +145,7 @@
                                             <td class="text-end">@if($ca->rac_especes){{ number_format($ca->rac_especes, 2, ',', ' ') }}@endif</td>
                                             <td class="text-end" style="border-right: 2px solid #000;">@if($ca->rac_cb){{ number_format($ca->rac_cb, 2, ',', ' ') }}@endif</td>
                                             <td>{{ $ca->commentaire ?: 'Aucun commentaire' }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($ca->created_at)->format('d-m-Y') }}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -191,7 +200,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="dateModalLabel">Sélectionner la période de modification</h5>
+                    <h5 class="modal-title" id="dateModalLabel">Sélectionner la période</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="exportForm" action="{{ asset('ca/export') }}" method="GET">
@@ -199,15 +208,30 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="date_ca_modif_debut" class="form-label">Date début</label>
+                                <label for="date_ca_modif_debut" class="form-label">Date de création début</label>
+                                <input type="date" id="date_ca_create_debut" name="date_ca_create_debut" class="form-control" value="">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="date_ca_modif_fin" class="form-label">Date de création fin</label>
+                                <input type="date" id="date_ca_create_fin" name="date_ca_create_fin" class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="date_ca_modif_debut" class="form-label">Date de modification début</label>
                                 <input type="date" id="date_ca_modif_debut" name="date_ca_modif_debut" class="form-control" value="">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="date_ca_modif_fin" class="form-label">Date fin</label>
+                                <label for="date_ca_modif_fin" class="form-label">Date de modification fin</label>
                                 <input type="date" id="date_ca_modif_fin" name="date_ca_modif_fin" class="form-control" value="">
                             </div>
                         </div>
-
+                        <div class="col-md-12 mb-12">
+                            <div>
+                                <input type="checkbox" id="withFilters" name="withFilters[]" value="oui">
+                                <label for="withFilters">Prendre en compte les filtres</label>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
@@ -308,6 +332,138 @@
                                                     {{ $pr->praticien }}
                                                 </li>
                                             @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-md-6">
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Cotation</h4>
+                                <div class="col-md-12 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Cotations
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="montant_min_cotation" class="form-label">Montant Min</label>
+                                                <input type="number" step="0.01" id="montant_min_cotation" name="montant_min_cotation"
+                                                       class="form-control" @if($filters) value="{{ $filters['montant_min_cotation'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="montant_max_cotation" class="form-label">Montant Max</label>
+                                                <input type="number" step="0.01" id="montant_max_cotation" name="montant_max_cotation"
+                                                       class="form-control" @if($filters) value="{{ $filters['montant_max_cotation'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="non_regle_cotation[]" value="non_regle_cotation" @if($filters) @if(count($filters['non_regle_cotation'])>0) checked @endif @endif>
+                                                </label> Non réglé
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="regle_cotation[]" value="regle_cotation" @if($filters) @if(count($filters['regle_cotation'])>0) checked @endif @endif>
+                                                </label> Réglé
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="row col-md-4">
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Part Sécu</h4>
+                                <div class="col-md-12 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Part sécu
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="montant_min_secu" class="form-label">Montant Min</label>
+                                                <input type="number" step="0.01" id="montant_min_secu" name="montant_min_secu"
+                                                       class="form-control" @if($filters) value="{{ $filters['montant_min_secu'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="montant_max_secu" class="form-label">Montant Max</label>
+                                                <input type="number" step="0.01" id="montant_max_secu" name="montant_max_secu"
+                                                       class="form-control" @if($filters) value="{{ $filters['montant_max_secu'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="non_regle_secu[]" value="non_regle_secu" @if($filters) @if(count($filters['non_regle_secu'])>0)  checked @endif @endif>
+                                                </label> Non réglé
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-md-4">
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Part Mut</h4>
+                                <div class="col-md-12 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Status
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="montant_min_mut" class="form-label">Montant Min</label>
+                                                <input type="number" step="0.01" id="montant_min_mut" name="montant_min_mut"
+                                                       class="form-control" @if($filters) value="{{ $filters['montant_min_mut'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="montant_max_mut" class="form-label">Montant Max</label>
+                                                <input type="number" step="0.01" id="montant_max_mut" name="montant_max_mut"
+                                                       class="form-control" @if($filters) value="{{ $filters['montant_max_mut'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="non_regle_mut[]" value="non_regle_mut" @if($filters) @if(count($filters['non_regle_mut'])>0)  checked @endif @endif>
+                                                </label> Non réglé
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-md-4">
+                                <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Part Patient</h4>
+                                <div class="col-md-12 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Praticiens
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="montant_min_patient" class="form-label">Montant Min</label>
+                                                <input type="number" step="0.01" id="montant_min_patient" name="montant_min_patient"
+                                                       class="form-control" @if($filters) value="{{ $filters['montant_min_patient'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="montant_max_patient" class="form-label">Montant Max</label>
+                                                <input type="number" step="0.01" id="montant_max_patient" name="montant_max_patient"
+                                                       class="form-control" @if($filters) value="{{ $filters['montant_max_patient'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="non_regle_patient[]" value="non_regle_patient" @if($filters) @if(count($filters['non_regle_patient'])>0)  checked @endif @endif>
+                                                </label> Non réglé
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>

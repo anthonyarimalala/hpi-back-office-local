@@ -40,7 +40,7 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="date" class="form-control" id="date_derniere_modif" name="date_derniere_modif" value="{{ $v_ca_actes_reglement->date_derniere_modif }}" placeholder="Date de modification"></td>
+                                    <td><input type="date" class="form-control" id="date_derniere_modif" name="date_derniere_modif" value="" placeholder="Date de modification" readonly></td>
                                     <td><input type="text" class="form-control" id="dossierr" name="dossierr" value="{{ $v_ca_actes_reglement->dossier }}" placeholder="Numéro de dossier" required readonly></td>
                                     <td><input type="text" class="form-control" id="nom_patient" name="nom_patient" value="{{ $v_ca_actes_reglement->nom }}" placeholder="Nom du patient" readonly></td>
                                     <td>

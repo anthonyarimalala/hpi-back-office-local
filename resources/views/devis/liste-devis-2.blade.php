@@ -572,6 +572,12 @@
                                 <label for="date_devis_fin" class="form-label">Date fin</label>
                                 <input type="date" id="date_devis_fin" name="date_devis_fin" class="form-control">
                             </div>
+                            <div class="col-md-12 mb-12">
+                                <div>
+                                    <input type="checkbox" id="withFilters" name="withFilters[]" value="oui">
+                                    <label for="withFilters">Prendre en compte les filtres</label>
+                                </div>
+                            </div>
                         </div>
 
                     </div>

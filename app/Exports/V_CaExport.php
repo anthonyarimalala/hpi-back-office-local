@@ -6,10 +6,11 @@ use Illuminate\View\View;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class V_CaExport implements FromView, WithEvents
+class V_CaExport implements FromView, WithEvents, WithTitle
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -29,6 +30,10 @@ class V_CaExport implements FromView, WithEvents
             'data' => $this->data,
             'praticiens' => $this->praticiens,
         ]);
+    }
+    public function title(): string
+    {
+        return 'CA';
     }
     public function registerEvents(): array
     {

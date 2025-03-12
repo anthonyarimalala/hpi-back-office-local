@@ -255,7 +255,7 @@
                                 <td>{{ $hist->nom }}</td>
                                 <td>{{ $hist->dossier }}</td>
                                 <td>{!! nl2br($hist->action) !!}</td>
-                                <td>{{ $hist->created_at }}</td>
+                                <td>{{ \Carbon\Carbon::parse($hist->created_at)->format('d-m-Y H:m') }}</td>
                             </tr>
                         @endforeach
                         </tbody>

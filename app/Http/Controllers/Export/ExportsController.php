@@ -20,10 +20,41 @@ class ExportsController extends Controller
     {
         $date_ca_modif_debut = $request->input('date_ca_modif_debut');
         $date_ca_modif_fin = $request->input('date_ca_modif_fin');
+        $date_ca_create_debut = $request->input('date_ca_create_debut');
+        $date_ca_create_fin = $request->input('date_ca_create_fin');
+        $withFilters = $request->input('withFilters', []);
+
+
+        /*
         $v_ca = V_CaActesReglement::where('date_derniere_modif', '>=', $date_ca_modif_debut)
             ->where('date_derniere_modif', '<=', $date_ca_modif_fin)
-            ->orderBy('date_derniere_modif', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
+        */
+
+        $filters = session()->get('ca_filters', []);
+        $m_v_ca = new V_CaActesReglement();
+        $query = $m_v_ca->query();
+        if (count($withFilters) > 0){
+            if ($filters)
+                $m_v_ca->scopeFilter($query, $filters);
+        }
+        if ($date_ca_modif_debut && $date_ca_create_debut!=''){
+            $query->where('date_derniere_modif' , '>=' , $date_ca_modif_debut);
+        }
+        if ($date_ca_modif_fin && $date_ca_create_fin!=''){
+            $query->where('date_derniere_modif' , '<=' , $date_ca_create_fin);
+        }
+        if ($date_ca_create_debut && $date_ca_create_debut!=''){
+            $query->where('date_derniere_modif' , '>=' , $date_ca_create_debut);
+        }
+        if ($date_ca_create_fin && $date_ca_create_fin!=''){
+            $query->orderBy('created_at', '<=', $date_ca_create_fin);
+        }
+
+        $v_ca = $query->orderBy('created_at', 'desc')
+            ->get();
+
         $praticiens = DB::select("SELECT
                                                             praticien
                                                         FROM ca_actes_reglements
@@ -33,9 +64,20 @@ class ExportsController extends Controller
     }
     public function exportV_Devis(Request $request)
     {
+        $withFilters = $request->input('withFilters', []);
         $date_devis_debut = $request->input('date_devis_debut');
         $date_devis_fin = $request->input('date_devis_fin');
-        $v_devis = V_Devis::where('date', '>=', $date_devis_debut)
+
+        $filters = session()->get('devis_filters', []);
+        $m_v_devis = new V_Devis();
+        $query = $m_v_devis->query(); // Crée une requête de base
+        // echo('count($withFilters): '.count($withFilters));
+
+        if (count($withFilters) > 0){
+            if ($filters)
+                $m_v_devis->scopeFiltrer($query, $filters);
+        }
+        $v_devis = $query->where('date', '>=', $date_devis_debut)
             ->where('date', '<=', $date_devis_fin)
             ->orderBy('date', 'asc')
             ->get();

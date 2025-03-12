@@ -88,10 +88,6 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::get('dashboard/rappels', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboardRappels'])->name('dashboard.rappel');
     Route::get('dashboard/c-a', [\App\Http\Controllers\Dashboard\DashboardController::class, 'showDashboardCa']);
 
-
-
-
-
     // section: historique
     Route::get('historiques/modif-chq', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistCheque']);
     Route::get('historiques/modif-pro', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistProthese']);
@@ -100,6 +96,7 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
 
     // section: ca
     Route::get('getFilterCa', [\App\Http\Controllers\Ca\CaController::class, 'getFilterCa']);
+    Route::get('reinitializeFilterCa', [\App\Http\Controllers\Ca\CaController::class, 'reinitializeFilterCa']);
     Route::get('liste-ca', [\App\Http\Controllers\Ca\CaController::class, 'showListeCa'])->name('liste.ca');
     Route::get('ca/{id_ca}/{dossier}/modifier', [\App\Http\Controllers\Ca\CaController::class, 'showModifierCa']);
     Route::post('ca/modifier', [\App\Http\Controllers\Ca\CaController::class, 'updateCa']);
@@ -107,6 +104,9 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::get('ca/nouveau/{dossier}', [\App\Http\Controllers\Ca\CaController::class, 'showNouveauCaWithDossier']);
     Route::post('ca/nouveau', [\App\Http\Controllers\Ca\CaController::class, 'saveCa']);
     Route::get('/get-patient-details', [\App\Http\Controllers\Ca\CaController::class, 'getPatientDetails'])->name('get.patient.details');
+
+    // section: anomalie
+    Route::get('anomalies-ca', [\App\Http\Controllers\Anomalie\AnomalieCaController::class, 'showAnomalieCa']);
 
     // section: imports
     Route::get('imports', [\App\Http\Controllers\Import\ImportsController::class, 'showImports']);

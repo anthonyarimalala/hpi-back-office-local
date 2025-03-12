@@ -178,10 +178,6 @@ class DevisController extends Controller
 
     public function reinitializeFilterListeDevis(){
         session()->forget('devis_filters');
-        $m_v_deviss = V_Devis::orderBy('date', 'desc')
-            ->where('is_deleted', 0)
-            ->paginate(20);
-        session()->put('deviss', $m_v_deviss);
         return back();
     }
     public function getFilterListeDevis(Request $request){

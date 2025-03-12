@@ -39,15 +39,17 @@
                     <h4 class="card-title mb-0" style="color: whitesmoke">Info chèque</h4>
                 </div>
                 <div class="card-body">
-                    <p class="card-description">
-                        <code>Nature: {{ $v_cheque->getNature_cheque() }}</code>
-                    </p>
+
                     <div class="row">
                         <div class="col-md-6">
                             <address>
                                 <p class="fw-bold">N° {{ $v_cheque->getNumero_cheque() }}</p>
+                                <p><strong>Montant:</strong> {{ $v_cheque->getMontant_cheque() }}</p>
                                 <p>
                                     <strong>Nom document:</strong> {{ $v_cheque->getNom_document() }}
+                                </p>
+                                <p>
+                                    <strong>Nature:</strong> {{ $v_cheque->getNature_cheque() }}
                                 </p>
                                 <p>
                                     <strong>Travaux Sur le Devis:</strong> {{ $v_cheque->getTravaux_sur_devis() }}
@@ -68,7 +70,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <h4 class="card-title">Montant: {{ $v_cheque->getMontant_cheque() }}</h4>
+
                     <p class="fw-bold">Observation:</p>
                     <p class="lead">{{ $v_cheque->getObservation() }}</p>
                 </div>
@@ -97,7 +99,7 @@
                                 <td>{{ $hist->prenom }} {{ $hist->nom }}</td>
                                 <td>{{ $hist->dossier }}</td>
                                 <td>{!! nl2br($hist->action) !!}</td>
-                                <td>{{ $hist->created_at }}</td>
+                                <td>{{ \Carbon\Carbon::parse($hist->created_at)->format('d-m-Y H:m') }}</td>
                             </tr>
                         @endforeach
                         </tbody>

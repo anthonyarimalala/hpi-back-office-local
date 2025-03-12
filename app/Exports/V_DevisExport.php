@@ -10,13 +10,14 @@ use App\Models\praticien\Praticien;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class V_DevisExport implements FromView, WithEvents
+class V_DevisExport implements FromView, WithEvents, WithTitle
 {
     protected $data;
 
@@ -32,6 +33,10 @@ class V_DevisExport implements FromView, WithEvents
             'dossier_statuss' => DossierStatus::where('is_deleted', 0)->get(), // mes status c'est $dossier_status->status,
             'praticiens' => Praticien::where('is_deleted', 0)->get()
         ]);
+    }
+    public function title(): string
+    {
+        return 'DEVIS & PROTHESE & CHQ';
     }
     public function registerEvents(): array
     {

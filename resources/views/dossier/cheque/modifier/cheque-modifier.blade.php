@@ -28,7 +28,7 @@
         </div>
     </div>
     <form action="{{ asset('modifier-cheque') }}" method="POST">
-    @csrf
+        @csrf
         <label>
             <input type="number" name="id_devis" value="{{ $v_cheque->id_devis }}" hidden>
             <input type="text" name="dossier" value="{{ $v_cheque->dossier }}" hidden>
@@ -44,6 +44,24 @@
                         <div class="col-md-6">
                             <address>
                                 <div class="row">
+                                    <label for="numero_cheque" class="col-sm-3 col-form-label">N°</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="numero_cheque" name="numero_cheque" placeholder="Numéro" value="{{ $v_cheque->numero_cheque }}">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label for="montant_cheque" class="col-sm-3 col-form-label">Montant du chèque</label>
+                                    <div class="col-sm-9">
+                                        <input type="number" step="0.01" class="form-control" id="montant_cheque" name="montant_cheque" placeholder="Montant du chèque" min="0" value="{{ $v_cheque->montant_cheque }}">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label for="nom_document" class="col-sm-3 col-form-label">Nom document</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="nom_document" name="nom_document" placeholder="Nom document" value="{{ $v_cheque->nom_document }}">
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <label for="nature_cheque" class="col-sm-3 col-form-label">Nature du chèque</label>
                                     <div class="col-sm-9">
                                         <select class="form-select" id="nature_cheque" name="nature_cheque">
@@ -54,18 +72,9 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <label for="numero_cheque" class="col-sm-3 col-form-label">N°</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="numero_cheque" name="numero_cheque" placeholder="Numéro" value="{{ $v_cheque->numero_cheque }}">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <label for="nom_document" class="col-sm-3 col-form-label">Nom document</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="nom_document" name="nom_document" placeholder="Nom document" value="{{ $v_cheque->nom_document }}">
-                                    </div>
-                                </div>
+
+
+
                                 <div class="row">
                                     <label for="travaux_sur_devis" class="col-sm-3 col-form-label">Travaux sur devis</label>
                                     <div class="col-sm-9">
@@ -106,12 +115,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <label for="montant_cheque" class="col-sm-3 col-form-label">Montant du chèque</label>
-                        <div class="col-sm-9">
-                            <input type="number" step="0.01" class="form-control" id="montant_cheque" name="montant_cheque" placeholder="Montant du chèque" min="0" value="{{ $v_cheque->montant_cheque }}">
-                        </div>
-                    </div>
+
                     <div>
                         <label for="observation">Observation</label>
                         <textarea type="text" class="form-control" id="observation" name="observation" placeholder="Observation" style="height: 100px">{{ $v_cheque->observation }}</textarea>
@@ -123,11 +127,8 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
-
     </form>
 
 @endsection

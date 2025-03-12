@@ -17,6 +17,10 @@ use Illuminate\Http\Request;
 class CaController extends Controller
 {
     //
+    public function reinitializeFilterCa(){
+        session()->forget('ca_filters');
+        return back();
+    }
     public function getPatientDetails(Request $request){
         $dossier = $request->query('dossier');
         $m_v_devis = \App\Models\views\V_Devis::where('dossier', $dossier)->orderBy('date', 'desc')->first();
@@ -88,7 +92,20 @@ class CaController extends Controller
             'date_derniere_modif_debut' => $request->input('date_derniere_modif_debut'),
             'date_derniere_modif_fin' => $request->input('date_derniere_modif_fin'),
             'status' => $request->input('status'),
-            'praticiens' => $request->input('praticiens')
+            'praticiens' => $request->input('praticiens'),
+            'montant_min_cotation' => $request->input('montant_min_cotation'),
+            'montant_max_cotation' => $request->input('montant_max_cotation'),
+            'non_regle_cotation' => $request->input('non_regle_cotation', []),
+            'regle_cotation' => $request->input('regle_cotation', []),
+            'montant_min_secu' => $request->input('montant_min_secu'),
+            'montant_max_secu' => $request->input('montant_max_secu'),
+            'non_regle_secu' => $request->input('non_regle_secu', []),
+            'montant_min_mut' => $request->input('montant_min_mut'),
+            'montant_max_mut' => $request->input('montant_max_mut'),
+            'non_regle_mut' => $request->input('non_regle_mut', []),
+            'montant_min_patient' => $request->input('montant_min_patient'),
+            'montant_max_patient' => $request->input('montant_max_patient'),
+            'non_regle_patient' => $request->input('non_regle_patient', []),
         ];
         session()->put('ca_filters', $filters);
         return redirect('liste-ca');

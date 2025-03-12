@@ -267,7 +267,7 @@
                         </a>
                         <div class="collapse" id="anomalies">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link" href="{{ asset('') }}">CA</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="{{ asset('anomalies-ca') }}">CA</a></li>
                             </ul>
                         </div>
                     </li>

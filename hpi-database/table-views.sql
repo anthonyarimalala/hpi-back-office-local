@@ -164,6 +164,16 @@ FROM
        LEFT JOIN prothese_travaux_status pts ON tra.id_pose_statut = pts.id;
 
 CREATE OR REPLACE VIEW v_ca_actes_reglements AS
-SELECT car.*, dos.nom, dos.date_naissance FROM ca_actes_reglements car
-    JOIN dossiers dos ON car.dossier = dos.dossier;
+SELECT
+    car.*,
+    dos.nom,
+    dos.date_naissance,
+    COALESCE(ro_part_secu, 0) + COALESCE(part_mutuelle, 0) + COALESCE(rac_part_patient, 0) AS cotation_paye,
+    COALESCE(ro_virement_recu, 0) + COALESCE(ro_indus_paye, 0) + COALESCE(ro_indus_irrecouvrable, 0) AS ro_part_secu_paye,
+    COALESCE(rcs_virement, 0) + COALESCE(rcs_especes, 0) + COALESCE(rcs_cb, 0) + COALESCE(rcsd_cheque, 0) + COALESCE(rcsd_especes, 0) + COALESCE(rcsd_cb, 0) AS part_mutuelle_paye,
+    COALESCE(rac_cheque, 0) + COALESCE(rac_especes, 0) + COALESCE(rac_cb, 0) AS rac_part_patient_paye
+        FROM ca_actes_reglements car
+        JOIN dossiers dos ON car.dossier = dos.dossier;
+
+
 
