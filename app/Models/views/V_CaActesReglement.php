@@ -80,6 +80,5 @@ class V_CaActesReglement extends Model
             $query->whereColumn('rac_part_patient', '>', 'rac_part_patient_paye');
             $filters['stringFilters'][] = 'Afficher que les Part Patient non réglés';
         }
-
     }
 }

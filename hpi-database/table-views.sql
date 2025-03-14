@@ -1,5 +1,6 @@
 
 
+/*
 CREATE OR REPLACE VIEW v_h_devis AS
 SELECT
     hd.code_u,
@@ -41,6 +42,7 @@ FROM h_cheques hc
 JOIN devis dev ON hc.id_devis = dev.id
 JOIN dossiers dos ON dev.dossier = dos.dossier
 JOIN users usr ON hc.code_u = usr.code_u;
+*/
 
 CREATE OR REPLACE VIEW v_devis AS
 SELECT

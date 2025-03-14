@@ -13,10 +13,51 @@ use App\Models\views\V_CaActesReglement;
 use App\Models\views\V_Devis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CaController extends Controller
 {
     //
+    public function deleteCa($id_ca){
+        $m_h_ca = new H_CaActesReglement();
+        $m_ca = CaActesReglement::find($id_ca);
+        $m_h_ca->code_u = Auth::user()->code_u;
+        $m_h_ca->nom = Auth::user()->prenom. ' '. Auth::user()->nom;
+        $m_h_ca->id_ca_actes_reglement = $id_ca;
+        $m_h_ca->dossier = $m_ca->dossier;
+        $m_h_ca->categorie = 'delete';
+        $m_h_ca->action .= "<strong>Date dernière modif: </strong> " . $m_ca->date_derniere_modif . "\n";
+        $m_h_ca->action .= "<strong>Dossier: </strong> " . $m_ca->dossier . "\n";
+        $m_h_ca->action .= "<strong>Nom patient: </strong> " . $m_ca->nom_patient . "\n";
+        $m_h_ca->action .= "<strong>Statut: </strong> " . $m_ca->statut . "\n";
+        $m_h_ca->action .= "<strong>Mutuelle: </strong> " . $m_ca->mutuelle . "\n";
+        $m_h_ca->action .= "<strong>Praticien: </strong> " . $m_ca->praticien . "\n";
+        $m_h_ca->action .= "<strong>Nom acte: </strong> " . $m_ca->nom_acte . "\n";
+        $m_h_ca->action .= "<strong>Cotation: </strong> " . $m_ca->cotation . "\n";
+        $m_h_ca->action .= "<strong>Contrôle sécurisation: </strong> " . $m_ca->controle_securisation . "\n";
+        $m_h_ca->action .= "<strong>RO part sécu: </strong> " . $m_ca->ro_part_secu . "\n";
+        $m_h_ca->action .= "<strong>RO virement reçu: </strong> " . $m_ca->ro_virement_recu . "\n";
+        $m_h_ca->action .= "<strong>RO indus payé: </strong> " . $m_ca->ro_indus_paye . "\n";
+        $m_h_ca->action .= "<strong>RO indus en attente: </strong> " . $m_ca->ro_indus_en_attente . "\n";
+        $m_h_ca->action .= "<strong>RO indus irrécouvrable: </strong> " . $m_ca->ro_indus_irrecouvrable . "\n";
+        $m_h_ca->action .= "<strong>Part mutuelle: </strong> " . $m_ca->part_mutuelle . "\n";
+        $m_h_ca->action .= "<strong>RCS virement: </strong> " . $m_ca->rcs_virement . "\n";
+        $m_h_ca->action .= "<strong>RCS espèces: </strong> " . $m_ca->rcs_especes . "\n";
+        $m_h_ca->action .= "<strong>RCS CB: </strong> " . $m_ca->rcs_cb . "\n";
+        $m_h_ca->action .= "<strong>RCSD chèque: </strong> " . $m_ca->rcsd_cheque . "\n";
+        $m_h_ca->action .= "<strong>RCSD espèces: </strong> " . $m_ca->rcsd_especes . "\n";
+        $m_h_ca->action .= "<strong>RCSD CB: </strong> " . $m_ca->rcsd_cb . "\n";
+        $m_h_ca->action .= "<strong>RAC part patient: </strong> " . $m_ca->rac_part_patient . "\n";
+        $m_h_ca->action .= "<strong>RAC chèque: </strong> " . $m_ca->rac_cheque . "\n";
+        $m_h_ca->action .= "<strong>RAC espèces: </strong> " . $m_ca->rac_especes . "\n";
+        $m_h_ca->action .= "<strong>RAC CB: </strong> " . $m_ca->rac_cb . "\n";
+        $m_h_ca->action .= "<strong>Commentaire: </strong> " . $m_ca->commentaire . "\n";
+        $m_h_ca->action .= "<strong>Date: </strong> " . Carbon::parse($m_ca->created_at)->format('d-m-Y') . "\n";
+        $m_h_ca->save();
+        DB::delete('DELETE FROM ca_actes_reglements WHERE id = ?', [$id_ca]);
+        return back();
+    }
     public function reinitializeFilterCa(){
         session()->forget('ca_filters');
         return back();

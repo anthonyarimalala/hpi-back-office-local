@@ -376,7 +376,15 @@ class ImportsController extends Controller
                     $withErrors = true;
                 }
             }
-            $m_devis = Devis::firstOrNew(['dossier' => $mid->dossier, 'date' => $date_devis]);
+            $prtc = $m_praticienS->get(strtoupper(trim($mid->praticien)));
+            if (!$prtc){
+                $prtc = '';
+            } else
+            {
+                $prtc = $prtc->praticien->praticien;
+            }
+
+            $m_devis = Devis::firstOrNew(['dossier' => $mid->dossier, 'date' => $date_devis, 'praticien' => $prtc]);
             $m_devis->status = $m_dossier->status;
             $m_devis->mutuelle = trim($mid->mutuelle);
             if ($mid->montant && $mid->montant != ''){

@@ -43,6 +43,7 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::get('{dossier}/details', [\App\Http\Controllers\Dossier\DossierController::class, 'getDetailDossier'])->name('dossier.detail');
 
     // section: devis
+    Route::get('deleteDevis/{id_devis}', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'deleteDevis'])->name('delete.devis');
     Route::post('modifier-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'modifierDevis']);
     Route::get('{dossier}/devis/{id_devis}/modifier', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showModifierDevis']);
     Route::get('getFilterListeDevis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getFilterListeDevis']);
@@ -95,6 +96,7 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::get('historiques/modif-ca', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistCa']);
 
     // section: ca
+    Route::get('delete-ca/{id_ca}', [\App\Http\Controllers\Ca\CaController::class, 'deleteCa']);
     Route::get('getFilterCa', [\App\Http\Controllers\Ca\CaController::class, 'getFilterCa']);
     Route::get('reinitializeFilterCa', [\App\Http\Controllers\Ca\CaController::class, 'reinitializeFilterCa']);
     Route::get('liste-ca', [\App\Http\Controllers\Ca\CaController::class, 'showListeCa'])->name('liste.ca');

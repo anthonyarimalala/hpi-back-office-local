@@ -20,7 +20,7 @@
                             </thead>
                             <tbody>
                             @foreach($hists as $hist)
-                                <tr>
+                                <tr @if($hist->categorie == 'delete') style="background-color: #ffbebe" @endif>
                                     <td>{{ $hist->prenom }} {{ $hist->nom }}</td>
                                     <td onclick="window.location.href='{{ asset($hist->dossier.'/devis/'.$hist->id_devis.'/detail') }}';"
                                         style="cursor: pointer;"

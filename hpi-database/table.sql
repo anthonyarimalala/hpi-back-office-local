@@ -209,6 +209,7 @@
         id_devis INTEGER,
         dossier VARCHAR(20),
         action TEXT,
+        categorie VARCHAR(255),
         created_at TIMESTAMP,
         updated_at TIMESTAMP
     );
@@ -219,6 +220,7 @@
         id_devis INTEGER,
         dossier VARCHAR(20),
         action TEXT,
+        categorie VARCHAR(255),
         created_at TIMESTAMP,
         updated_at TIMESTAMP
     );
@@ -229,6 +231,7 @@
         id_devis INTEGER,
         dossier VARCHAR(20),
         action TEXT,
+        categorie VARCHAR(255),
         created_at TIMESTAMP,
         updated_at TIMESTAMP
     );
@@ -239,6 +242,7 @@
         id_ca_actes_reglement INTEGER,
         dossier VARCHAR(20),
         action TEXT,
+        categorie VARCHAR(255),
         created_at TIMESTAMP,
         updated_at TIMESTAMP
     );

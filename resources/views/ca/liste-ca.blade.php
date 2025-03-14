@@ -146,6 +146,7 @@
                                             <td class="text-end" style="border-right: 2px solid #000;">@if($ca->rac_cb){{ number_format($ca->rac_cb, 2, ',', ' ') }}@endif</td>
                                             <td>{{ $ca->commentaire ?: 'Aucun commentaire' }}</td>
                                             <td>{{ \Carbon\Carbon::parse($ca->created_at)->format('d-m-Y') }}</td>
+                                            <td onclick="event.stopPropagation()"><a href="{{ asset('delete-ca/'. $ca->id ) }}" onclick="return deleteItem('<?= $ca->dossier ?>', '<?= $ca->created_at ?>')">Supprimer</a></td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -475,4 +476,10 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function deleteItem(dossier, dateCreated) {
+            return confirm(`Voulez-vous vraiment supprimer cela ?\nDossier: ${dossier}\nDate: ${dateCreated}`);
+        }
+    </script>
 @endsection

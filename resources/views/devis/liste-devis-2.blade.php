@@ -510,7 +510,7 @@
                                                     ...
                                                 @endif
                                             </td>
-
+                                            <td onclick="event.stopPropagation()"><a href="{{ asset('deleteDevis/'.$devis->id_devis) }}" onclick="return deleteItem('<?= $devis->dossier ?>', '<?= $devis->date ?>')">Supprimer</a></td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -1611,6 +1611,11 @@
             // Réinsérer les lignes triées dans le tableau
             tbody.innerHTML = '';
             rows.forEach(row => tbody.appendChild(row));
+        }
+    </script>
+    <script>
+        function deleteItem(dossier, dateCreated) {
+            return confirm(`Voulez-vous vraiment supprimer cela ?\nDossier: ${dossier}\nDate: ${dateCreated}`);
         }
     </script>
 
