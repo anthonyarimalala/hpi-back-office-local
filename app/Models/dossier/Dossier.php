@@ -18,14 +18,15 @@ class Dossier extends Model
     ];
 
 
-    public static function modifierDossier($num_dossier, $nom, $status, $mutuelle){
+    public static function modifierDossier($num_dossier, $nom, $status, $mutuelle, $email){
         $dossier = Dossier::where('dossier', $num_dossier)->first();
         $dossier->nom = $nom;
         $dossier->status = $status;
         $dossier->mutuelle = $mutuelle;
+        $dossier->email = $email;
         $dossier->save();
     }
-    public static function insertDossier($num_dossier, $nom, $date_naissance, $status, $mutuelle){
+    public static function insertDossier($num_dossier, $nom, $date_naissance, $status, $mutuelle, $email){
         $m_h_autres = new H_Autre();
         $dossier = new Dossier();
         $dossier->dossier = $num_dossier;
@@ -33,6 +34,7 @@ class Dossier extends Model
         $dossier->date_naissance = $date_naissance;
         $dossier->status = $status;
         $dossier->mutuelle = $mutuelle;
+        $dossier->email = $email;
         $dossier->save();
         $m_h_autres->code_u = Auth::user()->code_u;
         $m_h_autres->categorie = "Dossier";

@@ -28,8 +28,9 @@ class DossierController extends Controller
         $i_nom = $request->input('nom');
         $i_status = $request->input('status');
         $mutuelle = $request->input('mutuelle');
+        $email = $request->input('email');
 
-        Dossier::modifierDossier($i_dossier, $i_nom, $i_status, $mutuelle);
+        Dossier::modifierDossier($i_dossier, $i_nom, $i_status, $mutuelle, $email);
         return redirect('dossiers');
     }
     public function showModifierDossier($dossier)
@@ -55,15 +56,15 @@ class DossierController extends Controller
     {
         $validated = $request->validate([
             'nom' => 'required|string|min:3',
-            'date_naissance' => 'required',
         ]);
         $nom = $request->input('nom');
         $date_naissance = $request->input('date_naissance');
         $dossier = $request->input('dossier');
         $status = $request->input('status');
         $mutuelle = $request->input('mutuelle');
+        $email = $request->input('email');
 
-        Dossier::insertDossier($dossier, $nom, $date_naissance, $status, $mutuelle); // insérer son dossier
+        Dossier::insertDossier($dossier, $nom, $date_naissance, $status, $mutuelle, $email); // insérer son dossier
 
 
         return redirect()->route('dossiers')->with('success', 'Le patient "'.$nom.'" a été ajouté avec success');

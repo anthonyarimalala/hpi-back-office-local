@@ -29,6 +29,7 @@
         date_naissance DATE,
         status VARCHAR(155) REFERENCES dossier_statuss(status),
         mutuelle VARCHAR(255),
+        email VARCHAR(255),
         is_deleted INTEGER DEFAULT 0,
         code_u VARCHAR(10) REFERENCES users(code_u),
         created_at TIMESTAMP,
@@ -91,6 +92,7 @@
         date_3eme_appel DATE,
         note_3eme_appel TEXT,
         date_envoi_mail DATE,
+        email_sent INTEGER DEFAULT 0,
         is_deleted INTEGER DEFAULT 0,
         created_at TIMESTAMP,
         updated_at TIMESTAMP

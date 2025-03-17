@@ -40,36 +40,75 @@
                                     <div class="list align-items-center pt-3">
                                         <div class="wrapper w-100">
                                             <p class="mb-0">
-                                                <a href="#" class="fw-bold text-primary">plus <i class="mdi mdi-arrow-right ms-2"></i></a>
+
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 col-lg-6 grid-margin stretch-card">
+
+
+                        <div class="col-md-12 col-lg-12 grid-margin stretch-card">
                             <div class="card card-rounded">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-between mb-3">
-                                        <h4 class="card-title card-title-dash">Appels aujourd'hui</h4>
+                                        <h4 class="card-title card-title-dash">Appels et Mails Aujourd'hui</h4>
                                     </div>
-                                    <ul class="bullet-line-list">
-                                        @foreach($appels_mails_ajds as $ama)
-                                            <li>
-                                                <div class="d-flex justify-content-between">
-                                                    <div><span class="text-light-green">{{ $ama->nom }}</span> - {{ $ama->numero_appel }}</div>
-                                                    <p>{{ $ama->note_appel }}</p>
-                                                </div>
-                                            </li>
-                                            @if($ama->numero_ap == 3)
-                                                <li>
-                                                    <div class="d-flex justify-content-between">
-                                                        <div><span class="text-light-green">{{ $ama->nom }}</span> - Envoie mail</div>
-                                                    </div>
-                                                </li>
-                                            @endif
-                                        @endforeach
-                                    </ul>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>Dossier</th>
+                                                <th>Patient</th>
+                                                <th>Date 1er appel</th>
+                                                <th>Note 1er appel</th>
+                                                <th>Date 2ème appel</th>
+                                                <th>Note 2ème appel</th>
+                                                <th>Date 3ème appel</th>
+                                                <th>Note 3ème appel</th>
+                                                <th>Date d'envoi mail</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody  id="reglement-body">
+                                                @foreach($appels_mails_ajdss as $dev)
+                                                    @php
+                                                        $today = \Carbon\Carbon::today()->format('Y-m-d');
+                                                        $couleur1erAppel = null;
+                                                        $couleur2emeAppel = null;
+                                                        $couleur3emeAppel = null;
+                                                        $couleurMail = null;
+                                                        if ($dev->date_1er_appel == $today) $couleur1erAppel = '#ff9800';
+                                                        if ($dev->note_1er_appel != null && $dev->note_1er_appel != '') $couleur1erAppel = '#4CAF50';
+                                                        if ($dev->date_2eme_appel == $today) $couleur2emeAppel = '#ff9800';
+                                                        if ($dev->note_2eme_appel != null && $dev->note_2eme_appel != '') $couleur2emeAppel = '#4CAF50';
+                                                        if ($dev->date_3eme_appel == $today) $couleur3emeAppel = '#ff9800';
+                                                        if ($dev->note_3eme_appel != null && $dev->note_3eme_appel != '') $couleur3emeAppel = '#4CAF50';
+                                                        if ($dev->date_envoi_mail == $today) $couleurMail = '#ff9800';
+                                                    @endphp
+                                                    <tr>
+                                                        <td>{{ $dev->dossier }}</td>
+                                                        <td>{{ $dev->nom }}</td>
+                                                        <td style="background-color: {{ $couleur1erAppel }}">
+                                                            {{ $dev->date_1er_appel ? \Carbon\Carbon::parse($dev->date_1er_appel)->format('d-m-Y') : '' }}
+                                                        </td>
+                                                        <td>{{ $dev->note_1er_appel }}</td>
+                                                        <td style="background-color: {{ $couleur2emeAppel }}">
+                                                            {{ $dev->date_2eme_appel ? \Carbon\Carbon::parse($dev->date_2eme_appel)->format('d-m-Y') : '' }}
+                                                        </td>
+                                                        <td>{{ $dev->note_2eme_appel }}</td>
+                                                        <td style="background-color: {{ $couleur3emeAppel }}">
+                                                            {{ $dev->date_3eme_appel ? \Carbon\Carbon::parse($dev->date_3eme_appel)->format('d-m-Y') : '' }}
+                                                        </td>
+                                                        <td>{{ $dev->note_3eme_appel }}</td>
+                                                        <td style="background-color: {{ $couleurMail }}">
+                                                            {{ $dev->date_envoi_mail ? \Carbon\Carbon::parse($dev->date_envoi_mail)->format('d-m-Y') : '' }}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
 
                                 </div>
                             </div>

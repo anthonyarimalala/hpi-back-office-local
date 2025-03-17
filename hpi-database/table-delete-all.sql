@@ -1,9 +1,4 @@
 DROP VIEW v_ca_actes_reglements;
-DROP VIEW v_stat_devis_etats;
-DROP VIEW v_stat_devis_mens;
-DROP VIEW v_h_devis;
-DROP VIEW v_h_protheses;
-DROP VIEW v_h_cheques;
 DROP VIEW v_protheses;
 DROP VIEW v_cheques;
 DROP VIEW v_devis;

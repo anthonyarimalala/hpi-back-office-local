@@ -381,7 +381,7 @@ class ImportsController extends Controller
                 $prtc = '';
             } else
             {
-                $prtc = $prtc->praticien->praticien;
+                $prtc = $prtc->praticien;
             }
 
             $m_devis = Devis::firstOrNew(['dossier' => $mid->dossier, 'date' => $date_devis, 'praticien' => $prtc]);

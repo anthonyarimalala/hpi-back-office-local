@@ -51,21 +51,21 @@
                                 <tr>
                                     <td><input type="date" class="form-control" id="date_derniere_modif" name="date_derniere_modif" placeholder="Date de modification" value="{{ old('date_derniere_modif') }}"></td>
                                     <td>
-                                        <input type="text" class="form-control" id="dossiers" name="dossiers" placeholder="Numéro de dossier" required list="dossier-list" @if($m_v_devis) value="{{ $m_v_devis->dossier }}" @endif>
+                                        <input type="text" class="form-control" id="dossiers" name="dossiers" placeholder="Numéro de dossier" required list="dossier-list" @if($m_dossier) value="{{ $m_dossier->dossier }}" @endif>
                                         <datalist id="dossier-list">
                                         </datalist>
                                     </td>
 
-                                    <td><input type="text" class="form-control" id="nom_patient" name="nom_patient" placeholder="Nom du patient" readonly @if($m_v_devis) value="{{ $m_v_devis->nom }}" @endif></td>
+                                    <td><input type="text" class="form-control" id="nom_patient" name="nom_patient" placeholder="Nom du patient" readonly @if($m_dossier) value="{{ $m_dossier->nom }}" @endif></td>
                                     <td>
                                         <select class="form-select" name="statut" required>
                                             <option value="" disabled selected>Choix statut</option>
                                             @foreach($status as $st)
-                                                <option value="{{ $st->status }}" @if(old('statut') == $st->status) selected @endif @if($m_v_devis) @if($m_v_devis->status == $st->status) selected @endif @endif>{{ $st->status }}</option>
+                                                <option value="{{ $st->status }}" @if(old('statut') == $st->status) selected @endif @if($m_dossier) @if($m_dossier->status == $st->status) selected @endif @endif>{{ $st->status }}</option>
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td><input type="text" class="form-control" id="mutuelle" name="mutuelle" placeholder="Mutuelle" @if($m_v_devis) value="{{ $m_v_devis->mutuelle }}" @endif></td>
+                                    <td><input type="text" class="form-control" id="mutuelle" name="mutuelle" placeholder="Mutuelle" @if($m_dossier) value="{{ $m_dossier->mutuelle }}" @endif></td>
                                 </tr>
                                 </tbody>
                             </table>

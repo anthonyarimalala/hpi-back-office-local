@@ -1,75 +1,95 @@
 SELECT
-    COUNT(pose_statut),
-    pose_statut
-FROM v_devis
-GROUP BY pose_statut;
+    dos.dossier,
+    d.id AS id_devis,
+    dos.nom,
+    dos.date_naissance,
+    d.status,
+    d.mutuelle,
+    d.date,
+    d.montant,
+    d.devis_signe,
+    d.praticien,
+    d.observation AS devis_observation,
+    d.is_deleted,
+    d.updated_at AS dernier_modif,
+    dap.date_envoi_pec,
+    dap.date_fin_validite_pec,
+    dap.part_mutuelle,
+    dap.part_rac,
+    dr.date_paiement_cb_ou_esp,
+    dr.date_depot_chq_pec,
+    dr.date_depot_chq_part_mut,
+    dr.date_depot_chq_rac,
+    dam.date_1er_appel,
+    dam.note_1er_appel,
+    dam.date_2eme_appel,
+    dam.note_2eme_appel,
+    dam.date_3eme_appel,
+    dam.note_3eme_appel,
+    dam.date_envoi_mail,
+    de.id AS id_devis_etat,
+    de.etat,
+    de.couleur,
+    emp.laboratoire,
+    emp.date_empreinte,
+    emp.date_envoi_labo,
+    emp.travail_demande,
+    emp.numero_dent,
+    emp.observations AS empreinte_observation,
+    emp.created_at,
+    emp.updated_at,
+    rl.date_livraison,
+    rl.numero_suivi,
+    rl.numero_facture_labo,
+    tra.date_pose_prevue,
+    pts.id AS id_pose_statut,
+    pts.travaux_status AS pose_statut,
+    tra.date_pose_reel,
+    tra.organisme_payeur,
+    tra.montant_encaisse,
+    tra.date_controle_paiement,
+    ic.numero_cheque,
+    ic.montant_cheque,
+    ic.nom_document,
+    ic.date_encaissement_cheque,
+    ic.date_1er_acte   ,
+    ic.nature_cheque,
+    ic.travaux_sur_devis,
+    ic.situation_cheque,
+    ic.observation AS cheque_observation
+FROM devis d
+    WHERE dam.date_1er_appel ,
+    dam.date_2eme_appel,
+    dam.date_3eme_appel,
+    dam.date_envoi_mail,
+         JOIN dossiers dos ON d.dossier = dos.dossier
+         LEFT JOIN devis_accord_pecs dap ON d.id = dap.id_devis
+         LEFT JOIN devis_appels_et_mails dam ON d.id = dam.id_devis
+         LEFT JOIN devis_reglements dr ON d.id = dr.id_devis
+         LEFT JOIN devis_etats de ON d.id_devis_etat = de.id
+         LEFT JOIN prothese_empreintes emp ON d.id = emp.id_devis
+         LEFT JOIN prothese_retour_labos rl ON d.id = rl.id_devis
+         LEFT JOIN prothese_travaux tra ON d.id = tra.id_devis
+         LEFT JOIN info_cheques ic ON d.id = ic.id_devis
+         LEFT JOIN prothese_travaux_status pts ON tra.id_pose_statut = pts.id;
 
-SELECT
-    praticien
-FROM ca_actes_reglements
-WHERE date_derniere_modif <= ? AND date_derniere_modif >= ?
-GROUP BY praticien;
 
+<td>{{ $dev->dossier }}</td>
+                                                        <td>{{ $dev->nom }}</td>
+                                                        <td>{{ $dev->date_1er_appel }}</td>
+                                                        <td>{{ $dev->date_1er_appel }}</td>
+                                                        <td>{{ $dev->date_2eme_appel }}</td>
+                                                        <td>{{ $dev->note_2eme_appel }}</td>
+                                                        <td>{{ $dev->date_3eme_appel }}</td>
+                                                        <td>{{ $dev->note_3eme_appel }}</td>
+                                                        <td>{{ $dev->date_envoi_mail }}</td>
 
-id SERIAL PRIMARY KEY,
-date_derniere_modif DATE,
-dossier VARCHAR(20) REFERENCES dossiers(dossier),
-nom_patient VARCHAR(255),
-statut VARCHAR(50),
-mutuelle  VARCHAR(255),
-praticien VARCHAR(10) REFERENCES praticiens(praticien),
-nom_acte VARCHAR(255),
-cotation DECIMAL(10, 2),
-controle_securisation VARCHAR(255),
-ro_part_secu DECIMAL(10, 2),
-ro_virement_recu DECIMAL(10, 2),
-ro_indus_paye DECIMAL(10, 2),
-ro_indus_en_attente DECIMAL(10, 2),
-ro_indus_irrecouvrable DECIMAL(10, 2),
-part_mutuelle DECIMAL(10, 2),
-rcs_virement DECIMAL(10, 2),
-rcs_especes DECIMAL(10, 2),
-rcs_cb DECIMAL(10, 2),
-rcsd_cheque DECIMAL(10, 2),
-rcsd_especes DECIMAL(10, 2),
-rcsd_cb DECIMAL(10, 2),
-rac_part_patient DECIMAL(10, 2),
-rac_cheque DECIMAL(10, 2),
-rac_especes DECIMAL(10, 2),
-rac_cb DECIMAL(10, 2),
-commentaire TEXT,
-is_deleted INTEGER DEFAULT 0,
-created_at TIMESTAMP,
-updated_at TIMESTAMP
+<div class="email-form" id="emailForm">
 
-WITH ca_actes_reglements_bis AS (
-    SELECT
-        *,
-        COALESCE(ro_part_secu, 0) + COALESCE(part_mutuelle, 0) + COALESCE(rac_part_patient, 0) AS cotation_paye,
-        COALESCE(ro_virement_recu, 0) + COALESCE(ro_indus_paye, 0) + COALESCE(ro_indus_irrecouvrable, 0) AS ro_part_secu_paye,
-        COALESCE(rcs_virement, 0) + COALESCE(rcs_especes, 0) + COALESCE(rcs_cb, 0) + COALESCE(rcsd_cheque, 0) + COALESCE(rcsd_especes, 0) + COALESCE(rcsd_cb, 0) AS part_mutuelle_paye,
-        COALESCE(rac_cheque, 0) + COALESCE(rac_especes, 0) + COALESCE(rac_cb, 0) AS rac_part_patient_paye
-    FROM ca_actes_reglements
-)
-SELECT cotation_paye FROM ca_actes_reglements_bis;
-
-
-SELECT
-    *
-FROM v_ca_actes_reglements
-WHERE cotation_paye > COALESCE(cotation, 0)
-OR ro_part_secu_paye > COALESCE(ro_part_secu, 0)
-OR part_mutuelle_paye > COALESCE(part_mutuelle, 0)
-OR rac_part_patient_paye > COALESCE(rac_part_patient, 0);
-
-
-
-WHERE (COALESCE(ro_part_secu, 0)+COALESCE(part_mutuelle, 0)+COALESCE(rac_part_patient, 0)) > cotation
-OR COALESCE(ro_part_secu, 0) - (COALESCE(ro_virement_recu, 0)+COALESCE(ro_indus_paye, 0)+COALESCE(ro_indus_irrecouvrable, 0)) < 0
-OR COALESCE(part_mutuelle, 0) - (COALESCE(rcs_virement, 0)+COALESCE(rcs_especes, 0)+COALESCE(rcs_cb, 0)+COALESCE(rcsd_cheque, 0)+COALESCE(rcsd_especes, 0)+COALESCE(rcsd_cb, 0)) < 0
-OR COALESCE(rac_part_patient, 0) - (COALESCE(rac_cheque, 0)+COALESCE(rac_especes, 0)+COALESCE(rac_cb, 0)) < 0
-;
-
-SELECT
-    COALESCE(part_mutuelle, 0) - (COALESCE(rcs_virement, 0)+COALESCE(rcs_especes, 0)+COALESCE(rcs_cb, 0)+COALESCE(rcsd_cheque, 0)+COALESCE(rcsd_especes, 0)+COALESCE(rcsd_cb, 0))
-FROM ca_actes_reglements WHERE dossier='9320';
+</div>
+Comment faire pour que lorsque je clique sur <a href="#">Envoyer un email</a>, ce modal apparait?
+<h2>Envoyer un Email</h2>
+<input type="email" id="email" placeholder="Email du destinataire" required>
+<input type="text" id="subject" placeholder="Objet" required>
+<textarea id="message" placeholder="Votre message" rows="4" required></textarea>
+<button>Envoyer</button>

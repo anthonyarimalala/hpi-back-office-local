@@ -25,7 +25,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="patient">Patient</label>
-                                            <input type="text" class="form-control" id="nom" name="nom" placeholder="Patient" value="">
+                                            <input type="text" class="form-control" id="nom" name="nom" placeholder="Patient" value="" readonly>
                                         </div>
                                         <div class="form-group">
                                             <label for="status">Status</label>

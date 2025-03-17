@@ -111,46 +111,15 @@ class Dashboard extends Model
             ->all();
         return $rappels;
     }
-    public function getAppelsAujourdHui(){
-        $appels = DB::select(
-            "
-            SELECT *
-                FROM (
-                    SELECT
-                        id_devis,
-                        date_1er_appel AS date_appel,
-                        1 AS numero_ap,
-                        '1er appel' AS numero_appel,
-                        note_1er_appel AS note_appel
-                    FROM devis_appels_et_mails
-                    WHERE date_1er_appel IS NOT NULL
-                    UNION ALL
-                    SELECT
-                        id_devis,
-                        date_2eme_appel AS date_appel,
-                        2 AS numero_ap,
-                        '2ème appel' AS numero_appel,
-                        note_2eme_appel AS note_appel
-                    FROM devis_appels_et_mails
-                    WHERE date_2eme_appel IS NOT NULL
-                    UNION ALL
-                    SELECT
-                        id_devis,
-                        date_3eme_appel AS date_appel,
-                        3 AS numero_ap,
-                        '3ème appel' AS numero_appel,
-                        note_3eme_appel AS note_appel
-                    FROM devis_appels_et_mails
-                    WHERE date_3eme_appel IS NOT NULL
-                    ORDER BY id_devis, numero_appel
-                ) AS appels_mails
-                JOIN devis ON appels_mails.id_devis = devis.id
-                JOIN dossiers ON devis.dossier = dossiers.dossier
 
-                WHERE appels_mails.date_appel::date = CURRENT_DATE AND note_appel IS NULL
-                LIMIT 7;
-                            "
-                        );
+    public function getAppelsMailsAujourdHui(){
+        $today = Carbon::today()->format('Y-m-d');
+        $appels = V_Devis::where('date_1er_appel', $today)
+            ->orWhere('date_2eme_appel', $today)
+            ->orWhere('date_3eme_appel', $today)
+            ->orWhere('date_envoi_mail', $today)
+            ->get();
         return $appels;
     }
+
 }

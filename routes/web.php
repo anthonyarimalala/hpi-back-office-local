@@ -128,6 +128,11 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::get('showDevisExportView', [\App\Http\Controllers\Export\ExportsController::class, 'showDevisExportView']);
     Route::get('showCaExportView', [\App\Http\Controllers\Export\ExportsController::class, 'showCaExportView']);
 
+    Route::get('envoi-mail', function (){
+        \Illuminate\Support\Facades\Mail::to('cambellthony@gmail.com')
+            ->send(new \App\Mail\HelloMail());
+    });
+    Route::get('envoi-mail-2', [\App\Http\Controllers\Mail\MailController::class, 'envoiMail']);
 });
 Route::middleware(['auth', 'role:admin'])->group(function () {
     // section: gestion

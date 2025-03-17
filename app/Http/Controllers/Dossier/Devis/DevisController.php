@@ -133,6 +133,7 @@ class DevisController extends Controller
             $date_3eme_appel = $request->input('date_3eme_appel');
             $note_3eme_appel = $request->input('note_3eme_appel');
             $date_envoi_mail = $request->input('date_envoi_mail');
+            $email_sent = $request->input('email_sent');
 
             $m_h_devis = new H_Devis();
             $m_h_devis->code_u = Auth::user()->code_u;
@@ -150,7 +151,7 @@ class DevisController extends Controller
             $m_devis = Devis::updateDevis($m_h_devis, $m_devis_etatsS, $m_devis_ancien, $m_devis_nouveau, $withChange);
             DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_mutuelle, $part_rac, $withChange);
             DevisReglement::createDevisReglement($m_h_devis, $id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac, $withChange);
-            DevisAppelsEtMail::createDevisAppelsEtMail($m_h_devis, $id_devis, $date_1er_appel, $note_1er_appel, $date_2eme_appel, $note_2eme_appel, $date_3eme_appel, $note_3eme_appel, $date_envoi_mail, $withChange);
+            DevisAppelsEtMail::createDevisAppelsEtMail($m_h_devis, $id_devis, $date_1er_appel, $note_1er_appel, $date_2eme_appel, $note_2eme_appel, $date_3eme_appel, $note_3eme_appel, $date_envoi_mail, $withChange, $email_sent);
 
             // mettre le numero de dossier dans l'historique: dénormalisation
             $m_h_devis->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;

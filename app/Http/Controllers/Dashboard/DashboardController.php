@@ -4,10 +4,6 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\dashboard\Dashboard;
-use App\Models\devis\DevisReglement;
-use App\Models\views\stats\V_StatDevisEtat;
-use App\Models\views\stats\V_StatDevisMens;
-use App\Models\views\stats\V_StatNbrDevis;
 use App\Models\views\V_Devis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -51,12 +47,12 @@ class DashboardController extends Controller
         $data['today'] = $today;
         $data['appoche_validite_pecs'] = V_Devis::where('date_fin_validite_pec', '>=', $today)
             ->orderBy('date_fin_validite_pec', 'asc')->get();
-        $data['appels_mails_ajds'] = $m_dashboard->getAppelsAujourdHui();
         $data['reglements'] = V_Devis::where('date_paiement_cb_ou_esp', $today)
             ->orWhere('date_depot_chq_pec', $today)
             ->orWhere('date_depot_chq_part_mut', $today)
             ->orWhere('date_depot_chq_rac', $today)
             ->get();
+        $data['appels_mails_ajdss'] = $m_dashboard->getAppelsMailsAujourdHui();
         return view('dashboard/dashboard-rappels')->with($data);
     }
 

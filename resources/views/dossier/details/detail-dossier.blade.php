@@ -14,6 +14,16 @@
     </style>
 
     <div class="row mt-4">
+        <div class="d-sm-flex align-items-center justify-content-between border-bottom">
+            <div>
+                <div class="btn-wrapper">
+                    <a href="{{ asset('modifier-dossier/'.$dossier->dossier) }}" class="btn btn-primary text-white me-0"><i class="icon-download"></i> Modifier le dossier</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
         <div class="col-md-12">
             <div class="card shadow-sm">
                 <div class="card-header text-white d-flex justify-content-between align-items-center mb-3">
@@ -24,8 +34,6 @@
                         <a href="{{ asset($dossier->dossier.'/nouveau-devis') }}" class="text-primary">
                             <i class="mdi mdi-plus mdi-24px">Nouveau devis</i>
                         </a>
-
-
                     </div>
                 </div>
                 <div class="card-body">

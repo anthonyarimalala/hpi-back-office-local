@@ -199,8 +199,12 @@
                             <li class="border-bottom-0">
                                 <div class="form-check w-100">
                                     <label for="date_email">Envoi mail</label>
+                                    <a href="#dateModal" data-bs-toggle="modal"
+                                       data-bs-target="#dateModal">Envoyer un email</a>
+                                    <label for="date_email">Envoyé?</label><input type="checkbox" id="emailCheckbox" name="email_sent" value="1" @if($v_devis->email_sent == 1) checked @endif>
                                     <input type="date" class="form-control" id="date_email" name="date_envoi_mail"
                                            value="{{ $v_devis->date_envoi_mail ? \Carbon\Carbon::parse($v_devis->date_envoi_mail)->format('Y-m-d') : '' }}">
+
 
                                 </div>
                             </li>
@@ -216,6 +220,44 @@
         </div>
     </div>
     </form>
+    <div class="modal fade" id="dateModal" tabindex="-1" aria-labelledby="dateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dateModalLabel">Envoyer un Email</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="exportForm" action="{{ asset('envoi-mail-2') }}" method="GET">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email du destinataire</label>
+                                    <input hidden name="id_devis" value="{{ $v_devis->id_devis }}">
+                                    <input type="email" id="email" class="form-control" placeholder="Email du destinataire" value="{{ $v_devis->email }}" name="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="subject" class="form-label">Objet</label>
+                                    <input type="text" id="subject" class="form-control" placeholder="Objet" name="objet" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="message" class="form-label">Votre message</label>
+                                    <textarea id="message" style="height: 200px" class="form-control" placeholder="Votre message" rows="4" name="message" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Envoyer</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const partMutuelleInput = document.getElementById("part_mutuelle");
@@ -244,5 +286,6 @@
             });
         });
     </script>
+
 
 @endsection

@@ -64,6 +64,8 @@ class CaController extends Controller
     }
     public function getPatientDetails(Request $request){
         $dossier = $request->query('dossier');
+
+        $m_dossier = Dossier::where('dossier', $dossier)->first();
         $m_v_devis = \App\Models\views\V_Devis::where('dossier', $dossier)->orderBy('date', 'desc')->first();
         if ($m_v_devis) {
             return response()->json([
@@ -73,7 +75,16 @@ class CaController extends Controller
                 'praticien' => $m_v_devis->praticien,
                 'mutuelle' => $m_v_devis->mutuelle
             ]);
-        } else {
+        }
+        else if ($m_dossier) {
+            return response()->json([
+                'success' => true,
+                'nom_patient' => $m_dossier->nom,
+                'statut' => $m_dossier->status,
+                'mutuelle' => $m_dossier->mutuelle
+            ]);
+        }
+        else {
             return response()->json(['success' => false]);
         }
     }
@@ -97,6 +108,7 @@ class CaController extends Controller
     }
     public function showNouveauCaWithDossier($dossier)
     {
+        $data['m_dossier'] = Dossier::where('dossier', $dossier)->first();
         $data['m_v_devis'] = V_Devis::where('dossier', $dossier)
             ->where('is_deleted', 0)
             ->orderBy('date', 'desc')
