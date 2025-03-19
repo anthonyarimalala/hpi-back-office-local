@@ -277,7 +277,7 @@ class DevisController extends Controller
             'date_fin_validite_pec_null' => $request->input('date_fin_validite_pec_null'),
             'part_mutuelle_min' => $request->input('part_mutuelle_min'),
             'part_mutuelle_max' => $request->input('part_mutuelle_max'),
-            'part_mutuelle_null' => $request->input('part_mutuelle_max'),
+            'part_mutuelle_null' => $request->input('part_mutuelle_null'),
             'part_rac_min' => $request->input('part_rac_min'),
             'part_rac_max' => $request->input('part_rac_max'),
             'part_rac_null' => $request->input('part_rac_null'),

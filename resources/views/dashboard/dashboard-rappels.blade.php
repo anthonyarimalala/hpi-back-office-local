@@ -18,37 +18,6 @@
             <div class="row">
                 <div class="col-lg-12 d-flex flex-column">
                     <div class="row flex-grow">
-                        <div class="col-md-6 col-lg-6 grid-margin stretch-card">
-                            <div class="card card-rounded">
-                                <div class="card-body card-rounded">
-                                    <h4 class="card-title  card-title-dash">Validité PEC à venir</h4>
-                                    @foreach($appoche_validite_pecs as $avp)
-                                        <div class="list align-items-center border-bottom py-2">
-                                            <div class="wrapper w-100">
-                                                <p class="mb-2 font-weight-medium">
-                                                    {{ $avp->nom }}
-                                                </p>
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="mdi mdi-calendar text-muted me-1"></i>
-                                                        <p class="mb-0 text-small text-muted">{{ $avp->getDate_fin_validite_pec() }}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                    <div class="list align-items-center pt-3">
-                                        <div class="wrapper w-100">
-                                            <p class="mb-0">
-
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
                         <div class="col-md-12 col-lg-12 grid-margin stretch-card">
                             <div class="card card-rounded">
                                 <div class="card-body">
@@ -78,15 +47,19 @@
                                                         $couleur2emeAppel = null;
                                                         $couleur3emeAppel = null;
                                                         $couleurMail = null;
-                                                        if ($dev->date_1er_appel == $today) $couleur1erAppel = '#ff9800';
-                                                        if ($dev->note_1er_appel != null && $dev->note_1er_appel != '') $couleur1erAppel = '#4CAF50';
-                                                        if ($dev->date_2eme_appel == $today) $couleur2emeAppel = '#ff9800';
-                                                        if ($dev->note_2eme_appel != null && $dev->note_2eme_appel != '') $couleur2emeAppel = '#4CAF50';
-                                                        if ($dev->date_3eme_appel == $today) $couleur3emeAppel = '#ff9800';
-                                                        if ($dev->note_3eme_appel != null && $dev->note_3eme_appel != '') $couleur3emeAppel = '#4CAF50';
-                                                        if ($dev->date_envoi_mail == $today) $couleurMail = '#ff9800';
+                                                        if ($dev->date_1er_appel == $today) $couleur1erAppel = '#B7A28A';
+                                                        if ($dev->note_1er_appel != null && $dev->note_1er_appel != '') $couleur1erAppel = '#73E55D';
+                                                        if ($dev->date_2eme_appel == $today) $couleur2emeAppel = '#B7A28A';
+                                                        if ($dev->note_2eme_appel != null && $dev->note_2eme_appel != '') $couleur2emeAppel = '#73E55D';
+                                                        if ($dev->date_3eme_appel == $today) $couleur3emeAppel = '#B7A28A';
+                                                        if ($dev->note_3eme_appel != null && $dev->note_3eme_appel != '') $couleur3emeAppel = '#73E55D';
+                                                        if ($dev->date_envoi_mail == $today) $couleurMail = '#B7A28A';
+                                                        if ($dev->email_sent == 1) $couleurMail = '#73E55D';
                                                     @endphp
-                                                    <tr>
+                                                    <tr style="background-color: {{ $dev->couleur }}"
+                                                        onmouseover="this.style.backgroundColor='#d3d3d3';"
+                                                        onmouseout="this.style.backgroundColor='{{ $dev->couleur }}';"
+                                                        onclick="window.location.href='{{ asset($dev->dossier.'/devis/'.$dev->id_devis.'/modifier')  }}';">
                                                         <td>{{ $dev->dossier }}</td>
                                                         <td>{{ $dev->nom }}</td>
                                                         <td style="background-color: {{ $couleur1erAppel }}">
