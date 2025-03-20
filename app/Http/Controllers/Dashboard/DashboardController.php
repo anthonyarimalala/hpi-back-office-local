@@ -23,7 +23,7 @@ class DashboardController extends Controller
         $data['date_ca_debut'] = $date_ca_debut;
         $data['date_ca_fin'] = $date_ca_fin;
         $data['bilan_financier'] = $m_dash->getCaBilanFincancier($date_ca_debut, $date_ca_fin);
-        $data['ca_praticiens'] = $m_dash->getCaPraticiens();
+        $data['ca_praticiens'] = $m_dash->getCaPraticiens($date_ca_debut, $date_ca_fin);
         return view('dashboard/dashboard-ca')->with($data);
     }
     public function showDashboard(Request $request){

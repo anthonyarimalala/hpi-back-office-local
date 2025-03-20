@@ -162,7 +162,22 @@
                     </ul>
                 </li>
             </ul>
-
+            <ul class="navbar-nav me-5">
+                <li class="nav-item dropdown d-none d-lg-block">
+                    Email d'envoi: <br> {{ \Illuminate\Support\Facades\Auth::user()->mail_sender }}
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link btn btn-sm" id="deconnection" href="{{ route('logout') }}"
+                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="mdi mdi-logout"></i> Déconnection
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                </li>
+            </ul>
 
             <script>
                 document.getElementById('search-input').addEventListener('input', function () {
@@ -189,17 +204,7 @@
                 });
             </script>
 
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link btn btn-sm" id="deconnection" href="{{ route('logout') }}"
-                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="mdi mdi-logout"></i> Déconnection
-                    </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                </li>
-            </ul>
+
 
             <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
                 <span class="mdi mdi-menu"></span>
@@ -327,6 +332,13 @@
                             <li class="nav-item"> <a class="nav-link" href="{{ asset('erreur-import-2') }}">CA</a></li>
                         </ul>
                     </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ asset('modify/mail') }}">
+                        <i class="mdi mdi-mail-ru menu-icon"></i>
+                        <span class="menu-title">Modifier l'adresse email</span>
+                    </a>
                 </li>
             </ul>
         </nav>

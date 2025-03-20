@@ -5,13 +5,30 @@ namespace App\Http\Controllers\Gestion;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class GestionUtilisateurController extends Controller
 {
     //
-    public function effacerUtilisateur($code_u){
+    public function updateUtilisateur(Request $request, $code_u){
+        // Vérifier le mot de passe de l'utilisateur connecté
+        if (!Hash::check($request->password_confirmation, Auth::user()->password)) {
+            return back()->withErrors(['password_confirmation' => 'Mot de passe incorrect.']);
+        }
+
+        $m_user = User::where('code_u', $code_u)->first();
+        $role = $request->get("role");
+        $m_user->role = $role;
+        echo 'role: '.$role;
+        $m_user->save();
+        return back();
+    }
+    public function effacerUtilisateur(Request $request, $code_u){
+        if (!Hash::check($request->password_confirmation, Auth::user()->password)) {
+            return back()->withErrors(['password_confirmation' => 'Mot de passe incorrect.']);
+        }
         $user = User::where('code_u', $code_u)->first();
         $user->is_deleted = 1;
         $user->save();

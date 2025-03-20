@@ -1,1 +1,1 @@
-{{ $monMessage }}
+{!! nl2br(e($monMessage)) !!}

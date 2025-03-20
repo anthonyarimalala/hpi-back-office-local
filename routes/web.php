@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Mail\MailController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -132,6 +133,8 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
         \Illuminate\Support\Facades\Mail::to('cambellthony@gmail.com')
             ->send(new \App\Mail\HelloMail());
     });
+    Route::post('modify/mail', [\App\Http\Controllers\Mail\MailController::class, 'modifyMail']);
+    Route::get('modify/mail', [\App\Http\Controllers\Mail\MailController::class, 'showModidyMail']);
     Route::get('envoi-mail-2', [\App\Http\Controllers\Mail\MailController::class, 'envoiMail']);
 });
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -140,7 +143,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('utilisateurs',[\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'showListeUtilisateurs']);
     Route::post('creer-utilisateur', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'creerUtilisateur']);
     Route::get('effacer-utilisateur/{code_u}', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'effacerUtilisateur']);
-
+    Route::get('update-utilisateur/{code_u}', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'updateUtilisateur']);
 });
 
 

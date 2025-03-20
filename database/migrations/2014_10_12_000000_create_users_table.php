@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('role');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('mail_sender')->nullable(true);
+            $table->string('mail_password')->nullable(true);
+            $table->string('mail_name')->nullable(true);
             $table->rememberToken();
             $table->timestamps();
         });

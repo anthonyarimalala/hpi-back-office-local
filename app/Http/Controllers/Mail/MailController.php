@@ -4,11 +4,40 @@ namespace App\Http\Controllers\Mail;
 
 use App\Http\Controllers\Controller;
 use App\Models\devis\DevisAppelsEtMail;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class MailController extends Controller
 {
     //
+    public function modifyMail(Request $request){
+        $mail_name = $request->input('mail_name');
+        $mail = $request->input('mail');
+        $mail_password = $request->input('mail_password');
+
+        $user = User::where('code_u', Auth::user()->code_u)->first();
+        $user->mail_sender = $mail;
+        $user->mail_password = Crypt::encrypt($mail_password);
+        $user->mail_name = $mail_name;
+        $user->save();
+
+        /*
+        Config::set('mail.username', $mail);
+        Config::set('mail.password', $mail_password);
+        Config::set('mail.from.address', $mail);
+        Config::set('mail.from.name', $mail_name);
+        */
+
+        return back();
+    }
+    public function showModidyMail(Request $request){
+        return view('mail/modifyMail');
+    }
     public function envoiMail(Request $request){
         $email = $request->input('email');
         $objet = $request->input('objet');
@@ -19,6 +48,24 @@ class MailController extends Controller
         $devis_appels_mails->save();
 
         //echo $email;
+        $user = Auth::user();
+        $mail_sender = $user->mail_sender;
+        $mail_password = Crypt::decrypt($user->mail_password);
+        $mail_name = $user->mail_name;
+
+
+        /*
+        Config::set('mail.username', 'anthonyarimalal@gmail.com');
+        Config::set('mail.password', $mail_password);
+        Config::set('mail.from.address', $mail_sender);
+        Config::set('mail.from.name', $mail_name);
+        */
+
+        config([
+            'mail.mailers.smtp.username' => $mail_sender,
+            'mail.mailers.smtp.password' => $mail_password,
+            'mail.from.name' => $mail_name,
+        ]);
 
         \Illuminate\Support\Facades\Mail::to($email)
             ->send(new \App\Mail\HelloMail($objet, $message));
