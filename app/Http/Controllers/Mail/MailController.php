@@ -65,6 +65,7 @@ class MailController extends Controller
             'mail.mailers.smtp.username' => $mail_sender,
             'mail.mailers.smtp.password' => $mail_password,
             'mail.from.name' => $mail_name,
+            'mail.from.address' => $mail_sender,
         ]);
 
         \Illuminate\Support\Facades\Mail::to($email)
