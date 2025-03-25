@@ -63,6 +63,7 @@
         id_devis INTEGER REFERENCES devis(id),
         date_envoi_pec DATE,
         date_fin_validite_pec DATE,
+        part_secu DECIMAL(10, 2),
         part_mutuelle DECIMAL(10, 2),
         part_rac DECIMAL(10, 2),
         is_deleted INTEGER DEFAULT 0,
@@ -170,13 +171,20 @@
         updated_at TIMESTAMP
     );
 
-    CREATE TABLE ca_actes_reglements(
+    CREATE TABLE ca_generales(
         id SERIAL PRIMARY KEY,
-        date_derniere_modif DATE,
         dossier VARCHAR(20) REFERENCES dossiers(dossier),
         nom_patient VARCHAR(255),
         statut VARCHAR(50),
         mutuelle  VARCHAR(255),
+        created_at TIMESTAMP,
+        updated_at TIMESTAMP
+    );
+
+    CREATE TABLE l_ca_actes_reglements(
+        id SERIAL PRIMARY KEY,
+        id_ca_actes_reglement INTEGER REFERENCES ca_generales(id),
+        date_derniere_modif DATE,
         praticien VARCHAR(10) REFERENCES praticiens(praticien),
         nom_acte VARCHAR(255),
         cotation DECIMAL(10, 2),

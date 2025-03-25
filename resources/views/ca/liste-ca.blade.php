@@ -112,7 +112,7 @@
                                     </thead>
                                     <tbody>
                                     @foreach($ca_actes_reglements as $ca)
-                                        <tr onclick="window.location.href='{{ asset('ca/'.$ca->id.'/'.$ca->dossier.'/modifier') }}';">
+                                        <tr onclick="window.location.href='{{ asset('ca/'.$ca->id_ca_actes_reglement.'/'.$ca->dossier.'/modifier') }}';">
                                             <td>
                                                 @if($ca->date_derniere_modif)
                                                     {{ \Carbon\Carbon::parse($ca->date_derniere_modif)->format('Y-m-d') }}

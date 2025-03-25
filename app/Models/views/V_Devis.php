@@ -745,6 +745,12 @@ class V_Devis extends Model
         }
         return Carbon::parse($this->date_paiement_cb_ou_esp)->format('d/m/Y');
     }
+    public function getPart_secu(){
+        if ($this->part_secu == null){
+            return '...';
+        }
+        return number_format($this->part_secu, 2, ',', ' ');
+    }
     public function getPart_rac(){
         if ($this->part_rac == null){
             return '...';

@@ -342,6 +342,7 @@
                                 <th style="background-color: #f3f3f3">Espèces</th>
                                 <th style="background-color: #f3f3f3; border-right: 2px solid #000;">CB</th>
                                 <th style="background-color: #f3f3f3">Commentaire</th>
+                                <th style="background-color: #f3f3f3">Date de création</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -379,6 +380,7 @@
                                     <td class="text-end">@if($ca->rac_especes){{ number_format($ca->rac_especes, 2, ',', ' ') }}@endif</td>
                                     <td class="text-end" style="border-right: 2px solid #000;">@if($ca->rac_cb){{ number_format($ca->rac_cb, 2, ',', ' ') }}@endif</td>
                                     <td>{{ $ca->commentaire ?: 'Aucun commentaire' }}</td>
+                                    <td onclick="event.stopPropagation()"><a href="{{ asset('delete-ca/'. $ca->id ) }}" onclick="return deleteItem('<?= $ca->dossier ?>', '<?= $ca->created_at ?>')">Supprimer</a></td>
                                 </tr>
 
                             @endforeach

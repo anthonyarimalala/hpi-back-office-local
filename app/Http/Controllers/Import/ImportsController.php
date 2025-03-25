@@ -470,7 +470,7 @@ class ImportsController extends Controller
                 }
             }
 
-            DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $m_devis_nouveau->id, $date_envoie_pec, $date_fin_validite_pec, $part_mutuelle, $part_rac, $withChange);
+            DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $m_devis_nouveau->id, $date_envoie_pec, $date_fin_validite_pec, 0, $part_mutuelle, $part_rac, $withChange);
 
         // step 4: devis appels et mail
             $date_1er_appel = null;

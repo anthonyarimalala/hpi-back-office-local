@@ -17,7 +17,8 @@ DELETE FROM devis_appels_et_mails;
 DELETE FROM devis_reglements;
 DELETE FROM devis_accord_pecs;
 DELETE FROM devis;
-DELETE FROM ca_actes_reglements;
+DELETE FROM l_ca_actes_reglements;
+DELETE FROM ca_generales;
 DELETE FROM dossiers;
 
 
@@ -28,7 +29,8 @@ DROP TABLE h_ca_actes_reglements;
 DROP TABLE h_cheques;
 DROP TABLE h_devis;
 DROP TABLE h_protheses;
-DROP TABLE ca_actes_reglements;
+DROP TABLE l_ca_actes_reglements;
+DROP TABLE ca_generales;
 DROP TABLE prothese_travaux;
 DROP TABLE prothese_travaux_status;
 DROP TABLE prothese_retour_labos;

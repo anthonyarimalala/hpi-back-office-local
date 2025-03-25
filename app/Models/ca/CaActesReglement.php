@@ -130,57 +130,6 @@ class CaActesReglement extends Model
             $rac_cb,
             $commentaire
         );
-
-
-        //echo ('test');
-
-        /*
-        // Attribuer les valeurs récupérées aux colonnes correspondantes dans le modèle
-        $m_ca_acte_reglement->date_derniere_modif = $date_derniere_modif;
-        $m_ca_acte_reglement->statut = $statut;
-        $m_ca_acte_reglement->mutuelle = $mutuelle;
-
-        // Actes
-        $m_ca_acte_reglement->praticien = $praticien;
-        $m_ca_acte_reglement->nom_acte = $nom_acte;
-        $m_ca_acte_reglement->cotation = $cotation;
-        $m_ca_acte_reglement->controle_securisation = $controle_securisation;
-
-        // RO
-        $m_ca_acte_reglement->ro_part_secu = $ro_part_secu;
-        $m_ca_acte_reglement->ro_virement_recu = $ro_virement_recu;
-        $m_ca_acte_reglement->ro_indus_paye = $ro_indus_paye;
-        $m_ca_acte_reglement->ro_indus_en_attente = $ro_indus_en_attente;
-        $m_ca_acte_reglement->ro_indus_irrecouvrable = $ro_indus_irrecouvrable;
-
-        // Part Mutuelle
-        $m_ca_acte_reglement->part_mutuelle = $part_mutuelle;
-
-        // RC Soins
-        $m_ca_acte_reglement->rcs_virement = $rcs_virement;
-        $m_ca_acte_reglement->rcs_especes = $rcs_especes;
-        $m_ca_acte_reglement->rcs_cb = $rcs_cb;
-
-        // RC Soins avec devis
-        $m_ca_acte_reglement->rcsd_cheque = $rcsd_cheque;
-        $m_ca_acte_reglement->rcsd_especes = $rcsd_especes;
-        $m_ca_acte_reglement->rcsd_cb = $rcsd_cb;
-
-        // RAC
-        $m_ca_acte_reglement->rac_part_patient = $rac_part_patient;
-        $m_ca_acte_reglement->rac_cheque = $rac_cheque;
-        $m_ca_acte_reglement->rac_especes = $rac_especes;
-        $m_ca_acte_reglement->rac_cb = $rac_cb;
-
-        // Commentaire
-        $m_ca_acte_reglement->commentaire = $commentaire;
-
-        $m_ca_acte_reglement->save();
-
-
-        // Retourner une réponse ou rediriger selon ton besoin
-        return $m_ca_acte_reglement;
-        */
     }
 
     public function saveCa(Request $request)

@@ -63,6 +63,10 @@ class Devis extends Model
             $m_h_devis->action .= "<strong>Devis signé:</strong> " . $m_devis_ancien->devis_signe . " => " . $m_devis_nouveau->devis_signe . "\n";
             $withChange = true;
         }
+        if ($m_devis_ancien->montant != $m_devis_nouveau->montant){
+            $m_h_devis->action .= "<strong>Montant:</strong> " . $m_devis_ancien->montant . " => " . $m_devis_nouveau->montant . "\n";
+            $withChange = true;
+        }
         if ($m_devis_ancien->observation != $m_devis_nouveau->observation){
             $m_h_devis->action .= "<strong>Observation:</strong> " . $m_devis_ancien->observation . " => " . $m_devis_nouveau->observation . "\n";
             $withChange = true;

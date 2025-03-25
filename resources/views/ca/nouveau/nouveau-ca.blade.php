@@ -26,9 +26,8 @@
         </div>
     @endif
 
-    <form action="{{ asset('ca/nouveau') }}" method="POST">
+    <form action="{{ asset('ca/nouveau-2') }}" method="POST">
         @csrf
-
         <div class="row">
             <div class="col-md-12">
                 <div class="card shadow-sm">
@@ -103,7 +102,7 @@
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td><input type="text" class="form-control" id="nom_acte" name="nom_acte" placeholder="Nom de l'acte"></td>
+                                    <td><input type="text" class="form-control" id="nom_acte" name="nom_acte" placeholder="Nom de l'acte" required></td>
                                     <td><input type="number" min="0" step="0.01" class="form-control" id="cotation" name="cotation" placeholder="Cotation"></td>
                                     <td><input type="text" class="form-control" id="controle_securisation" name="controle_securisation" placeholder="Contrôle sécurisation"></td>
                                 </tr>

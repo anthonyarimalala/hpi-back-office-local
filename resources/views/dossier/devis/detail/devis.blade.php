@@ -99,6 +99,19 @@
                     <div class="list align-items-center border-bottom py-2">
                         <div class="wrapper w-100">
                             <p class="mb-2 font-weight-medium">
+                                Part sécu
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <p class="mb-0 text-small text-muted">{{ $v_devis->getPart_secu() }}</p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list align-items-center border-bottom py-2">
+                        <div class="wrapper w-100">
+                            <p class="mb-2 font-weight-medium">
                                 Part mutuelle
                             </p>
                             <div class="d-flex justify-content-between align-items-center">
@@ -109,7 +122,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="list align-items-center border-bottom py-2">
+                    <div class="list align-items-center py-2">
                         <div class="wrapper w-100">
                             <p class="mb-2 font-weight-medium">
                                 Part RAC

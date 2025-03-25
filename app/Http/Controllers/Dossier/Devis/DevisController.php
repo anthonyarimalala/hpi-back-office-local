@@ -112,10 +112,12 @@ class DevisController extends Controller
             $devis_signe = $request->input('devis_signe');
             $observation = $request->input('observation');
             $id_devis_etat = $request->input('id_devis_etat');
+            $montant = $request->input('montant');
 
             // table: devis_accord_pecs
             $date_envoi_pec = $request->input('date_envoi_pec');
             $date_fin_validite_pec = $request->input('date_fin_validite_pec');
+            $part_secu = $request->input('part_secu');
             $part_mutuelle = $request->input('part_mutuelle');
             $part_rac = $request->input('part_rac');
 
@@ -144,12 +146,13 @@ class DevisController extends Controller
 
             $m_devis_ancien = Devis::find($id_devis);
             $m_devis_nouveau = clone $m_devis_ancien;
+            $m_devis_nouveau->montant = $montant;
             $m_devis_nouveau->devis_signe = $devis_signe;
             $m_devis_nouveau->observation = $observation;
             $m_devis_nouveau->id_devis_etat = $id_devis_etat;
 
             $m_devis = Devis::updateDevis($m_h_devis, $m_devis_etatsS, $m_devis_ancien, $m_devis_nouveau, $withChange);
-            DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_mutuelle, $part_rac, $withChange);
+            DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_secu, $part_mutuelle, $part_rac, $withChange);
             DevisReglement::createDevisReglement($m_h_devis, $id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac, $withChange);
             DevisAppelsEtMail::createDevisAppelsEtMail($m_h_devis, $id_devis, $date_1er_appel, $note_1er_appel, $date_2eme_appel, $note_2eme_appel, $date_3eme_appel, $note_3eme_appel, $date_envoi_mail, $withChange, $email_sent);
 
@@ -209,8 +212,27 @@ class DevisController extends Controller
         $praticien = $validated['praticien'];
         $observation = $validated['observation'];
 
-        echo ($nom);
+
         $id_devis = Devis::createDevisSansDossier($dossier, $nom, $status, $mutuelle, $date, $montant, $devis_signe, $praticien, $observation);
+        // mettre l'historique de cet ajout de devis
+        $m_h_devis = new H_Devis();
+        $m_h_devis->code_u = Auth::user()->code_u;
+        $m_h_devis->nom = Auth::user()->prenom. ' '. Auth::user()->nom;
+        $m_h_devis->id_devis = $id_devis;
+        $m_h_devis->dossier = $dossier;
+        $m_h_devis->categorie = 'new';
+        $m_h_devis->action .= "<strong>Nouveau devis: </strong> " . $dossier . "\n";
+        $m_h_devis->action .= "<strong>Nom: </strong>" . $nom . "\n";
+        $m_h_devis->action .= "<strong>Status: </strong>" . $status . "\n";
+        $m_h_devis->action .= "<strong>Mutuelle: </strong>" . $mutuelle . "\n";
+        $m_h_devis->action .= "<strong>Montant: </strong>" . $montant . "\n";
+        $m_h_devis->action .= "<strong>Devis_signe: </strong>" . $devis_signe . "\n";
+        $m_h_devis->action .= "<strong>Praticien: </strong>" . $praticien . "\n";
+        if ($observation != null && $observation!='') $m_h_devis->action .= "<strong>Observation: </strong>" . $observation . "\n";
+        $m_h_devis->save();
+        // pour l'envoi mail
+        $devis_appels_mails = DevisAppelsEtMail::firstOrNew(['id_devis'=>$id_devis]);
+        $devis_appels_mails->save();
         return redirect()->to($dossier.'/devis/'.$id_devis.'/detail');
     }
     public function creerDevis(Request $request)
@@ -236,7 +258,23 @@ class DevisController extends Controller
 
         try {
             // Création du devis
-            Devis::createDevis($dossier, $status, $mutuelle, $date, $montant, $devis_signe, $praticien, $observation);
+            $id_devis = Devis::createDevis($dossier, $status, $mutuelle, $date, $montant, $devis_signe, $praticien, $observation);
+            $m_h_devis = new H_Devis();
+            $m_h_devis->code_u = Auth::user()->code_u;
+            $m_h_devis->nom = Auth::user()->prenom. ' '. Auth::user()->nom;
+            $m_h_devis->id_devis = $id_devis;
+            $m_h_devis->dossier = $dossier;
+            $m_h_devis->categorie = 'new';
+            $m_h_devis->action .= "<strong>Nouveau devis: </strong> " . $dossier . "\n";
+            $m_h_devis->action .= "<strong>Status: </strong>" . $status . "\n";
+            $m_h_devis->action .= "<strong>Mutuelle: </strong>" . $mutuelle . "\n";
+            $m_h_devis->action .= "<strong>Montant: </strong>" . $montant . "\n";
+            $m_h_devis->action .= "<strong>Devis_signe: </strong>" . $devis_signe . "\n";
+            $m_h_devis->action .= "<strong>Praticien: </strong>" . $praticien . "\n";
+            if ($observation != null && $observation!='') $m_h_devis->action .= "<strong>Observation: </strong>" . $observation . "\n";
+            $m_h_devis->save();
+            $devis_appels_mails = DevisAppelsEtMail::firstOrNew(['id_devis'=>$id_devis]);
+            $devis_appels_mails->save();
             return redirect()->to($dossier.'/details')->with('success', 'Le devis a été ajouté avec succès.');
         } catch (\Exception $e) {
             // print($e->getMessage());
@@ -252,7 +290,7 @@ class DevisController extends Controller
     }
     public function showNouveauDevis(){
         $data['statuss'] = DossierStatus::where('is_deleted', 0)->get();
-        $data['praticiens'] = Praticien::where('is_deleted', 0)->get();
+        $data['praticiens'] = Praticien::where('is_deleted', 0)->where('praticien', '!=','')->get();
         return view('devis/nouveau/nouveau-devis')->with($data);
     }
 

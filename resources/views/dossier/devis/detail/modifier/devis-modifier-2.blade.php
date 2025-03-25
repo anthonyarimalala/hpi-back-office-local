@@ -64,7 +64,8 @@
                         </div>
                         <div class="col-md-6">
                             <p class="text-dark">Date: @if($v_devis->date != null) {{ \Carbon\Carbon::parse($v_devis->date)->translatedFormat('d F Y') }} @endif</p>
-                            <p class="text-dark">Montant: {{ number_format($v_devis->montant, 2, ',', ' ') }} Euro </p>
+                            <p class="text-dark">Montant:</p> <input class="form-control" type="number" step="0.02" name="montant" placeholder="Montant" value="{{ $v_devis->montant }}">
+
                             <div class="form-group">
                                 <label for="devis_signe">Devis signé</label>
                                 <select class="form-select" id="devis_signe" name="devis_signe">
@@ -103,17 +104,22 @@
                     </div>
                     <div class="list align-items-center border-bottom py-2">
                         <div class="form-group">
+                            <label for="part_secu">Part sécu</label>
+                            <input type="number" step="0.01" class="form-control" id="part_secu" name="part_secu" placeholder="Part Sécu" value="{{ $v_devis->part_secu }}">
+                        </div>
+                    </div>
+                    <div class="list align-items-center border-bottom py-2">
+                        <div class="form-group">
                             <label for="part_mutuelle">Part mutuelle</label>
                             <input type="number" step="0.01" class="form-control" id="part_mutuelle" name="part_mutuelle" placeholder="Part Mutuelle" value="{{ $v_devis->part_mutuelle }}">
                         </div>
                     </div>
-                    <div class="list align-items-center border-bottom py-2">
+                    <div class="list align-items-center py-2">
                         <div class="form-group">
                             <label for="part_rac">Part RAC</label>
                             <input type="number" step="0.01" class="form-control" id="part_rac" name="part_rac" placeholder="Part RAC" value="{{ $v_devis->part_rac }}">
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -260,20 +266,21 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            const partSecu = document.getElementById("part_secu");
             const partMutuelleInput = document.getElementById("part_mutuelle");
             const partRacInput = document.getElementById("part_rac");
+
             const montantTotal = parseFloat("{{ $v_devis->montant }}") || 0;
             const partRacInitial = parseFloat("{{ $v_devis->part_rac }}");
 
             if (!partRacInitial) { // Vérifie si part_rac est nul ou 0
                 partMutuelleInput.addEventListener("input", function() {
                     let partMutuelle = parseFloat(partMutuelleInput.value) || 0;
-                    let partRac = montantTotal - partMutuelle;
+                    let partRac = montantTotal - partMutuelle - partSecu;
                     partRacInput.value = partRac.toFixed(2);
                 });
             }
         });
-
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

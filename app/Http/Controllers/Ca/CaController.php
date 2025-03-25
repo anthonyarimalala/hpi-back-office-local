@@ -133,7 +133,7 @@ class CaController extends Controller
         $data['status'] = DossierStatus::where('is_deleted', 0)->get();
         $data['praticiens'] = Praticien::where('is_deleted', 0)
             ->where('praticien', '!=', '')->get();
-        $data['v_ca_actes_reglement'] = V_CaActesReglement::where('id', $id_ca)->where('dossier', $dossier)->first();
+        $data['v_ca_actes_reglement'] = V_CaActesReglement::where('id_ca_actes_reglement', $id_ca)->where('dossier', $dossier)->first();
         $data['hists'] = H_CaActesReglement::orderBy('created_at', 'desc')
             ->where('id_ca_actes_reglement', $id_ca)
             ->paginate(15);

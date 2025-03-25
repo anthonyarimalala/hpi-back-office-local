@@ -100,13 +100,20 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::get('delete-ca/{id_ca}', [\App\Http\Controllers\Ca\CaController::class, 'deleteCa']);
     Route::get('getFilterCa', [\App\Http\Controllers\Ca\CaController::class, 'getFilterCa']);
     Route::get('reinitializeFilterCa', [\App\Http\Controllers\Ca\CaController::class, 'reinitializeFilterCa']);
-    Route::get('liste-ca', [\App\Http\Controllers\Ca\CaController::class, 'showListeCa'])->name('liste.ca');
     Route::get('ca/{id_ca}/{dossier}/modifier', [\App\Http\Controllers\Ca\CaController::class, 'showModifierCa']);
     Route::post('ca/modifier', [\App\Http\Controllers\Ca\CaController::class, 'updateCa']);
-    Route::get('ca/nouveau', [\App\Http\Controllers\Ca\CaController::class, 'showNouveauCa']);
     Route::get('ca/nouveau/{dossier}', [\App\Http\Controllers\Ca\CaController::class, 'showNouveauCaWithDossier']);
     Route::post('ca/nouveau', [\App\Http\Controllers\Ca\CaController::class, 'saveCa']);
     Route::get('/get-patient-details', [\App\Http\Controllers\Ca\CaController::class, 'getPatientDetails'])->name('get.patient.details');
+
+    // section: ca2
+    Route::get('ca/nouveau', [\App\Http\Controllers\Ca\CaController::class, 'showNouveauCa']);
+    Route::get('liste-ca', [\App\Http\Controllers\Ca\CaController::class, 'showListeCa'])->name('liste.ca');
+    Route::post('ca/nouveau-2', [\App\Http\Controllers\ca\Ca2Controller::class, 'insertCa']);
+    Route::get('ca/{id_ca_actes_reglement}/{dossier}/modifier', [\App\Http\Controllers\ca\Ca2Controller::class, 'showUpdateCa']);
+    Route::post('ca/modifier-2/{id_ca_actes_reglement}', [\App\Http\Controllers\ca\Ca2Controller::class, 'updateCa']);
+    Route::get('ca/{id_ca}/nouveau-acte',[\App\Http\Controllers\ca\Ca2Controller::class, 'showNouveauCaActe']);
+    Route::post('ca/{id_ca}/nouveau-acte', [\App\Http\Controllers\ca\Ca2Controller::class, 'insertNouveauCaActe']);
 
     // section: anomalie
     Route::get('anomalies-ca', [\App\Http\Controllers\Anomalie\AnomalieCaController::class, 'showAnomalieCa']);

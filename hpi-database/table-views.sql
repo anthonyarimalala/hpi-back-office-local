@@ -1,49 +1,3 @@
-
-
-/*
-CREATE OR REPLACE VIEW v_h_devis AS
-SELECT
-    hd.code_u,
-    usr.nom,
-    usr.prenom,
-    hd.id_devis,
-    dos.dossier,
-    hd.action,
-    hd.created_at
-FROM h_devis hd
-JOIN devis dev ON hd.id_devis = dev.id
-JOIN dossiers dos ON dev.dossier = dos.dossier
-JOIN users usr ON hd.code_u = usr.code_u;
-
-CREATE OR REPLACE VIEW v_h_protheses AS
-SELECT
-    hp.code_u,
-    usr.nom,
-    usr.prenom,
-    hp.id_devis,
-    dos.dossier,
-    hp.action,
-    hp.created_at
-FROM h_protheses hp
-JOIN devis dev ON hp.id_devis = dev.id
-JOIN dossiers dos ON dev.dossier = dos.dossier
-JOIN users usr ON hp.code_u = usr.code_u;
-
-CREATE OR REPLACE VIEW v_h_cheques AS
-SELECT
-    hc.code_u,
-    usr.nom,
-    usr.prenom,
-    hc.id_devis,
-    dos.dossier,
-    hc.action,
-    hc.created_at
-FROM h_cheques hc
-JOIN devis dev ON hc.id_devis = dev.id
-JOIN dossiers dos ON dev.dossier = dos.dossier
-JOIN users usr ON hc.code_u = usr.code_u;
-*/
-
 CREATE OR REPLACE VIEW v_devis AS
 SELECT
     dos.dossier,
@@ -62,6 +16,7 @@ SELECT
     d.updated_at AS dernier_modif,
     dap.date_envoi_pec,
     dap.date_fin_validite_pec,
+    dap.part_secu,
     dap.part_mutuelle,
     dap.part_rac,
     dr.date_paiement_cb_ou_esp,
@@ -137,7 +92,6 @@ SELECT
 FROM devis d
         LEFT JOIN info_cheques ic ON d.id = ic.id_devis;
 
-DROP VIEW v_protheses;
 CREATE VIEW v_protheses as
 SELECT
     dev.dossier,
@@ -169,15 +123,48 @@ FROM
 
 CREATE OR REPLACE VIEW v_ca_actes_reglements AS
 SELECT
-    car.*,
+    cg.id ,
+    cg.dossier ,
+    cg.nom_patient ,
+    cg.statut ,
+    cg.mutuelle ,
+    lcar.id AS id_ca_actes_reglement,
+    lcar.praticien ,
+    lcar.date_derniere_modif ,
+    lcar.nom_acte ,
+    lcar.cotation ,
+    lcar.controle_securisation ,
+    lcar.ro_part_secu ,
+    lcar.ro_virement_recu ,
+    lcar.ro_indus_paye ,
+    lcar.ro_indus_en_attente ,
+    lcar.ro_indus_irrecouvrable ,
+    lcar.part_mutuelle ,
+    lcar.rcs_virement ,
+    lcar.rcs_especes ,
+    lcar.rcs_cb ,
+    lcar.rcsd_cheque ,
+    lcar.rcsd_especes ,
+    lcar.rcsd_cb ,
+    lcar.rac_part_patient ,
+    lcar.rac_cheque ,
+    lcar.rac_especes ,
+    lcar.rac_cb ,
+    lcar.commentaire ,
+    lcar.created_at ,
+    lcar.updated_at ,
     dos.nom,
     dos.date_naissance,
     COALESCE(ro_part_secu, 0) + COALESCE(part_mutuelle, 0) + COALESCE(rac_part_patient, 0) AS cotation_paye,
     COALESCE(ro_virement_recu, 0) + COALESCE(ro_indus_paye, 0) + COALESCE(ro_indus_irrecouvrable, 0) AS ro_part_secu_paye,
     COALESCE(rcs_virement, 0) + COALESCE(rcs_especes, 0) + COALESCE(rcs_cb, 0) + COALESCE(rcsd_cheque, 0) + COALESCE(rcsd_especes, 0) + COALESCE(rcsd_cb, 0) AS part_mutuelle_paye,
-    COALESCE(rac_cheque, 0) + COALESCE(rac_especes, 0) + COALESCE(rac_cb, 0) AS rac_part_patient_paye
-        FROM ca_actes_reglements car
-        JOIN dossiers dos ON car.dossier = dos.dossier;
+    COALESCE(rac_cheque, 0) + COALESCE(rac_especes, 0) + COALESCE(rac_cb, 0) AS rac_part_patient_paye,
+    lcar.is_deleted
+        FROM ca_generales cg
+        JOIN l_ca_actes_reglements lcar ON cg.id = lcar.id_ca_actes_reglement
+        JOIN dossiers dos ON cg.dossier = dos.dossier;
+
+
 
 
 

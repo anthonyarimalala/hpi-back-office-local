@@ -14,7 +14,7 @@ class DevisAccordPec extends Model
         'id_devis'
     ];
 
-    public static function createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_mutuelle, $part_rac, &$withChange = false)
+    public static function createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_secu, $part_mutuelle, $part_rac, &$withChange = false)
     {
         $m_devisAccordPecs = DevisAccordPec::firstOrNew(['id_devis' => $id_devis]);
 
@@ -26,6 +26,11 @@ class DevisAccordPec extends Model
         if (($m_devisAccordPecs->date_fin_validite_pec ? Carbon::parse($m_devisAccordPecs->date_fin_validite_pec)->format('Y-m-d') : '') != $date_fin_validite_pec) {
             $m_h_devis->action .= "<strong>Date fin validité PEC:</strong> " . ($m_devisAccordPecs->date_fin_validite_pec ? Carbon::parse($m_devisAccordPecs->date_fin_validite_pec)->format('d-m-Y') : '...') . " => " . ($date_fin_validite_pec ? Carbon::parse($date_fin_validite_pec)->format('d-m-Y') : '...') . "\n";
             $m_devisAccordPecs->date_fin_validite_pec = $date_fin_validite_pec;
+            $withChange = true;
+        }
+        if ($m_devisAccordPecs->part_secu != $part_secu) {
+            $m_h_devis->action .= "<strong>Part sécu:</strong> " . $m_devisAccordPecs->part_secu . " => " . $part_secu . "\n";
+            $m_devisAccordPecs->part_secu = $part_secu;
             $withChange = true;
         }
         if ($m_devisAccordPecs->part_mutuelle != $part_mutuelle) {

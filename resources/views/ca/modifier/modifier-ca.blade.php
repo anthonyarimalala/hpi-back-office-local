@@ -17,9 +17,8 @@
         </div>
     </div>
 
-    <form action="{{ asset('ca/modifier') }}" method="POST">
+    <form action="{{ asset('ca/modifier-2/'.$v_ca_actes_reglement->id_ca_actes_reglement) }}" method="POST">
         @csrf
-        <input type="hidden" name="id_ca" value="{{ $v_ca_actes_reglement->id }}">
         <div class="row">
             <div class="col-md-12">
                 <div class="card shadow-sm">
@@ -42,7 +41,7 @@
                                 <tr>
                                     <td><input type="date" class="form-control" id="date_derniere_modif" name="date_derniere_modif" value="" placeholder="Date de modification" readonly></td>
                                     <td><input type="text" class="form-control" id="dossierr" name="dossierr" value="{{ $v_ca_actes_reglement->dossier }}" placeholder="Numéro de dossier" required readonly></td>
-                                    <td><input type="text" class="form-control" id="nom_patient" name="nom_patient" value="{{ $v_ca_actes_reglement->nom }}" placeholder="Nom du patient" readonly></td>
+                                    <td><input type="text" class="form-control" id="nom_patient" name="nom_patient" value="@if($v_ca_actes_reglement->nom) {{ $v_ca_actes_reglement->nom }} @else {{ old("nom_patient") }} @endif" placeholder="Nom du patient" readonly></td>
                                     <td>
                                         <select class="form-select" name="statut" id="statut" required readonly>
                                             <option value="" disabled selected>Choix statut</option>
@@ -65,7 +64,17 @@
             <div class="col-md-12">
                 <div class="card shadow-sm">
                     <div class="card-header text-white">
-                        <h4 class="card-title mb-0" style="color: whitesmoke">ACTES</h4>
+
+                        <div class="d-sm-flex justify-content-between align-items-start">
+                            <div>
+                                <h4 class="card-title mb-0" style="color: whitesmoke">ACTES</h4>
+                            </div>
+                            <div>
+                                <a href="{{ asset('ca/'.$v_ca_actes_reglement->id.'/nouveau-acte') }}" class="text-primary">
+                                    <i class="mdi mdi-plus mdi-24px">Nouveau</i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
