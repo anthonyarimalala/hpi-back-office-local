@@ -43,7 +43,7 @@
                             <!-- Section INFO DEVIS -->
                             <tr>
                                 <th class="infoCheques" colspan="8" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO DEVIS</th>
-                                <th class="infoAccordPec" colspan="4" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO ACCORD PEC</th>
+                                <th class="infoAccordPec" colspan="5" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO ACCORD PEC</th>
                                 <th class="appelsMail" colspan="7" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">APPELS & MAIL</th>
                                 <th class="infoEmpreinte" colspan="6" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO D'EMPREINTE</th>
                                 <th class="retourLabo" colspan="3" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">RETOUR LABO</th>
@@ -76,6 +76,7 @@
                                 <!-- 9 -->
                                 <th onclick="sortTableByDate('myTable', 9)" class="infoAccordPec">Date fin validité PEC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                 <!-- 10 -->
+                                <th onclick="sortTableByNumber('myTable', 10)" class="infoAccordPec">Part sécu<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                 <th onclick="sortTableByNumber('myTable', 10)" class="infoAccordPec">Part mutuelle<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
                                 <!-- 11 -->
                                 <th onclick="sortTableByNumber('myTable', 11)" style="border-right: 2px solid #000;" class="infoAccordPec">Part RAC<span id="sort-icon-0" class="mdi mdi-sort"></span></th>
@@ -140,141 +141,144 @@
                             @foreach($deviss as $devis)
                                 <tr style="background-color: {{ $devis->couleur }};" onmouseover="this.style.backgroundColor='#d3d3d3';" onmouseout="this.style.backgroundColor='{{ $devis->couleur }}';">
                                     <!-- INFO DEVIS -->
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         <strong>{{ $devis->dossier }}</strong>
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; word-wrap: break-word; max-width: 150px; overflow: hidden; text-overflow: ellipsis;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; word-wrap: break-word; max-width: 150px; overflow: hidden; text-overflow: ellipsis;">
                                         {{ $devis->nom }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->status }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->mutuelle }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate() }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getMontant() }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         @if($devis->devis_signe == 'oui')
                                             <label class="badge badge-info">Oui</label>
                                         @else
                                             Non
                                         @endif
                                     </td>
-                                    <td class="infoCheques" style="border-right: 2px solid #000;" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" style="border-right: 2px solid #000;" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->praticien }}
                                     </td>
 
                                     <!-- INFO ACCORD PEC -->
-                                    <td class="infoAccordPec" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoAccordPec" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate_envoi_pec() }}
                                     </td>
-                                    <td class="infoAccordPec" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoAccordPec" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate_fin_validite_pec() }}
                                     </td>
-                                    <td class="infoAccordPec" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoAccordPec" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; @foreach($devis_accord_pecs_status as $da) @if($da->status == $devis->part_secu_status) background-color: {{ $da->couleur }} @endif @endforeach">
+                                        {{ $devis->getPart_secu() }}
+                                    </td>
+                                    <td class="infoAccordPec" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; @foreach($devis_accord_pecs_status as $da) @if($da->status == $devis->part_mutuelle_status) background-color: {{ $da->couleur }} @endif @endforeach">
                                         {{ $devis->getPart_mutuelle() }}
                                     </td>
-                                    <td class="infoAccordPec" style="border-right: 2px solid #000;" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoAccordPec" style="border-right: 2px solid #000;" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; @foreach($devis_accord_pecs_status as $da) @if($da->status == $devis->part_rac_status) background-color: {{ $da->couleur }} @endif @endforeach">
                                         {{ $devis->getPart_rac() }}
                                     </td>
 
                                     <!-- APPELS & MAIL -->
-                                    <td class="appelsMail" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="appelsMail" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate_1er_appel() }}
                                     </td>
-                                    <td class="appelsMail" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
+                                    <td class="appelsMail" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
                                         {{ $devis->getNote_1er_appel() }}
                                     </td>
-                                    <td class="appelsMail" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="appelsMail" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate_2eme_appel() }}
                                     </td>
-                                    <td class="appelsMail" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
+                                    <td class="appelsMail" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
                                         {{ $devis->getNote_2eme_appel() }}
                                     </td>
-                                    <td class="appelsMail" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="appelsMail" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate_3eme_appel() }}
                                     </td>
-                                    <td class="appelsMail" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
+                                    <td class="appelsMail" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
                                         {{ $devis->getNote_3eme_appel() }}
                                     </td>
-                                    <td class="appelsMail" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; border-right: 2px solid #000;">
+                                    <td class="appelsMail" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; border-right: 2px solid #000;">
                                         {{ $devis->getDate_envoi_mail() }}
                                     </td>
-                                    <td class="infoEmpreinte" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoEmpreinte" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getLaboratoire() }}
                                     </td>
-                                    <td class="infoEmpreinte" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoEmpreinte" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate_empreinte() }}
                                     </td>
-                                    <td class="infoEmpreinte" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoEmpreinte" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate_envoi_labo() }}
                                     </td>
-                                    <td class="infoEmpreinte" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoEmpreinte" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getTravail_demande() }}
                                     </td>
-                                    <td class="infoEmpreinte" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoEmpreinte" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getNumero_dent() }}
                                     </td>
-                                    <td class="infoEmpreinte" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; border-right: 2px solid #000;">
+                                    <td class="infoEmpreinte" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; border-right: 2px solid #000;">
                                         {{ $devis->getObservations() }}
                                     </td>
-                                    <td class="retourLabo" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="retourLabo" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate_livraison() }}
                                     </td>
-                                    <td class="retourLabo" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="retourLabo" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getNumero_suivi() }}
                                     </td>
-                                    <td class="retourLabo" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; border-right: 2px solid #000;">
+                                    <td class="retourLabo" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; border-right: 2px solid #000;">
                                         {{ $devis->getNumero_facture_labo() }}
                                     </td>
-                                    <td class="pose" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="pose" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate_pose_prevue() }}
                                     </td>
-                                    <td class="pose" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; border-right: 2px solid #000;">
+                                    <td class="pose" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer; border-right: 2px solid #000;">
                                         {{ $devis->getPoseStatut() }}
                                     </td>
-                                    <td class="pose" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="pose" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate_pose_reel() }}
                                     </td>
-                                    <td class="travauxCloture" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="travauxCloture" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getOrganisme_payeur() }}
                                     </td>
-                                    <td class="travauxCloture" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="travauxCloture" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getMontant_encaisse() }}
                                     </td>
-                                    <td class="travauxCloture" style="border-right: 2px solid #000;" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="travauxCloture" style="border-right: 2px solid #000;" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate_controle_paiement() }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getNumero_cheque() }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getMontant_cheque() }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getNom_document() }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate_encaissement_cheque() }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getDate_1er_acte() }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getNature_cheque() }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getTravaux_sur_devis() }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getSituation_cheque() }}
                                     </td>
-                                    <td class="infoCheques" onclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
+                                    <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getCheque_observation() }}
                                     </td>
 
@@ -347,7 +351,7 @@
                             </thead>
                             <tbody>
                             @foreach($ca_actes_reglements as $ca)
-                                <tr onclick="window.location.href='{{ asset('ca/'.$ca->id.'/'.$ca->dossier.'/modifier') }}';">
+                                <tr ondblclick="window.location.href='{{ asset('ca/'.$ca->id.'/'.$ca->dossier.'/modifier') }}';">
                                     <td>
                                         @if($ca->date_derniere_modif)
                                             {{ \Carbon\Carbon::parse($ca->date_derniere_modif)->format('Y-m-d') }}
@@ -380,14 +384,11 @@
                                     <td class="text-end">@if($ca->rac_especes){{ number_format($ca->rac_especes, 2, ',', ' ') }}@endif</td>
                                     <td class="text-end" style="border-right: 2px solid #000;">@if($ca->rac_cb){{ number_format($ca->rac_cb, 2, ',', ' ') }}@endif</td>
                                     <td>{{ $ca->commentaire ?: 'Aucun commentaire' }}</td>
-                                    <td onclick="event.stopPropagation()"><a href="{{ asset('delete-ca/'. $ca->id ) }}" onclick="return deleteItem('<?= $ca->dossier ?>', '<?= $ca->created_at ?>')">Supprimer</a></td>
+                                    <td ondblclick="event.stopPropagation()"><a href="{{ asset('delete-ca/'. $ca->id ) }}" ondblclick="return deleteItem('<?= $ca->dossier ?>', '<?= $ca->created_at ?>')">Supprimer</a></td>
                                 </tr>
-
                             @endforeach
                             </tbody>
                         </table>
-
-
                     </div>
                 </div>
             </div>

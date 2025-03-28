@@ -14,11 +14,19 @@ class V_CaActesReglement extends Model
     public function scopeFilter($query, &$filters){
         if ($filters['date_derniere_modif_debut']) {
             $query->where('date_derniere_modif', '>=', $filters['date_derniere_modif_debut']);
-            $filters['stringFilters'][] = 'Date de dèrniere modification debut: '. Carbon::parse($filters['date_derniere_modif_debut'])->format('d/m/Y');
+            $filters['stringFilters'][] = 'Date de dèrniere modification debut: '.  '>= ' .Carbon::parse($filters['date_derniere_modif_debut'])->format('d/m/Y').' 00:00:00';
         }
         if ($filters['date_derniere_modif_fin']) {
             $query->where('date_derniere_modif', '<=', $filters['date_derniere_modif_fin']);
-            $filters['stringFilters'][] = 'Date de dèrniere modification fin: '. Carbon::parse($filters['date_derniere_modif_fin'])->format('d/m/Y');
+            $filters['stringFilters'][] = 'Date de dèrniere modification fin: '.  '<= ' .Carbon::parse($filters['date_derniere_modif_fin'])->format('d/m/Y').' 23:59:59';
+        }
+        if ($filters['date_ca_debut']) {
+            $query->where('created_at', '>=', $filters['date_ca_debut'].' 00:00:00');
+            $filters['stringFilters'][] = 'Date '. '>= ' .$filters['date_ca_debut'];
+        }
+        if ($filters['date_ca_fin']) {
+            $query->where('created_at', '<=', $filters['date_ca_fin'].' 23:59:59');
+            $filters['stringFilters'][] = 'Date '.'<= '.$filters['date_ca_fin'];
         }
         if ($filters['status']){
             $query->whereIn('statut', $filters['status']);

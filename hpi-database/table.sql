@@ -58,14 +58,25 @@
         updated_at TIMESTAMP
     );
 
+    CREATE TABLE devis_accord_pecs_status(
+        status VARCHAR(155) PRIMARY KEY,
+        couleur VARCHAR(30),
+        is_deleted INTEGER DEFAULT 0,
+        created_at TIMESTAMP,
+        updated_at TIMESTAMP
+    );
+
     CREATE TABLE devis_accord_pecs(
         id SERIAL PRIMARY KEY,
         id_devis INTEGER REFERENCES devis(id),
         date_envoi_pec DATE,
         date_fin_validite_pec DATE,
         part_secu DECIMAL(10, 2),
+        part_secu_status VARCHAR(155) REFERENCES devis_accord_pecs_status(status),
         part_mutuelle DECIMAL(10, 2),
+        part_mutuelle_status VARCHAR(155) REFERENCES devis_accord_pecs_status(status),
         part_rac DECIMAL(10, 2),
+        part_rac_status VARCHAR(155) REFERENCES devis_accord_pecs_status(status),
         is_deleted INTEGER DEFAULT 0,
         created_at TIMESTAMP,
         updated_at TIMESTAMP
@@ -74,6 +85,8 @@
     CREATE TABLE devis_reglements(
         id SERIAL PRIMARY KEY,
         id_devis INTEGER REFERENCES devis(id),
+        reglement_cb DECIMAL(10, 2),
+        reglement_espece DECIMAL(10, 2),
         date_paiement_cb_ou_esp DATE,
         date_depot_chq_pec DATE,
         date_depot_chq_part_mut DATE,
@@ -183,7 +196,7 @@
 
     CREATE TABLE l_ca_actes_reglements(
         id SERIAL PRIMARY KEY,
-        id_ca_actes_reglement INTEGER REFERENCES ca_generales(id),
+        id_ca INTEGER REFERENCES ca_generales(id),
         date_derniere_modif DATE,
         praticien VARCHAR(10) REFERENCES praticiens(praticien),
         nom_acte VARCHAR(255),

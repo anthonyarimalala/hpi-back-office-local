@@ -60,3 +60,9 @@ INSERT INTO prothese_travaux_status(travaux_status) VALUES
     ('Partiellement posÚ/pas de rdv'),
     ('Partiellement posÚ/avec rdv');
 
+INSERT INTO devis_accord_pecs_status(status, couleur) VALUES
+    ('', ''),
+    ('Non PayÚ', '#FF0000'),
+    ('PayÚ', '#008000');
+
+

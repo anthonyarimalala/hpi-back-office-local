@@ -17,8 +17,9 @@ class Dashboard extends Model
         $datas = DB::select("
             SELECT
                 praticien,
-                SUM(cotation) AS sum_cotation_praticien
-            FROM ca_actes_reglements
+                SUM(cotation) AS sum_cotation_praticien,
+                SUM(COALESCE(ro_part_secu_paye, 0)+COALESCE(part_mutuelle_paye, 0)+COALESCE(rac_part_patient_paye, 0)) AS sum_cotation_praticien_reste_a_paye
+            FROM v_ca_actes_reglements
             WHERE created_at >= ? AND created_at <= ?
             GROUP BY praticien
         ", [$date_ca_debut.' 00:00:00', $date_ca_fin.' 23:59:59']);
@@ -39,7 +40,7 @@ class Dashboard extends Model
                     COALESCE(SUM(COALESCE(rac_part_patient, 0)), 0) AS sum_part_patient,
                     COALESCE(SUM(COALESCE(rac_cheque, 0) + COALESCE(rac_especes, 0) + COALESCE(rac_cb, 0)), 0) AS sum_rac_wt_part_patient,
                     COALESCE(SUM(COALESCE(ro_indus_en_attente, 0)), 0) AS sum_ro_indus_en_attente
-                FROM ca_actes_reglements
+                FROM v_ca_actes_reglements
                 WHERE created_at >= ? AND created_at <= ?
             )
             SELECT

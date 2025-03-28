@@ -103,7 +103,16 @@
         <div class="col-md-12 grid-margin">
             <div class="card">
                 <div class="card-header text-white">
-                    <h4 class="card-title mb-0" style="color: whitesmoke">Travaux</h4>
+                    <div class="d-sm-flex justify-content-between align-items-start">
+                        <div>
+                            <h4 class="card-title mb-0" style="color: whitesmoke">Travaux</h4>
+                        </div>
+                        <div>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#posestatusModal">
+                                <i class="mdi mdi-cogs mr-2" style="font-size: 1.5rem;"></i> Statut
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -146,4 +155,5 @@
         </div>
     </div>
     </form>
+    @include('modals.pose-status-modal')
 @endsection

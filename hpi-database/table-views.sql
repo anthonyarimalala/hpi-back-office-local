@@ -17,8 +17,13 @@ SELECT
     dap.date_envoi_pec,
     dap.date_fin_validite_pec,
     dap.part_secu,
+    dap.part_secu_status,
     dap.part_mutuelle,
+    dap.part_mutuelle_status,
     dap.part_rac,
+    dap.part_rac_status,
+    dr.reglement_cb,
+    dr.reglement_espece,
     dr.date_paiement_cb_ou_esp,
     dr.date_depot_chq_pec,
     dr.date_depot_chq_part_mut,
@@ -161,7 +166,7 @@ SELECT
     COALESCE(rac_cheque, 0) + COALESCE(rac_especes, 0) + COALESCE(rac_cb, 0) AS rac_part_patient_paye,
     lcar.is_deleted
         FROM ca_generales cg
-        JOIN l_ca_actes_reglements lcar ON cg.id = lcar.id_ca_actes_reglement
+        JOIN l_ca_actes_reglements lcar ON cg.id = lcar.id_ca
         JOIN dossiers dos ON cg.dossier = dos.dossier;
 
 

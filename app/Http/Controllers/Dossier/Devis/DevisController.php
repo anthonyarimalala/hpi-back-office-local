@@ -8,6 +8,7 @@ use App\Models\devis\cheque\InfoChequeSituationCheque;
 use App\Models\devis\cheque\InfoChequeTravauxDevis;
 use App\Models\devis\Devis;
 use App\Models\devis\DevisAccordPec;
+use App\Models\devis\DevisAccordPecStatus;
 use App\Models\devis\DevisAppelsEtMail;
 use App\Models\devis\DevisEtat;
 use App\Models\devis\DevisReglement;
@@ -118,10 +119,15 @@ class DevisController extends Controller
             $date_envoi_pec = $request->input('date_envoi_pec');
             $date_fin_validite_pec = $request->input('date_fin_validite_pec');
             $part_secu = $request->input('part_secu');
+            $part_secu_status = $request->input('part_secu_status');
             $part_mutuelle = $request->input('part_mutuelle');
+            $part_mutuelle_status = $request->input('part_mutuelle_status');
             $part_rac = $request->input('part_rac');
+            $part_rac_status = $request->input('part_rac_status');
 
             // table: devis_reglements
+            $reglement_cb = $request->input('reglement_cb');
+            $reglement_espece = $request->input('reglement_espece');
             $date_paiement_cb_ou_esp = $request->input('date_paiement_cb_ou_esp');
             $date_depot_chq_pec = $request->input('date_depot_chq_pec');
             $date_depot_chq_part_mut = $request->input('date_depot_chq_part_mut');
@@ -152,8 +158,8 @@ class DevisController extends Controller
             $m_devis_nouveau->id_devis_etat = $id_devis_etat;
 
             $m_devis = Devis::updateDevis($m_h_devis, $m_devis_etatsS, $m_devis_ancien, $m_devis_nouveau, $withChange);
-            DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_secu, $part_mutuelle, $part_rac, $withChange);
-            DevisReglement::createDevisReglement($m_h_devis, $id_devis, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac, $withChange);
+            DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_secu, $part_secu_status, $part_mutuelle, $part_mutuelle_status, $part_rac, $part_rac_status, $withChange);
+            DevisReglement::createDevisReglement($m_h_devis, $id_devis, $reglement_cb, $reglement_espece, $date_paiement_cb_ou_esp, $date_depot_chq_pec, $date_depot_chq_part_mut, $date_depot_chq_rac, $withChange);
             DevisAppelsEtMail::createDevisAppelsEtMail($m_h_devis, $id_devis, $date_1er_appel, $note_1er_appel, $date_2eme_appel, $note_2eme_appel, $date_3eme_appel, $note_3eme_appel, $date_envoi_mail, $withChange, $email_sent);
 
             // mettre le numero de dossier dans l'historique: dénormalisation
@@ -176,6 +182,7 @@ class DevisController extends Controller
             ->where('id_devis', $id_devis)
             ->first();
         $data['etat_devis'] = DevisEtat::all();
+        $data['devis_accord_pecs_status'] = DevisAccordPecStatus::all();
         return view('dossier/devis/detail/modifier/devis-modifier-2')->with($data);
     }
 
@@ -284,12 +291,12 @@ class DevisController extends Controller
 
     public function nouveauDevis($dossier){
         $data['dossier'] = Dossier::where('dossier', $dossier)->first();
-        $data['statuss'] = DossierStatus::where('is_deleted', 0)->get();
+        $data['statuss'] = DossierStatus::orderBy('ordre', 'desc')->where('is_deleted', 0)->where('status', '!=', '')->get();
         $data['praticiens'] = Praticien::where('is_deleted', 0)->where('praticien', '!=','')->get();
         return view('dossier/devis/nouveau-devis')->with($data);
     }
     public function showNouveauDevis(){
-        $data['statuss'] = DossierStatus::where('is_deleted', 0)->get();
+        $data['statuss'] = DossierStatus::orderBy('ordre', 'desc')->where('is_deleted', 0)->where('status', '!=', '')->get();
         $data['praticiens'] = Praticien::where('is_deleted', 0)->where('praticien', '!=','')->get();
         return view('devis/nouveau/nouveau-devis')->with($data);
     }
@@ -394,6 +401,7 @@ class DevisController extends Controller
         $data['nature_cheques'] = InfoChequeNatureCheque::all();
         $data['travaux_sur_devis'] = InfoChequeTravauxDevis::all();
         $data['situation_cheques'] = InfoChequeSituationCheque::all();
+        $data['devis_accord_pecs_status'] = DevisAccordPecStatus::where('is_deleted', 0)->get();
         $data['filters'] = $filters;
 
         return view('devis/liste-devis-2')->with($data);

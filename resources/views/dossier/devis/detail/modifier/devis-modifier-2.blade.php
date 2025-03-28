@@ -64,7 +64,7 @@
                         </div>
                         <div class="col-md-6">
                             <p class="text-dark">Date: @if($v_devis->date != null) {{ \Carbon\Carbon::parse($v_devis->date)->translatedFormat('d F Y') }} @endif</p>
-                            <p class="text-dark">Montant:</p> <input class="form-control" type="number" step="0.02" name="montant" placeholder="Montant" value="{{ $v_devis->montant }}">
+                            <p class="text-dark">Montant:</p> <input class="form-control" type="number" step="0.02" name="montant" id="montant" placeholder="Montant" value="{{ $v_devis->montant }}">
 
                             <div class="form-group">
                                 <label for="devis_signe">Devis signé</label>
@@ -102,22 +102,58 @@
                             <input type="date" class="form-control" id="fin_validite_pec" name="date_fin_validite_pec" value="{{ $v_devis->date_fin_validite_pec ? \Carbon\Carbon::parse($v_devis->date_fin_validite_pec)->format('Y-m-d'):'' }}">
                         </div>
                     </div>
-                    <div class="list align-items-center border-bottom py-2">
-                        <div class="form-group">
-                            <label for="part_secu">Part sécu</label>
-                            <input type="number" step="0.01" class="form-control" id="part_secu" name="part_secu" placeholder="Part Sécu" value="{{ $v_devis->part_secu }}">
+                    <div class="list d-flex align-items-center border-bottom py-2">
+                        <div class="wrapper w-50 px-2">
+                            <div class="form-group">
+                                <label for="part_secu">Part sécu</label>
+                                <input type="number" step="0.01" class="form-control" id="part_secu" name="part_secu" placeholder="Part Sécu" value="{{ $v_devis->part_secu }}">
+                            </div>
+                        </div>
+                        <div class="wrapper w-50 px-2">
+                            <div class="form-group">
+                                <label for="part_secu">Status</label>
+                                <select class="form-select" name="part_secu_status" id="part_secu_status">
+                                    @foreach($devis_accord_pecs_status as $da)
+                                        <option value="{{ $da->status }}" @if($v_devis->part_secu_status == $da->status) selected @endif>{{ $da->status }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="list align-items-center border-bottom py-2">
-                        <div class="form-group">
-                            <label for="part_mutuelle">Part mutuelle</label>
-                            <input type="number" step="0.01" class="form-control" id="part_mutuelle" name="part_mutuelle" placeholder="Part Mutuelle" value="{{ $v_devis->part_mutuelle }}">
+                    <div class="list d-flex align-items-center border-bottom py-2">
+                        <div class="wrapper w-50 px-2">
+                            <div class="form-group">
+                                <label for="part_mutuelle">Part mutuelle</label>
+                                <input type="number" step="0.01" class="form-control" id="part_mutuelle" name="part_mutuelle" placeholder="Part Mutuelle" value="{{ $v_devis->part_mutuelle }}">
+                            </div>
+                        </div>
+                        <div class="wrapper w-50 px-2">
+                            <div class="form-group">
+                                <label for="part_secu">Status</label>
+                                <select class="form-select" name="part_mutuelle_status" id="part_mutuelle_status">
+                                    @foreach($devis_accord_pecs_status as $da)
+                                        <option value="{{ $da->status }}" @if($v_devis->part_mutuelle_status == $da->status) selected @endif>{{ $da->status }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="list align-items-center py-2">
-                        <div class="form-group">
-                            <label for="part_rac">Part RAC</label>
-                            <input type="number" step="0.01" class="form-control" id="part_rac" name="part_rac" placeholder="Part RAC" value="{{ $v_devis->part_rac }}">
+                    <div class="list d-flex align-items-center py-2">
+                        <div class="wrapper w-50 px-2">
+                            <div class="form-group">
+                                <label for="part_rac">Part RAC</label>
+                                <input type="number" step="0.01" class="form-control" id="part_rac" name="part_rac" placeholder="Part RAC" value="{{ $v_devis->part_rac }}">
+                            </div>
+                        </div>
+                        <div class="wrapper w-50 px-2">
+                            <div class="form-group">
+                                <label for="part_secu">Status</label>
+                                <select class="form-select" name="part_rac_status" id="part_rac_status">
+                                    @foreach($devis_accord_pecs_status as $da)
+                                        <option value="{{ $da->status }}" @if($v_devis->part_rac_status == $da->status) selected @endif>{{ $da->status }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -130,6 +166,24 @@
                 </div>
                 <div class="card-body">
                     <div class="container">
+                        <!-- CB -->
+                        <div class="row align-items-center border-bottom py-2">
+                            <div class="form-group">
+                                <label for="reglement_cb">CB</label>
+                                <input type="number" step="1" class="form-control" placeholder="CB" id="reglement_cb" name="reglement_cb"
+                                       value="{{ $v_devis->reglement_cb }}">
+                            </div>
+                        </div>
+
+                        <!-- Espece -->
+                        <div class="row align-items-center border-bottom py-2">
+                            <div class="form-group">
+                                <label for="reglement_espece">Espèce</label>
+                                <input type="number" step="1" class="form-control" placeholder="Espèce" id="reglement_espece" name="reglement_espece"
+                                       value="{{ $v_devis->reglement_espece }}">
+                            </div>
+                        </div>
+
                         <!-- Date paiement par CB ou Esp -->
                         <div class="row align-items-center border-bottom py-2">
                             <div class="form-group">
@@ -264,24 +318,76 @@
         </div>
     </div>
 
+
+
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const partSecu = document.getElementById("part_secu");
-            const partMutuelleInput = document.getElementById("part_mutuelle");
-            const partRacInput = document.getElementById("part_rac");
+        // Fonction pour mettre à jour le status en fonction de la valeur de l'input
+        function updateStatus(inputId, selectId) {
+            const inputEl = document.getElementById(inputId);
+            const selectEl = document.getElementById(selectId);
 
-            const montantTotal = parseFloat("{{ $v_devis->montant }}") || 0;
-            const partRacInitial = parseFloat("{{ $v_devis->part_rac }}");
-
-            if (!partRacInitial) { // Vérifie si part_rac est nul ou 0
-                partMutuelleInput.addEventListener("input", function() {
-                    let partMutuelle = parseFloat(partMutuelleInput.value) || 0;
-                    let partRac = montantTotal - partMutuelle - partSecu;
-                    partRacInput.value = partRac.toFixed(2);
-                });
+            // Si l'input est vide, on définit le status à une chaîne vide ("")
+            if (!inputEl.value || inputEl.value.trim() === "") {
+                selectEl.value = '';
+            } else {
+                // Si une valeur est saisie, on sélectionne "Non Payé"
+                selectEl.value = 'Non Payé';
             }
+        }
+
+        // Ajout des écouteurs d'évènement sur chacun des inputs
+        document.getElementById('part_rac').addEventListener('input', function() {
+            updateStatus('part_rac', 'part_rac_status');
+        });
+
+        document.getElementById('part_secu').addEventListener('input', function() {
+            updateStatus('part_secu', 'part_secu_status');
+        });
+
+        document.getElementById('part_mutuelle').addEventListener('input', function() {
+            updateStatus('part_mutuelle', 'part_mutuelle_status');
+        });
+
+        // Vous pouvez également appeler la fonction au chargement de la page pour initialiser l'état
+        window.addEventListener('load', function() {
+            updateStatus('part_rac', 'part_rac_status');
+            updateStatus('part_secu', 'part_secu_status');
+            updateStatus('part_mutuelle', 'part_mutuelle_status');
         });
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Valeur totale initiale
+            const montantTotal = {{ $v_devis->montant }};
+
+            // Récupérer les éléments des inputs
+            const partSecuInput = document.getElementById('part_secu');
+            const partMutuelleInput = document.getElementById('part_mutuelle');
+            const partRacInput = document.getElementById('part_rac');
+
+            // Fonction pour mettre à jour la part RAC
+            function updatePartRac() {
+                // Récupérer les valeurs actuelles des inputs
+                const partSecu = parseFloat(partSecuInput.value) || 0;
+                const partMutuelle = parseFloat(partMutuelleInput.value) || 0;
+
+                // Calculer la part RAC
+                const partRac = montantTotal - (partSecu + partMutuelle);
+
+                // Mettre à jour la valeur de part RAC
+                partRacInput.value = partRac.toFixed(2);
+            }
+
+            // Ajouter des écouteurs d'événements pour mettre à jour partRac à chaque changement
+            partSecuInput.addEventListener('input', updatePartRac);
+            partMutuelleInput.addEventListener('input', updatePartRac);
+
+            // Initialiser la valeur de part RAC au chargement de la page
+            updatePartRac();
+        });
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const selectElement = document.getElementById('devis_etat');

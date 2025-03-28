@@ -28,13 +28,22 @@
                                             <input type="text" class="form-control" id="nom" name="nom" placeholder="Patient" value="" readonly>
                                         </div>
                                         <div class="form-group">
-                                            <label for="status">Status</label>
-                                            <select class="form-select" name="status" id="status">
-                                                <option value="" disabled selected>Choisissez un status</option>
-                                                @foreach($statuss as $s)
-                                                    <option value="{{ $s->status }}">{{ $s->status }}</option>
-                                                @endforeach
-                                            </select>
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <label for="status">Status</label>
+                                                    <select class="form-select" name="status" id="status">
+                                                        <option value="" disabled selected>Choisissez un status</option>
+                                                        @foreach($statuss as $s)
+                                                            <option value="{{ $s->status }}">{{ $s->status }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#statusModal">
+                                                        <i class="mdi mdi-cogs mr-2" style="font-size: 2rem;"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
                                             @error('status')
                                             <div class="alert alert-danger mt-2">{{ $message }}</div>
                                             @enderror
@@ -80,15 +89,24 @@
                                             @enderror
                                         </div>
                                         <div class="form-group">
-                                            <label for="praticien">Praticien</label>
-                                            <select id="praticien" name="praticien" class="form-select">
-                                                <option value="" disabled selected>Choisissez un praticien</option>
-                                                @foreach($praticiens as $praticien)
-                                                    <option value="{{ $praticien->praticien }}" {{ old('praticien') == $praticien->praticien ? 'selected' : '' }}>
-                                                        {{ $praticien->praticien }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <label for="praticien">Praticien</label>
+                                                    <select id="praticien" name="praticien" class="form-select">
+                                                        <option value="" disabled selected>Choisissez un praticien</option>
+                                                        @foreach($praticiens as $praticien)
+                                                            <option value="{{ $praticien->praticien }}" {{ old('praticien') == $praticien->praticien ? 'selected' : '' }}>
+                                                                {{ $praticien->praticien }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#praticienModal">
+                                                        <i class="mdi mdi-cogs mr-2" style="font-size: 2rem;"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
                                             @error('praticien')
                                             <div class="alert alert-danger mt-2">{{ $message }}</div>
                                             @enderror
@@ -185,5 +203,6 @@
         });
 
     </script>
+    @include('modals.praticien-modal')
 
 @endsection

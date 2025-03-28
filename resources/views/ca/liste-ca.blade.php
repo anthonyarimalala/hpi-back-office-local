@@ -112,7 +112,13 @@
                                     </thead>
                                     <tbody>
                                     @foreach($ca_actes_reglements as $ca)
-                                        <tr onclick="window.location.href='{{ asset('ca/'.$ca->id_ca_actes_reglement.'/'.$ca->dossier.'/modifier') }}';">
+                                        @php
+                                            $cotation_restant = $ca->cotation - $ca->cotation_paye;
+                                            $part_secu_restant = ($ca->ro_part_secu ?? 0) - $ca->ro_part_secu_paye;
+                                            $part_mutuelle_restant = ($ca->part_mutuelle ?? 0) - $ca->part_mutuelle_paye;
+                                            $rac_part_patient_restant = ($ca->rac_part_patient ?? 0) - $ca->rac_part_patient_paye;
+                                        @endphp
+                                        <tr ondblclick="window.location.href='{{ asset('ca/'.$ca->id_ca_actes_reglement.'/'.$ca->dossier.'/modifier') }}';">
                                             <td>
                                                 @if($ca->date_derniere_modif)
                                                     {{ \Carbon\Carbon::parse($ca->date_derniere_modif)->format('Y-m-d') }}
@@ -126,24 +132,30 @@
                                             <td style="border-right: 2px solid #000;">{{ $ca->mutuelle }}</td>
                                             <td>{{ $ca->praticien }}</td>
                                             <td>{{ $ca->nom_acte }}</td>
-                                            <td class="text-end">@if($ca->cotation){{ number_format($ca->cotation, 2, ',', ' ') }}@endif</td>
+                                            <!-- -->    <td class="text-end" style="@if($cotation_restant < 0) background-color: red; @elseif($cotation_restant > 0) background-color: orange; @endif">@if($ca->cotation){{ number_format($ca->cotation, 2, ',', ' ') }}@endif</td>
                                             <td style="border-right: 2px solid #000;">{{ $ca->controle_securisation }}</td>
-                                            <td class="text-end">@if($ca->ro_part_secu){{ number_format($ca->ro_part_secu, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end">@if($ca->ro_virement_recu){{ number_format($ca->ro_virement_recu, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end">@if($ca->ro_indus_paye){{ number_format($ca->ro_indus_paye, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end">@if($ca->ro_indus_en_attente){{ number_format($ca->ro_indus_en_attente, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end" style="border-right: 2px solid #000;">@if($ca->ro_indus_irrecouvrable){{ number_format($ca->ro_indus_irrecouvrable, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end" style="border-right: 2px solid #000;">@if($ca->part_mutuelle){{ number_format($ca->part_mutuelle, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end">@if($ca->rcs_virement){{ number_format($ca->rcs_virement, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end">@if($ca->rcs_especes){{ number_format($ca->rcs_especes, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end" style="border-right: 2px solid #000;">@if($ca->rcs_cb){{ number_format($ca->rcs_cb, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end">@if($ca->rcsd_cheque){{ number_format($ca->rcsd_cheque, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end">@if($ca->rcsd_especes){{ number_format($ca->rcsd_especes, 2, ',', ' ') }}@endif</td>
-                                            <td style="border-right: 2px solid #000;" class="text-end">@if($ca->rcsd_cb){{ number_format($ca->rcsd_cb, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end">@if($ca->rac_part_patient){{ number_format($ca->rac_part_patient, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end">@if($ca->rac_cheque){{ number_format($ca->rac_cheque, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end">@if($ca->rac_especes){{ number_format($ca->rac_especes, 2, ',', ' ') }}@endif</td>
-                                            <td class="text-end" style="border-right: 2px solid #000;">@if($ca->rac_cb){{ number_format($ca->rac_cb, 2, ',', ' ') }}@endif</td>
+                                            <!-- -->    <td class="text-end" style="@if($cotation_restant < 0 || $part_secu_restant < 0) background-color: red; @elseif($cotation_restant > 0 || $part_secu_restant > 0) background-color: orange; @endif">
+                                                @if($ca->ro_part_secu){{ number_format($ca->ro_part_secu, 2, ',', ' ') }}@endif
+                                            </td>
+                                            <td class="text-end" style="@if($part_secu_restant < 0) background-color: red; @elseif($part_secu_restant > 0) background-color: orange; @endif">@if($ca->ro_virement_recu){{ number_format($ca->ro_virement_recu, 2, ',', ' ') }}@endif</td>
+                                            <td class="text-end" style="@if($part_secu_restant < 0) background-color: red; @elseif($part_secu_restant > 0) background-color: orange; @endif">@if($ca->ro_indus_paye){{ number_format($ca->ro_indus_paye, 2, ',', ' ') }}@endif</td>
+                                            <td class="text-end" style="@if($part_secu_restant < 0) background-color: red; @elseif($part_secu_restant > 0) background-color: orange; @endif">@if($ca->ro_indus_en_attente){{ number_format($ca->ro_indus_en_attente, 2, ',', ' ') }}@endif</td>
+                                            <td class="text-end" style="@if($part_secu_restant < 0) background-color: red; @elseif($part_secu_restant > 0) background-color: orange; @endif border-right: 2px solid #000;">@if($ca->ro_indus_irrecouvrable){{ number_format($ca->ro_indus_irrecouvrable, 2, ',', ' ') }}@endif</td>
+                                            <!-- -->    <td class="text-end" style="@if($cotation_restant < 0 || $part_mutuelle_restant < 0) background-color: red; @elseif($cotation_restant > 0 || $part_mutuelle_restant > 0) background-color: orange; @endif border-right: 2px solid #000; ">
+                                                @if($ca->part_mutuelle){{ number_format($ca->part_mutuelle, 2, ',', ' ') }}@endif
+                                            </td>
+                                            <td class="text-end" style="@if($part_mutuelle_restant < 0) background-color: red; @elseif($part_mutuelle_restant > 0) background-color: orange; @endif">@if($ca->rcs_virement){{ number_format($ca->rcs_virement, 2, ',', ' ') }}@endif</td>
+                                            <td class="text-end" style="@if($part_mutuelle_restant < 0) background-color: red; @elseif($part_mutuelle_restant > 0) background-color: orange; @endif">@if($ca->rcs_especes){{ number_format($ca->rcs_especes, 2, ',', ' ') }}@endif</td>
+                                            <td class="text-end" style="@if($part_mutuelle_restant < 0) background-color: red; @elseif($part_mutuelle_restant > 0) background-color: orange; @endif border-right: 2px solid #000;">@if($ca->rcs_cb){{ number_format($ca->rcs_cb, 2, ',', ' ') }}@endif</td>
+                                            <td class="text-end" style="@if($part_mutuelle_restant < 0) background-color: red; @elseif($part_mutuelle_restant > 0) background-color: orange; @endif">@if($ca->rcsd_cheque){{ number_format($ca->rcsd_cheque, 2, ',', ' ') }}@endif</td>
+                                            <td class="text-end" style="@if($part_mutuelle_restant < 0) background-color: red; @elseif($part_mutuelle_restant > 0) background-color: orange; @endif">@if($ca->rcsd_especes){{ number_format($ca->rcsd_especes, 2, ',', ' ') }}@endif</td>
+                                            <td class="text-end" style="@if($part_mutuelle_restant < 0) background-color: red; @elseif($part_mutuelle_restant > 0) background-color: orange; @endif border-right: 2px solid #000;">@if($ca->rcsd_cb){{ number_format($ca->rcsd_cb, 2, ',', ' ') }}@endif</td>
+                                            <!-- -->    <td class="text-end" style="@if($cotation_restant < 0 || $rac_part_patient_restant < 0 ) background-color: red; @elseif($cotation_restant > 0 || $rac_part_patient_restant > 0) background-color: orange; @endif">
+                                                @if($ca->rac_part_patient){{ number_format($ca->rac_part_patient, 2, ',', ' ') }}@endif
+                                            </td>
+                                            <td class="text-end" style="@if($rac_part_patient_restant < 0) background-color: red; @elseif($rac_part_patient_restant > 0) background-color: orange; @endif">@if($ca->rac_cheque){{ number_format($ca->rac_cheque, 2, ',', ' ') }}@endif</td>
+                                            <td class="text-end" style="@if($rac_part_patient_restant < 0) background-color: red; @elseif($rac_part_patient_restant > 0) background-color: orange; @endif">@if($ca->rac_especes){{ number_format($ca->rac_especes, 2, ',', ' ') }}@endif</td>
+                                            <td class="text-end" style="@if($rac_part_patient_restant < 0) background-color: red; @elseif($rac_part_patient_restant > 0) background-color: orange; @endif border-right: 2px solid #000;">@if($ca->rac_cb){{ number_format($ca->rac_cb, 2, ',', ' ') }}@endif</td>
                                             <td>{{ $ca->commentaire ?: 'Aucun commentaire' }}</td>
                                             <td>{{ \Carbon\Carbon::parse($ca->created_at)->format('d-m-Y') }}</td>
                                             <td onclick="event.stopPropagation()"><a href="{{ asset('delete-ca/'. $ca->id ) }}" onclick="return deleteItem('<?= $ca->dossier ?>', '<?= $ca->created_at ?>')">Supprimer</a></td>
@@ -256,6 +268,31 @@
                         <div class="row">
                             <div class="row col-md-6">
                                 <h4 class="text-center mb-4"
+                                    style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Date de CA</h4>
+                                <div class="col-md-12 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Date de CA
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="date_ca_debut" class="form-label">Date début</label>
+                                                <input type="date" id="date_ca_debut" name="date_ca_debut"
+                                                       class="form-control" @if($filters) value="{{ $filters['date_ca_debut'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="date_ca_fin" class="form-label">Date fin</label>
+                                                <input type="date" id="date_ca_fin" name="date_ca_fin"
+                                                       class="form-control" @if($filters) value="{{ $filters['date_ca_fin'] }}" @endif>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row col-md-6">
+                                <h4 class="text-center mb-4"
                                     style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Date de dernière modification</h4>
                                 <div class="col-md-12 mb-3">
                                     <div class="dropdown">
@@ -279,7 +316,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row col-md-6">
+                            <div class="row col-md-4">
                                 <h4 class="text-center mb-4"
                                     style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Status</h4>
                                 <div class="col-md-12 mb-3">
@@ -308,7 +345,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row col-md-6">
+                            <div class="row col-md-4">
                                 <h4 class="text-center mb-4"
                                     style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Praticiens</h4>
                                 <div class="col-md-12 mb-3">
@@ -337,7 +374,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row col-md-6">
+                            <div class="row col-md-4">
                                 <h4 class="text-center mb-4"
                                     style="font-size: 24px; color: #2f8ab9; font-weight: bold;">Cotation</h4>
                                 <div class="col-md-12 mb-3">

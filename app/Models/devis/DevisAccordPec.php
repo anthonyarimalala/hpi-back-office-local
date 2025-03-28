@@ -14,7 +14,7 @@ class DevisAccordPec extends Model
         'id_devis'
     ];
 
-    public static function createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_secu, $part_mutuelle, $part_rac, &$withChange = false)
+    public static function createOrUpdateDevisAccordPecs($m_h_devis, $id_devis, $date_envoi_pec, $date_fin_validite_pec, $part_secu, $part_secu_status,$part_mutuelle, $part_mutuelle_status, $part_rac, $part_rac_status, &$withChange = false)
     {
         $m_devisAccordPecs = DevisAccordPec::firstOrNew(['id_devis' => $id_devis]);
 
@@ -33,14 +33,29 @@ class DevisAccordPec extends Model
             $m_devisAccordPecs->part_secu = $part_secu;
             $withChange = true;
         }
+        if ($m_devisAccordPecs->part_secu_status != $part_secu_status) {
+            $m_h_devis->action .= "<strong>Part sécu:</strong> " . $m_devisAccordPecs->part_secu_status . " => " . $part_secu_status . "\n";
+            $m_devisAccordPecs->part_secu_status = $part_secu_status;
+            $withChange = true;
+        }
         if ($m_devisAccordPecs->part_mutuelle != $part_mutuelle) {
             $m_h_devis->action .= "<strong>Part mutuelle:</strong> " . $m_devisAccordPecs->part_mutuelle . " => " . $part_mutuelle . "\n";
             $m_devisAccordPecs->part_mutuelle = $part_mutuelle;
             $withChange = true;
         }
+        if ($m_devisAccordPecs->part_mutuelle_status != $part_mutuelle_status) {
+            $m_h_devis->action .= "<strong>Part mutuelle:</strong> " . $m_devisAccordPecs->part_mutuelle_status . " => " . $part_mutuelle_status . "\n";
+            $m_devisAccordPecs->part_mutuelle_status = $part_mutuelle_status;
+            $withChange = true;
+        }
         if ($m_devisAccordPecs->part_rac != $part_rac) {
             $m_h_devis->action .= "<strong>Part RAC:</strong> " . $m_devisAccordPecs->part_rac . " => " . $part_rac . "\n";
             $m_devisAccordPecs->part_rac = $part_rac;
+            $withChange = true;
+        }
+        if ($m_devisAccordPecs->part_rac_status != $part_rac_status) {
+            $m_h_devis->action .= "<strong>Part RAC:</strong> " . $m_devisAccordPecs->part_rac_status . " => " . $part_rac_status . "\n";
+            $m_devisAccordPecs->part_rac_status = $part_rac_status;
             $withChange = true;
         }
         $m_devisAccordPecs->save();

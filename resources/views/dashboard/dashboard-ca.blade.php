@@ -1,5 +1,13 @@
 @extends('layouts.app')
 @section('content')
+    <style>
+        .chart-container {
+            width: 100%;
+            height: 300px; /* Ajuste cette valeur selon tes besoins */
+            position: relative;
+        }
+
+    </style>
     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
@@ -37,7 +45,7 @@
                             <div class="card card-rounded">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-between mb-3">
-                                        <h4 class="card-title card-title-dash">CA entre date de dernière modif: [{{ \Carbon\Carbon::parse($date_ca_debut)->format('d/m/Y') }} et {{ \Carbon\Carbon::parse($date_ca_fin)->format('d/m/Y') }}]</h4>
+                                        <h4 class="card-title card-title-dash">CA entre les dates: [{{ \Carbon\Carbon::parse($date_ca_debut)->format('d/m/Y') }} et {{ \Carbon\Carbon::parse($date_ca_fin)->format('d/m/Y') }}]</h4>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table">
@@ -101,19 +109,81 @@
                                                 @endforeach
                                             </tr>
                                         </table>
-
                                     </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="row">
+                @foreach($ca_praticiens as $ca_p)
+                    <div class="col-lg-3 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Praticien: {{ $ca_p->praticien }} ({{ $ca_p->sum_cotation_praticien }})</h4>
+                                <div class="chart-container">
+                                    <canvas id="myChart_{{ $ca_p->praticien }}" width="400" height="400"></canvas>
+                                </div>
+                                <div class="d-grid">
+                                    <form class="form-group" action="{{ asset('getFilterCa') }}">
+                                        <input name="date_ca_debut" value="{{ \Carbon\Carbon::parse($date_ca_debut)->format('d/m/Y') }}" hidden>
+                                        <input name="date_ca_fin" value="{{ \Carbon\Carbon::parse($date_ca_fin)->format('d/m/Y') }}" hidden>
+                                        <input name="praticiens[]" value="{{ $ca_p->praticien }}" hidden>
+                                        <button class="btn btn-primary" style="color: whitesmoke">Consulter les restes à payer</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @php
+                        // Calculer les valeurs pour le graphique
+                        $total_cotation = $ca_p->sum_cotation_praticien;
+                        $reste_a_paye = $ca_p->sum_cotation_praticien_reste_a_paye;
+                        $paye = $total_cotation - $reste_a_paye;
+                        $pourcentage_paye = ($total_cotation > 0) ? ($paye / $total_cotation) * 100 : 0;
+                    @endphp
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var ctx = document.getElementById("myChart_{{ $ca_p->praticien }}").getContext("2d");
+                            new Chart(ctx, {
+                                type: "doughnut",
+                                data: {
+                                    labels: ["Reste à payer", "Payé"],
+                                    datasets: [{
+                                        data: [{{ $paye }}, {{ $reste_a_paye }}],
+                                        backgroundColor: ["#FF5733", "#4CAF50"]
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false
+                                }
+                            });
+                        });
+
+                    </script>
+                @endforeach
+
+            </div>
         </div>
     </div>
+    <script src="{{ asset('chart.js/Chart.min.js') }}"></script>
+
+    {{--
+        @php
+        foreach ($ca_praticiens as $ca_p){
+            echo 'cotation praticien '.$ca_p->praticien. ': '.$ca_p->sum_cotation_praticien.'</br>';
+            echo 'cotation payé '.$ca_p->praticien. ': '.$ca_p->sum_cotation_praticien_reste_a_paye.'<br>';
+        }
+        @endphp
+    --}}
 
 
 
 
 
-@endsection
+
+    @endsection

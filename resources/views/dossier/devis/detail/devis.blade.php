@@ -96,45 +96,60 @@
                             </div>
                         </div>
                     </div>
-                    <div class="list align-items-center border-bottom py-2">
-                        <div class="wrapper w-100">
-                            <p class="mb-2 font-weight-medium">
-                                Part sécu
-                            </p>
+                    <div class="list d-flex align-items-center border-bottom py-2">
+                        <div class="wrapper w-50 px-2">
+                            <p class="mb-2 font-weight-medium">Part sécu</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
                                     <p class="mb-0 text-small text-muted">{{ $v_devis->getPart_secu() }}</p>
                                 </div>
-
+                            </div>
+                        </div>
+                        <div class="wrapper w-50 px-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <p class="mb-0 text-small text-muted">{{ $v_devis->part_secu_status }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="list align-items-center border-bottom py-2">
-                        <div class="wrapper w-100">
-                            <p class="mb-2 font-weight-medium">
-                                Part mutuelle
-                            </p>
+
+                    <div class="list d-flex align-items-center border-bottom py-2">
+                        <div class="wrapper w-50 px-2">
+                            <p class="mb-2 font-weight-medium">Part mutuelle</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
                                     <p class="mb-0 text-small text-muted">{{ $v_devis->getPart_mutuelle() }}</p>
                                 </div>
-
+                            </div>
+                        </div>
+                        <div class="wrapper w-50 px-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <p class="mb-0 text-small text-muted">{{ $v_devis->part_mutuelle_status }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="list align-items-center py-2">
-                        <div class="wrapper w-100">
-                            <p class="mb-2 font-weight-medium">
-                                Part RAC
-                            </p>
+
+                    <div class="list d-flex align-items-center border-bottom py-2">
+                        <div class="wrapper w-50 px-2">
+                            <p class="mb-2 font-weight-medium">Part RAC</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
                                     <p class="mb-0 text-small text-muted">{{ $v_devis->getPart_rac() }}</p>
                                 </div>
-
+                            </div>
+                        </div>
+                        <div class="wrapper w-50 px-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <p class="mb-0 text-small text-muted">{{ $v_devis->part_rac_status }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
+
 
                 </div>
             </div>
@@ -147,6 +162,22 @@
                 <div class="card-body">
                     <div class="container">
                         <!-- Date paiement par CB ou Esp -->
+                        <div class="row align-items-center border-bottom py-2">
+                            <div class="col-12">
+                                <p class="mb-2 font-weight-medium">CB</p>
+                                <div class="d-flex align-items-center">
+                                    <p class="mb-0 text-small text-muted">{{ $v_devis->reglement_cb }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center border-bottom py-2">
+                            <div class="col-12">
+                                <p class="mb-2 font-weight-medium">Espece</p>
+                                <div class="d-flex align-items-center">
+                                    <p class="mb-0 text-small text-muted">{{ $v_devis->reglement_espece }}</p>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row align-items-center border-bottom py-2">
                             <div class="col-12">
                                 <p class="mb-2 font-weight-medium">Date paiement par CB ou Esp</p>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dossier;
 
 use App\Http\Controllers\Controller;
 use App\Models\devis\Devis;
+use App\Models\devis\DevisAccordPecStatus;
 use App\Models\dossier\Dossier;
 use App\Models\dossier\DossierStatus;
 use App\Models\views\V_CaActesReglement;
@@ -20,6 +21,7 @@ class DossierController extends Controller
         $data['ca_actes_reglements'] = V_CaActesReglement::where('dossier', $dossier)
             ->orderBy('created_at', 'desc')
             ->paginate(20);
+        $data['devis_accord_pecs_status'] = DevisAccordPecStatus::where('is_deleted', 0)->get();
         return view('dossier/details/detail-dossier')->with($data);
     }
     public function modifierDossier(Request $request)
@@ -37,6 +39,7 @@ class DossierController extends Controller
     {
         $data['statuss'] = DossierStatus::orderBy('ordre', 'desc')
             ->where('is_deleted', 0)
+            ->where('status', '!=', '')
             ->orderBy('status', 'asc')
             ->get();
         $data['v_dossier'] = Dossier::where('dossier', $dossier)

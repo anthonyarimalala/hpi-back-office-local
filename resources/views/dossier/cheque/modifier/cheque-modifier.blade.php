@@ -64,12 +64,21 @@
                                 <div class="row">
                                     <label for="nature_cheque" class="col-sm-3 col-form-label">Nature du chèque</label>
                                     <div class="col-sm-9">
-                                        <select class="form-select" id="nature_cheque" name="nature_cheque">
-                                            <option value="" disabled selected>Choisir la nature du chèque</option>
-                                            @foreach($nature_cheques as $nc)
-                                                <option value="{{ $nc->nature_cheque }}" @if($nc->nature_cheque == $v_cheque->nature_cheque) selected @endif>{{ $nc->nature_cheque }}</option>
-                                            @endforeach
-                                        </select>
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <select class="form-select" id="nature_cheque" name="nature_cheque">
+                                                    <option value="" disabled selected>Choisir la nature du chèque</option>
+                                                    @foreach($nature_cheques as $nc)
+                                                        <option value="{{ $nc->nature_cheque }}" @if($nc->nature_cheque == $v_cheque->nature_cheque) selected @endif>{{ $nc->nature_cheque }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-auto">
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#naturechequeModal">
+                                                    <i class="mdi mdi-cogs mr-2" style="font-size: 2rem;"></i>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -78,24 +87,42 @@
                                 <div class="row">
                                     <label for="travaux_sur_devis" class="col-sm-3 col-form-label">Travaux sur devis</label>
                                     <div class="col-sm-9">
-                                        <select class="form-select" id="travaux_sur_devis" name="travaux_sur_devis">
-                                            <option value="" disabled selected>Travaux sur devis</option>
-                                            @foreach($travaux_sur_devis as $td)
-                                                <option value="{{ $td->travaux_sur_devis }}" @if($td->travaux_sur_devis == $v_cheque->travaux_sur_devis) selected @endif>{{ $td->travaux_sur_devis }}</option>
-                                            @endforeach
-                                        </select>
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <select class="form-select" id="travaux_sur_devis" name="travaux_sur_devis">
+                                                    <option value="" disabled selected>Travaux sur devis</option>
+                                                    @foreach($travaux_sur_devis as $td)
+                                                        <option value="{{ $td->travaux_sur_devis }}" @if($td->travaux_sur_devis == $v_cheque->travaux_sur_devis) selected @endif>{{ $td->travaux_sur_devis }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-auto">
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#situationchequeModal">
+                                                    <i class="mdi mdi-cogs mr-2" style="font-size: 2rem;"></i>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="row">
                                     <label for="situation_cheque" class="col-sm-3 col-form-label">Situation</label>
                                     <div class="col-sm-9">
-                                        <select class="form-select" id="situation_cheque" name="situation_cheque">
-                                            <option value="" disabled selected>Situation</option>
-                                            @foreach($situation_cheques as $sc)
-                                                <option value="{{ $sc->situation_cheque }}" @if($sc->situation_cheque == $v_cheque->situation_cheque) selected @endif>{{ $sc->situation_cheque }}</option>
-                                            @endforeach
-                                        </select>
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <select class="form-select" id="situation_cheque" name="situation_cheque">
+                                                    <option value="" disabled selected>Situation</option>
+                                                    @foreach($situation_cheques as $sc)
+                                                        <option value="{{ $sc->situation_cheque }}" @if($sc->situation_cheque == $v_cheque->situation_cheque) selected @endif>{{ $sc->situation_cheque }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-auto">
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#travauxdevisModal">
+                                                    <i class="mdi mdi-cogs mr-2" style="font-size: 2rem;"></i>
+                                                </a>
+                                            </div>
+                                </div>
                                     </div>
                                 </div>
                             </address>
@@ -130,5 +157,8 @@
         </div>
     </div>
     </form>
+    @include('modals.info-cheque.nature-cheque-modal')
+    @include('modals.info-cheque.situation-cheque-modal')
+    @include('modals.info-cheque.travaux-devis-modal')
 
 @endsection

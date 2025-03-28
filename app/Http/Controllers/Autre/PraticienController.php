@@ -12,7 +12,7 @@ class PraticienController extends Controller
     //
     public function deletePraticien(Request $request){
         $praticien_ = $request->input('praticien');
-        DB::delete('DELETE FROM praticiens WHERE praticien=?',[$praticien_]);
+        DB::update('UPDATE praticiens SET is_deleted=1 WHERE praticien=?',[$praticien_]);
         return back();
     }
     public function savePraticien(Request $request){

@@ -66,7 +66,7 @@ class L_CaActesReglement extends Model
             $date_derniere_modif = Carbon::parse()->format('Y-m-d H:i');
         }
 
-        $m_l_ca_actes_reglement = L_CaActesReglement::where('id_ca_actes_reglement', $id_ca_actes_reglement)->first();
+        $m_l_ca_actes_reglement = L_CaActesReglement::where('id', $id_ca_actes_reglement)->first();
         $m_l_ca_actes_reglement->date_derniere_modif = $date_derniere_modif;
         $m_l_ca_actes_reglement->praticien = $praticien;
         $m_l_ca_actes_reglement->nom_acte = $nom_acte;
@@ -94,7 +94,6 @@ class L_CaActesReglement extends Model
 
     }
     public static function insertCaActesReglement(Request $request, $id_ca){
-        $id_ca_actes_reglement = $id_ca;
         $date_derniere_modif = $request->input('date_derniere_modif');
         $praticien = $request->input('praticien');
         $nom_acte = $request->input('nom_acte');
@@ -123,7 +122,7 @@ class L_CaActesReglement extends Model
         }
 
         $m_l_ca_actes_reglement = new L_CaActesReglement();
-        $m_l_ca_actes_reglement->id_ca_actes_reglement = $id_ca_actes_reglement;
+        $m_l_ca_actes_reglement->id_ca = $id_ca;
         $m_l_ca_actes_reglement->date_derniere_modif = $date_derniere_modif;
         $m_l_ca_actes_reglement->praticien = $praticien;
         $m_l_ca_actes_reglement->nom_acte = $nom_acte;

@@ -46,8 +46,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                         <!-- Deuxième formulaire -->
                         <div class="col-lg-6">
                             <div class="card shadow-sm p-4">
@@ -59,19 +57,23 @@
                                             <input type="text" class="form-control" id="dossier" name="dossier" placeholder="Dossier" value="{{ $v_dossier->dossier }}" disabled>
                                         </div>
                                         <div class="form-group">
-                                            <label for="status">Status</label>
-                                            <select class="form-select" id="status" name="status">
-                                                @foreach($statuss as $status)
-                                                    @if($status->status == $v_dossier->status)
-                                                        <option value="{{ $status->status }}">{{ $status->status }}</option>
-                                                    @endif
-                                                @endforeach
-                                                @foreach($statuss as $status)
-                                                    @if($status->status != $v_dossier->status)
-                                                        <option value="{{ $status->status }}">{{ $status->status }}</option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <label for="status">Status</label>
+                                                    <select class="form-select" id="status" name="status">
+                                                        <option disabled selected>Choisissez le statut</option>
+                                                        @foreach($statuss as $status)
+                                                            <option
+                                                                value="{{ $status->status }}" @if($status->status == $v_dossier->status) selected @endif>{{ $status->status }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#statusModal">
+                                                        <i class="mdi mdi-cogs mr-2" style="font-size: 2rem;"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div id="mutuellesContainer">
                                             <label for="mutuelle">Mutuelle </label>
@@ -96,5 +98,6 @@
         </div>
     </div>
 
+    @include('modals.status-modal')
 
 @endsection

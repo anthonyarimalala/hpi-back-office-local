@@ -95,12 +95,21 @@
                                 <tbody>
                                 <tr>
                                     <td>
-                                        <select class="form-select" name="praticien" required>
-                                            <option value="" disabled selected>Choix praticien</option>
-                                            @foreach($praticiens as $pra)
-                                                <option value="{{ $pra->praticien }}" @if(old('praticien')==$pra->praticien) selected @endif>{{ $pra->praticien }}</option>
-                                            @endforeach
-                                        </select>
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <select class="form-select" name="praticien" required>
+                                                    <option value="" disabled selected>Choix praticien</option>
+                                                    @foreach($praticiens as $pra)
+                                                        <option value="{{ $pra->praticien }}" @if(old('praticien')==$pra->praticien) selected @endif>{{ $pra->praticien }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-auto">
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#praticienModal">
+                                                    <i class="mdi mdi-cogs mr-2" style="font-size: 1.5rem;"></i>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td><input type="text" class="form-control" id="nom_acte" name="nom_acte" placeholder="Nom de l'acte" required></td>
                                     <td><input type="number" min="0" step="0.01" class="form-control" id="cotation" name="cotation" placeholder="Cotation"></td>
@@ -365,7 +374,7 @@
 
     </script>
 
-
+    @include('modals.praticien-modal')
 
     <!-- Répète le même pattern pour les autres sections (RC soins avec DEVIS, RAC, Commentaires) -->
 

@@ -9,5 +9,6 @@ class DossierStatus extends Model
 {
     use HasFactory;
     protected $table = 'dossier_statuss';
+    protected $primaryKey = 'status';
     public $incrementing = false;
 }

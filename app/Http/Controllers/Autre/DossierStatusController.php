@@ -13,29 +13,37 @@ class DossierStatusController extends Controller
     public function deleteDossierStatus(Request $request)
     {
         $status_ = $request->input('status');
-        DB::delete('DELETE FROM dossier_statuss WHERE status = ?', [$status_]);
+        $m_status = DossierStatus::find($status_);
+        $m_status->is_deleted = 1;
+        $m_status->save();
+        /*
+        if ($status_ != 'C2S') {
+
+            DB::update('UPDATE dossier_statuss SET is_deleted = 1 WHERE status = ?', [$status_]);
+        }else{
+            DB::update('UPDATE dossier_statuss SET is_deleted = 1, ordre = 10 WHERE status = ?', [$status_]);
+        }
+        */
+
         return back();
     }
     public function saveDossierStatus(Request $request)
     {
         $status_ = $request->input('status');
         $signification = $request->input('signification');
-        $ordre = $request->input('ordre', 0);  // Valeur par défaut pour "ordre" est 0
 
         // Vérifie si un statut avec le même "status" existe déjà
-        $dossierStatus = DossierStatus::where('status', $status_)->first();
+        $dossierStatus = DossierStatus::find($status_);
 
         if ($dossierStatus) {
             // Si le statut existe, on met à jour les informations
             $dossierStatus->signification = $signification;
-            $dossierStatus->ordre = $ordre;
             $dossierStatus->is_deleted = 0;  // Restaure le statut si supprimé
         } else {
             // Si le statut n'existe pas, on crée un nouveau statut
             $dossierStatus = new DossierStatus();
             $dossierStatus->status = $status_;
             $dossierStatus->signification = $signification;
-            $dossierStatus->ordre = $ordre;
             $dossierStatus->is_deleted = 0;  // Par défaut, le statut est actif
         }
 
