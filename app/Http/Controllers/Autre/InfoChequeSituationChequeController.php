@@ -17,7 +17,7 @@ class InfoChequeSituationChequeController extends Controller
     }
     public function saveSituationCheque(Request $request){
         $situation_cheque = $request->input('situation_cheque');
-        $m_situation = InfoChequeSituationCheque::firstOrNew(['nature_cheque' => $situation_cheque]);
+        $m_situation = InfoChequeSituationCheque::firstOrNew(['situation_cheque' => $situation_cheque]);
         $m_situation->is_deleted = 0;
         $m_situation->save();
         return back();

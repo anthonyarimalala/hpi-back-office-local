@@ -26,9 +26,8 @@
                                                         </div>
                                                         <div class="d-flex">
                                                             <!-- Bouton Supprimer -->
-                                                            <form action="" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce statut ?');">
+                                                            <form action="{{ asset('deleteSituationCheque/'.$dt->situation_cheque) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce statut ?');">
                                                                 @csrf
-                                                                <input id="status" type="text" name="situation_cheque" value="{{ $dt->id }}" hidden>
                                                                 <button type="submit" class="btn btn-sm btn-danger" title="Supprimer">
                                                                     <i class="mdi mdi-delete"></i>
                                                                 </button>
@@ -57,7 +56,7 @@
                                     </div>
 
                                     <!-- Formulaire Ajouter un nouveau statut -->
-                                    <form action="" method="POST">
+                                    <form action="{{ asset('saveSituationCheque') }}" method="POST">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="situation_cheque" class="form-label">Situation chèque</label>

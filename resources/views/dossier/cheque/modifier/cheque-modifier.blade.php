@@ -97,7 +97,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-auto">
-                                                <a href="#" data-bs-toggle="modal" data-bs-target="#situationchequeModal">
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#travauxdevisModal">
                                                     <i class="mdi mdi-cogs mr-2" style="font-size: 2rem;"></i>
                                                 </a>
                                             </div>
@@ -118,7 +118,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-auto">
-                                                <a href="#" data-bs-toggle="modal" data-bs-target="#travauxdevisModal">
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#situationchequeModal">
                                                     <i class="mdi mdi-cogs mr-2" style="font-size: 2rem;"></i>
                                                 </a>
                                             </div>

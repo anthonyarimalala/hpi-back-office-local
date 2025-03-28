@@ -10,6 +10,10 @@ class InfoChequeNatureCheque extends Model
     use HasFactory;
     protected $table = 'info_cheques_nature_cheques';
     protected $primaryKey = 'nature_cheque';
+    protected $fillable = [
+        'nature_cheque',
+    ];
+
     public $incrementing = false;
     public $timestamps = false;
 }

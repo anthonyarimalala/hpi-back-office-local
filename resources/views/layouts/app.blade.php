@@ -276,7 +276,7 @@
                             </ul>
                         </div>
                     </li>
-
+                <!--
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#autre" aria-expanded="false" aria-controls="ui-basic">
                             <i class="menu-icon mdi mdi-dots-horizontal"></i>
@@ -294,6 +294,7 @@
                             </ul>
                         </div>
                     </li>
+                -->
 
                 <li class="nav-item nav-category">Gestion BACK OFFICE</li>
                 @if(\Illuminate\Support\Facades\Auth::user()->role == 'admin')

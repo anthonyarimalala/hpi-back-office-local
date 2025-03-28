@@ -348,9 +348,15 @@
                                                 style="cursor:pointer; @foreach($devis_accord_pecs_status as $da) @if($da->status == $devis->part_mutuelle_status) background-color: {{ $da->couleur }} @endif @endforeach">
                                                 {{ $devis->getPart_mutuelle() }}
                                             </td>
-                                            <td class="infoAccordPec" style="border-right: 2px solid #000;"
-                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';"
-                                                style="cursor:pointer; @foreach($devis_accord_pecs_status as $da) @if($da->status == $devis->part_rac_status) background-color: {{ $da->couleur }} @endif @endforeach">
+                                            @php
+                                                foreach ($devis_accord_pecs_status as $da) {
+                                                    if($da->status == $devis->part_rac_status){
+                                                        $couleur = $da->couleur;
+                                                    }
+                                                }
+                                            @endphp
+                                            <td class="infoAccordPec" style="border-right: 2px solid #000; cursor:pointer; background-color: {{ $couleur }}"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/detail')  }}';">
                                                 {{ $devis->getPart_rac() }}
                                             </td>
 
@@ -811,7 +817,36 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Part sécu
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label for="part_secu_min" class="form-label">Montant min</label>
+                                                <input type="number" id="part_secu_min" name="part_secu_min"
+                                                       class="form-control" min="0" step="0.01"
+                                                       @if($filters) value="{{ $filters['part_secu_min'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label for="part_secu_max" class="form-label">Montant max</label>
+                                                <input type="number" id="part_secu_max" name="part_secu_max"
+                                                       class="form-control" min="0" step="0.01"
+                                                       @if($filters) value="{{ $filters['part_secu_max'] }}" @endif>
+                                            </li>
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="part_secu_null[]" value="sans_valeur" @if($filters && isset($filters['part_secu_null'])) checked @endif>
+                                                </label> Sans valeurs
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
                                     <div class="dropdown">
                                         <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
                                                 data-bs-toggle="dropdown" aria-expanded="false"
@@ -840,7 +875,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <div class="dropdown">
                                         <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
                                                 data-bs-toggle="dropdown" aria-expanded="false"
@@ -865,6 +900,23 @@
                                                     <input type="checkbox" class="form-check-input"
                                                            name="part_rac_null[]" value="sans_valeur" @if($filters && isset($filters['part_rac_null'])) checked @endif>
                                                 </label> Sans valeurs
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false"
+                                                style="color: whitesmoke; background-color: #2f8ab9;">
+                                            Non réglés
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li class="dropdown-item">
+                                                <label>
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="non_regle[]" value="non_regle" @if($filters && isset($filters['non_regle'])) checked @endif>
+                                                </label> Afficher que les non-réglés
                                             </li>
                                         </ul>
                                     </div>

@@ -91,6 +91,23 @@ class V_Devis extends Model
             $filters['stringFilters'][] = 'Date fin validité PEC: sans valeur';
         }
 
+        // 'part_secu_min' => $request->input('part_secu_min'),
+        if ($filters['part_secu_min']) {
+            $query->where('part_secu', '>=', $filters['part_secu_min']);
+            $filters['stringFilters'][] = 'Part sécu min: '.$filters['part_secu_min'];
+        }
+
+        // 'part_secu_max' => $request->input('part_secu_max'),
+        if ($filters['part_secu_max']) {
+            $query->where('part_secu', '<=', $filters['part_secu_max']);
+            $filters['stringFilters'][] = 'Part sécu max: '.$filters['part_secu_max'];
+        }
+        // 'part_secu_null' => $request->input('part_secu_null'),
+        if ($filters['part_secu_null']) {
+            $query->where('part_secu', null);
+            $filters['stringFilters'][] = 'Part sécu: sans valeur';
+        }
+
         // 'part_mutuelle_min' => $request->input('part_mutuelle_min'),
         if ($filters['part_mutuelle_min']) {
             $query->where('part_mutuelle', '>=', $filters['part_mutuelle_min']);
@@ -124,6 +141,23 @@ class V_Devis extends Model
         if ($filters['part_rac_null']) {
             $query->where('part_rac', null);
             $filters['stringFilters'][] = 'Part RAC: sans valeur';
+        }
+
+        if ($filters['non_regle']) {
+            $query->where(function($query) {
+                $query->where('part_secu_status', '!=', 'Payé')
+                    ->where('part_secu_status', '!=', '');  // Ajout de l'ET pour la condition part_secu_status
+                $query->orWhere(function($query) {
+                    $query->where('part_mutuelle_status', '!=', 'Payé')
+                        ->where('part_mutuelle_status', '!=', '');  // Ajout de l'ET pour la condition part_mutuelle_status
+                });
+                $query->orWhere(function($query) {
+                    $query->where('part_rac_status', '!=', 'Payé')
+                        ->where('part_rac_status', '!=', '');  // Ajout de l'ET pour la condition part_rac_status
+                });
+            });
+
+            $filters['stringFilters'][] = 'Afficher que les non-réglés';
         }
 
 

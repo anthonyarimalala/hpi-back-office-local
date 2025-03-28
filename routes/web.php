@@ -68,6 +68,14 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::get('{dossier}/cheque/{id_devis}/modifier', [\App\Http\Controllers\Dossier\Cheque\ChequeController::class, 'showModifierCheque']);
     Route::post('modifier-cheque', [\App\Http\Controllers\Dossier\Cheque\ChequeController::class, 'modifierCheque']);
 
+    Route::post('saveTravauxDevis', [\App\Http\Controllers\Autre\InfoChequeTravauxDevisController::class, 'saveTravauxDevis']);
+    Route::post('deleteTravauxDevis/{travaux_sur_devis}', [\App\Http\Controllers\Autre\InfoChequeTravauxDevisController::class, 'deleteTravauxDevis']);
+    Route::post('saveSituationCheque', [\App\Http\Controllers\Autre\InfoChequeSituationChequeController::class, 'saveSituationCheque']);
+    Route::post('deleteSituationCheque/{situation_cheque_}', [\App\Http\Controllers\Autre\InfoChequeSituationChequeController::class, 'deleteSituationCheque']);
+    Route::post('saveNatureCheque', [\App\Http\Controllers\Autre\InfoChequeNatureChequeController::class, 'saveNatureCheque']);
+    Route::post('deleteNatureCheque/{nature_cheque_}', [\App\Http\Controllers\Autre\InfoChequeNatureChequeController::class, 'deleteNatureCheque']);
+
+
     // section: autres
     Route::get('liste-praticiens', [\App\Http\Controllers\Autre\PraticienController::class, 'showPraticiens']);
     Route::post('save-praticien', [\App\Http\Controllers\Autre\PraticienController::class, 'savePraticien']);

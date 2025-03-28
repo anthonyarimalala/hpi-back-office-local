@@ -34,8 +34,8 @@ INSERT INTO info_cheques_nature_cheques(nature_cheque) VALUES
 
 INSERT INTO info_cheques_travaux_sur_devis(travaux_sur_devis) VALUES
     (''),
-    ('CLOTUREE'),
-    ('EN COURS');
+    ('EN COURS'),
+    ('CLOTUREE');
 
 INSERT INTO info_cheques_situation_cheques(situation_cheque) VALUES
     (''),

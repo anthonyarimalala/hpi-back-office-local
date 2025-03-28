@@ -321,40 +321,51 @@
 
 
     <script>
-        // Fonction pour mettre à jour le status en fonction de la valeur de l'input
-        function updateStatus(inputId, selectId) {
+        // Fonction pour mettre à jour le statut uniquement si le champ était vide au début
+        function updateStatusIfInitiallyEmpty(inputId, selectId) {
             const inputEl = document.getElementById(inputId);
             const selectEl = document.getElementById(selectId);
 
-            // Si l'input est vide, on définit le status à une chaîne vide ("")
-            if (!inputEl.value || inputEl.value.trim() === "") {
-                selectEl.value = '';
-            } else {
-                // Si une valeur est saisie, on sélectionne "Non Payé"
-                selectEl.value = 'Non Payé';
+            // Vérifier si le champ était vide au chargement de la page
+            if (inputEl.dataset.initialEmpty === "true") {
+                // Si une valeur est entrée, changer le statut en "Non Payé"
+                if (inputEl.value.trim() !== "") {
+                    selectEl.value = "Non Payé";
+                } else {
+                    selectEl.value = ""; // Remettre à vide si l'utilisateur efface la valeur
+                }
             }
         }
 
-        // Ajout des écouteurs d'évènement sur chacun des inputs
-        document.getElementById('part_rac').addEventListener('input', function() {
-            updateStatus('part_rac', 'part_rac_status');
+        // Fonction pour stocker l'état initial des inputs
+        function initializeInputs() {
+            const inputs = ["part_rac", "part_secu", "part_mutuelle"];
+            inputs.forEach(id => {
+                const inputEl = document.getElementById(id);
+                // Stocker si le champ était initialement vide
+                inputEl.dataset.initialEmpty = inputEl.value.trim() === "" ? "true" : "false";
+            });
+        }
+
+        // Ajout des écouteurs d'événement
+        document.getElementById("part_rac").addEventListener("input", function() {
+            updateStatusIfInitiallyEmpty("part_rac", "part_rac_status");
         });
 
-        document.getElementById('part_secu').addEventListener('input', function() {
-            updateStatus('part_secu', 'part_secu_status');
+        document.getElementById("part_secu").addEventListener("input", function() {
+            updateStatusIfInitiallyEmpty("part_secu", "part_secu_status");
         });
 
-        document.getElementById('part_mutuelle').addEventListener('input', function() {
-            updateStatus('part_mutuelle', 'part_mutuelle_status');
+        document.getElementById("part_mutuelle").addEventListener("input", function() {
+            updateStatusIfInitiallyEmpty("part_mutuelle", "part_mutuelle_status");
         });
 
-        // Vous pouvez également appeler la fonction au chargement de la page pour initialiser l'état
-        window.addEventListener('load', function() {
-            updateStatus('part_rac', 'part_rac_status');
-            updateStatus('part_secu', 'part_secu_status');
-            updateStatus('part_mutuelle', 'part_mutuelle_status');
+        // Initialiser l'état des champs au chargement de la page
+        window.addEventListener("load", function() {
+            initializeInputs();
         });
     </script>
+
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
