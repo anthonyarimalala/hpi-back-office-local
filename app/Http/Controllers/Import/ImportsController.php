@@ -12,6 +12,7 @@ use App\Models\devis\cheque\InfoChequeSituationCheque;
 use App\Models\devis\cheque\InfoChequeTravauxDevis;
 use App\Models\devis\Devis;
 use App\Models\devis\DevisAccordPec;
+use App\Models\devis\DevisAccordPecStatus;
 use App\Models\devis\DevisAppelsEtMail;
 use App\Models\devis\DevisEtat;
 use App\Models\devis\DevisReglement;
@@ -315,7 +316,7 @@ class ImportsController extends Controller
         // Importer le fichier avec la classe d'import
         Excel::import(new DevisImport($file), $file);
 
-        // step-2: mise à jour et insertion des données, celà peut prendre un certain moment
+// step-2: mise à jour et insertion des données, celà peut prendre un certain moment
         $m_import_deviss = ImportDevis::all();
 
         // Obtenir tous les clés primaires pour éviter de faire trop de requetes vers la base de donnée
@@ -326,30 +327,17 @@ class ImportsController extends Controller
         $m_nature_chequeS = InfoChequeNatureCheque::all()->keyBy('nature_cheque');
         $m_travaux_sur_devisS = InfoChequeTravauxDevis::all()->keyBy('travaux_sur_devis');
         $m_situation_chequeS = InfoChequeSituationCheque::all()->keyBy('situation_cheque');
+        $m_devis_accord_pecs_statusS = DevisAccordPecStatus::all()->keyBy('status');
 
         foreach ($m_import_deviss as $mid){
             // déclaration de nouvelle variable d'historique
 
-            /*
-            $m_error_import = new ErrorImport();
-            $m_error_import->type = 1; // ne change pas
-            $m_error_import->date = $mid->date; // ne change pas
-            $m_error_import->dossier = $mid->dossier;
-            $m_error_import->error_message = $e->getMessage();
-            $m_error_import->categorie = "INFO DEVIS";
-            $m_error_import->description .= "<strong>Date: </strong>".$mid->date."\n";
-            $m_error_import->description .= "<strong>Montant: </strong>".$mid->montant."\n";
-            $m_error_import->description .= "<strong>Devis signé: </strong>".$mid->devis_signe."\n";
-            $m_error_import->description .= "<strong>Praticien: </strong>".$mid->praticien."\n";
-            $m_error_import->description .= "<strong>Observation: </strong>".$mid->devis_observation."\n";
-            $m_error_import->save();
-            */
             $withErrors = false;
             $m_error_import = new ErrorImport();
             $m_error_import->type = 1;
             $m_error_import->dossier = trim($mid->dossier);
 
-        // Step 1: dossier
+            // Step 1: dossier
             $m_dossier = Dossier::firstOrNew(['dossier' => trim($mid->dossier)]);
             $m_devis_etat = $m_devis_etatsS->get(trim($mid->couleur));
             $m_dossier->nom = trim($mid->nom);
@@ -364,7 +352,7 @@ class ImportsController extends Controller
             $m_dossier->mutuelle = trim($mid->mutuelle);
             $m_dossier->save();
 
-        //  Step 2: devis
+            //  Step 2: devis
             $date_devis = null;
             if ($mid->date && $mid->date != ''){
                 try {
@@ -423,11 +411,15 @@ class ImportsController extends Controller
             $withChange = false;
             Devis::updateDevis($m_h_devis, $m_devis_etatsS, $m_devis, $m_devis_nouveau, $withChange);
 
-        //  Step 3: Info Accord Pec
+            //  Step 3: Info Accord Pec
             $date_envoie_pec = null;
             $date_fin_validite_pec = null;
+            $part_secu = null;
+            $part_secu_status = null;
             $part_mutuelle = null;
+            $part_mutuelle_status = null;
             $part_rac = null;
+            $part_rac_status = null;
 
             if ($mid->date_envoi_pec && $mid->date_envoi_pec!=''){
                 try {
@@ -449,6 +441,28 @@ class ImportsController extends Controller
                     $withErrors = true;
                 }
             }
+            if ($mid->part_secu && $mid->part_secu != ''){
+                try {
+                    $part_secu = $mid->makeNumericOrError($mid->part_secu);
+                }
+                catch (\Exception $e){
+                    $m_error_import->error_message .= "Part secu non conforme, ";
+                    $m_error_import->description.= "<strong>Part Secu: </strong>".$mid->part_secu."\n";
+                    $withErrors = true;
+                }
+            }
+            if ($mid->part_secu_status){
+                $stt = $m_devis_accord_pecs_statusS->get(trim($mid->part_secu_status));
+                if ($stt){
+                    $part_secu_status = $stt->status;
+                    //echo('part_secu_status: ' . $mid->part_secu_status.'<br>');
+                }
+                else {
+                    $m_error_import->error_message .= "Part secu: ";
+                    $m_error_import->description.= "<strong>Part Secu: </strong>".$mid->part_secu_status."\n";
+                    $withErrors = true;
+                }
+            }
             if ($mid->part_mutuelle && $mid->part_mutuelle != ''){
                 try {
                     $part_mutuelle = $mid->makeNumericOrError($mid->part_mutuelle);
@@ -456,6 +470,18 @@ class ImportsController extends Controller
                 catch (\Exception $e){
                     $m_error_import->error_message .= "Part mutuelle non conforme, ";
                     $m_error_import->description.= "<strong>Part mutuelle: </strong>".$mid->part_mutuelle."\n";
+                    $withErrors = true;
+                }
+            }
+            if ($mid->part_mutuelle_status){
+                $stt = $m_devis_accord_pecs_statusS->get(trim($mid->part_mutuelle_status));
+                if ($stt){
+                    $part_mutuelle_status = $stt->status;
+                    //echo('part_mutuelle_status: ' . $mid->part_mutuelle_status.'<br>');
+                }
+                else{
+                    $m_error_import->error_message .= "Part mutuelle: ";
+                    $m_error_import->description.= "<strong>Part Mutuelle: </strong>".$mid->part_mutuelle_status."\n";
                     $withErrors = true;
                 }
             }
@@ -469,10 +495,22 @@ class ImportsController extends Controller
                     $withErrors = true;
                 }
             }
+            if ($mid->part_rac_status){
+                $stt = $m_devis_accord_pecs_statusS->get(trim($mid->part_rac_status));
+                if ($stt){
+                    $part_rac_status = $stt->status;
+                    //echo ('part_rac_status: ' . $mid->part_rac_status.'<br>');
+                }
+                else{
+                    $m_error_import->error_message .= "Part RAC: ";
+                    $m_error_import->description.= "<strong>Part RAC: </strong>".$mid->part_rac_status."\n";
+                    $withErrors = true;
+                }
+            }
 
-            DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $m_devis_nouveau->id, $date_envoie_pec, $date_fin_validite_pec, 0, $part_mutuelle, $part_rac, $withChange);
+            DevisAccordPec::createOrUpdateDevisAccordPecs($m_h_devis, $m_devis_nouveau->id, $date_envoie_pec, $date_fin_validite_pec, $part_secu, $part_secu_status, $part_mutuelle, $part_mutuelle_status, $part_rac, $part_rac_status, $withChange);
 
-        // step 4: devis appels et mail
+            // step 4: devis appels et mail
             $date_1er_appel = null;
             $note_1er_appel = $mid->note_1er_appel;
             $date_2eme_appel = null;
@@ -530,11 +568,34 @@ class ImportsController extends Controller
                 $withChange);
 
 
-        // step 4: Devis Reglement
+            // step 4: Devis Reglement
+            $reglement_cb = null;
+            $reglement_espece = null;
             $date_paiement_cb_ou_esp = null;
             $date_depot_chq_pec = null;
             $date_depot_chq_part_mut = null;
             $date_depot_chq_rac = null;
+
+            if ($mid->reglement_cb && $mid->reglement_cb != '') {
+                try {
+                    $reglement_cb = $mid->reglement_cb;
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Reglement, ";
+                    $m_error_import->description .= "<strong>Reglement, CB: </strong>" . $mid->reglement_cb . "\n";
+                    $withErrors = true;
+                }
+            }
+
+            if ($mid->reglement_espece && $mid->reglement_espece != '') {
+                try {
+                    $reglement_espece = $mid->reglement_espece;
+                } catch (\Exception $e) {
+                    $m_error_import->error_message .= "Reglement, ";
+                    $m_error_import->description .= "<strong>Reglement, espece: </strong>" . $mid->reglement_espece . "\n";
+                    $withErrors = true;
+                }
+            }
+
             if ($mid->date_paiement_cb_ou_esp && $mid->date_paiement_cb_ou_esp != '') {
                 try {
                     $date_paiement_cb_ou_esp = $imp_devis->makeDateOrError($mid->date_paiement_cb_ou_esp);
@@ -578,6 +639,8 @@ class ImportsController extends Controller
             DevisReglement::createDevisReglement(
                 $m_h_devis,
                 $m_devis_nouveau->id,
+                $reglement_cb,
+                $reglement_espece,
                 $date_paiement_cb_ou_esp,
                 $date_depot_chq_pec,
                 $date_depot_chq_part_mut,
@@ -592,7 +655,7 @@ class ImportsController extends Controller
             $m_h_prothese->action .= "Données importés: (Date devis: ". $m_devis_nouveau->date .")" . "\n";
             $withChangeProthese = false;
 
-        // step 5: prothese empreinte
+            // step 5: prothese empreinte
             $laboratoire = trim($mid->laboratoire);
             $date_empreinte = null;
             $date_envoi_labo = null;
@@ -631,7 +694,7 @@ class ImportsController extends Controller
                 $withChangeProthese
             );
 
-        // step 6: prothese retour labo
+            // step 6: prothese retour labo
             $date_livraison = null;
             $numero_suivi = trim($mid->numero_suivi);
             $numero_facture_labo = trim($mid->numero_facture_labo);
@@ -653,7 +716,7 @@ class ImportsController extends Controller
                 $withChangeProthese
             );
 
-        // step 7: prothese travaux
+            // step 7: prothese travaux
             $m_protheseTravauxStatus = $m_protheseTravauxStatusS->get(trim($mid->pose_statut));
             $date_pose_prevue = null;
             $id_pose_status = null;
@@ -740,7 +803,7 @@ class ImportsController extends Controller
             $m_info_cheques->situation_cheque = trim($mid->situation_cheque);
             $m_info_cheques->observation = $mid->cheque_observation;
             */
-        // step 8: cheque
+            // step 8: cheque
             $numero_cheque = trim($mid->numero_cheque);
             $montant_cheque = null;
             $nom_document = trim($mid->nom_document);
@@ -831,10 +894,13 @@ class ImportsController extends Controller
                 $m_error_import->save();
             }
         }
+
+
         if (!$withErrorsAll)
             return back()->with('success', 'Fichier importé avec succès');
         else
             return back()->with('warning', 'Données importées mais contiennent des erreurs');
+
     }
     public function showImports(){
         return view('imports/imports');

@@ -4,6 +4,7 @@ namespace App\Exports;
 use App\Models\devis\cheque\InfoChequeNatureCheque;
 use App\Models\devis\cheque\InfoChequeSituationCheque;
 use App\Models\devis\cheque\InfoChequeTravauxDevis;
+use App\Models\devis\DevisAccordPecStatus;
 use App\Models\devis\prothese\ProtheseTravauxStatus;
 use App\Models\dossier\DossierStatus;
 use App\Models\praticien\Praticien;
@@ -15,6 +16,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\Conditional;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class V_DevisExport implements FromView, WithEvents, WithTitle
@@ -48,12 +50,13 @@ class V_DevisExport implements FromView, WithEvents, WithTitle
                 $info_cheques_travaux_sur_devis = InfoChequeTravauxDevis::where('is_deleted', 0)->get()->pluck('travaux_sur_devis')->toArray();
                 $info_cheques_situation_cheques = InfoChequeSituationCheque::where('is_deleted', 0)->get()->pluck('situation_cheque')->toArray();
                 $prothese_travaux_status = ProtheseTravauxStatus::where('is_deleted', 0)->get()->pluck('travaux_status')->toArray();
+                $devis_accord_pecs_status = DevisAccordPecStatus::where('is_deleted', 0)->get()->pluck('status')->toArray();
 
-                // Define the range for the dropdown (adjust the range as needed)
+                // nombre de ligne affecté au dropdown
                 $startRow = 16; // Assuming your data starts from row 16
                 $endRow = count($this->data) + 15 + $startRow; // Adjust based on your data count
 
-                // Create a data validation for the dropdown on the specified range
+                // dropdown
                 $range = 'D16:D' . $endRow; // Range D16:D20, for example
                 $validation = $event->sheet->getDelegate()->getDataValidation($range);
                 $validation->setType(DataValidation::TYPE_LIST);
@@ -72,25 +75,43 @@ class V_DevisExport implements FromView, WithEvents, WithTitle
                 $validationH16->setFormula1('"' . implode(',', $praticiens) . '"');
                 $validationH16->setShowDropDown(true);
 
+                $rangeM16 = 'M16:M'.$endRow;
+                $validationM16 = $event->sheet->getDelegate()->getDataValidation($rangeM16);
+                $validationM16->setType(DataValidation::TYPE_LIST);
+                $validationM16->setFormula1('"' . implode(',', $devis_accord_pecs_status) . '"');
+                $validationM16->setShowDropDown(true);
+
+                $rangeO16 = 'O16:O'.$endRow;
+                $validationO16 = $event->sheet->getDelegate()->getDataValidation($rangeO16);
+                $validationO16->setType(DataValidation::TYPE_LIST);
+                $validationO16->setFormula1('"' . implode(',', $devis_accord_pecs_status) . '"');
+                $validationO16->setShowDropDown(true);
+
+                $rangeQ16 = 'Q16:Q'.$endRow;
+                $validationQ16 = $event->sheet->getDelegate()->getDataValidation($rangeQ16);
+                $validationQ16->setType(DataValidation::TYPE_LIST);
+                $validationQ16->setFormula1('"' . implode(',', $devis_accord_pecs_status) . '"');
+                $validationQ16->setShowDropDown(true);
+
                 $rangeAI16 = 'AI16:AI'.$endRow;
                 $validationAI16 = $event->sheet->getDelegate()->getDataValidation($rangeAI16);
                 $validationAI16->setType(DataValidation::TYPE_LIST);
                 $validationAI16->setFormula1('"' . implode(',', $prothese_travaux_status) . '"');
                 $validationAI16->setShowDropDown(true);
 
-                $rangeAS16 = 'AS16:AS'.$endRow;
+                $rangeAS16 = 'AT16:AS'.$endRow;
                 $validationAS16 = $event->sheet->getDelegate()->getDataValidation($rangeAS16);
                 $validationAS16->setType(DataValidation::TYPE_LIST);
                 $validationAS16->setFormula1('"' . implode(',', $info_cheques_nature_cheques) . '"');
                 $validationAS16->setShowDropDown(true);
 
-                $rangeAT16 = 'AT16:AT'.$endRow;
+                $rangeAT16 = 'AU16:AT'.$endRow;
                 $validationAT16 = $event->sheet->getDelegate()->getDataValidation($rangeAT16);
                 $validationAT16->setType(DataValidation::TYPE_LIST);
                 $validationAT16->setFormula1('"' . implode(',', $info_cheques_travaux_sur_devis) . '"');
                 $validationAT16->setShowDropDown(true);
 
-                $rangeAU16 = 'AU16:AU'.$endRow;
+                $rangeAU16 = 'AV16:AU'.$endRow;
                 $validationAU16 = $event->sheet->getDelegate()->getDataValidation($rangeAU16);
                 $validationAU16->setType(DataValidation::TYPE_LIST);
                 $validationAU16->setFormula1('"' . implode(',', $info_cheques_situation_cheques) . '"');
@@ -99,13 +120,13 @@ class V_DevisExport implements FromView, WithEvents, WithTitle
 
                 $sheet = $event->sheet->getDelegate();
                 $highestRow = $sheet->getHighestRow();
-                $colNumbers = ['F', 'L', 'M', 'AL', 'AO'];
+                $colNumbers = ['F', 'L', 'N', 'P', 'R', 'S', 'AR', 'AU'];
                 foreach ($colNumbers as $col) {
                     $sheet->getStyle($col . '16:' . $col . $highestRow)
                         ->getNumberFormat()
                         ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
                 }
-                $colDates = ['E', 'J', 'K', 'N', 'O', 'P', 'Q', 'R', 'T', 'V', 'X', 'Z', 'AA', 'AE', 'AH', 'AJ', 'AM', 'AQ', 'AR'];
+                $colDates = ['E', 'J', 'K', 'T', 'U', 'V', 'W', 'AX', 'AZ', 'AB', 'AD', 'AF', 'AG', 'AK', 'AN', 'AP', 'AS', 'AW', 'AX'];
                 foreach ($colDates as $col){
                     $sheet->getStyle($col . '16:' . $col . $highestRow)
                         ->getNumberFormat()
@@ -113,8 +134,6 @@ class V_DevisExport implements FromView, WithEvents, WithTitle
                 }
 
                 $event->sheet->getDelegate()->freezePane('A16');
-
-
                 // Appliquer une bordure épaisse sur la ligne verticale entre D et E
                 for ($row = 14; $row <= $highestRow; $row++) {
                     $columns = ["E", "I", "J", "N", "R", "Y", "AD", "AE", "AH", "AJ", "AN"];

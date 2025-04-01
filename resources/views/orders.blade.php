@@ -42,12 +42,12 @@
     <tr></tr>
     <tr>
         <th colspan="4" style="background-color: #b4a7d6; text-align: center; font-weight: bold; border: 1px solid black;"> PATIENTS</th>
-        <th colspan="20" style="border: 1px solid black; background-color: #ffd966; text-align: center; font-weight: bold;">DEVIS</th>
+        <th colspan="26" style="border: 1px solid black; background-color: #ffd966; text-align: center; font-weight: bold;">DEVIS</th>
         <th colspan="15" style="border: 1px solid black; background-color: #9fc5e8; text-align: center; font-weight: bold;">PROTHESE &amp; APPAREILLAGE DENTAIRE</th>
         <th colspan="9" style="border: 1px solid black; background-color: #34A853; text-align: center; font-weight: bold;">TRAITEMENTS CHEQUES</th>
     </tr>
     <tr>
-        <th colspan="17" style="border: 1px solid black; background-color: #FFF2CC; text-align: center; font-weight: bold;">CHARGE D'ACCEUIL</th>
+        <th colspan="23" style="border: 1px solid black; background-color: #FFF2CC; text-align: center; font-weight: bold;">CHARGE D'ACCEUIL</th>
         <th colspan="7" style="border: 1px solid black; background-color: #CFE2F3; text-align: center; font-weight: bold;">ASSISTANT ADMINISTRATIF</th>
         <th colspan="11" style="border: 1px solid black; background-color: #D9EAD3; text-align: center; font-weight: bold;">ADMIN</th>
         <th colspan="4" style="border: 1px solid black; background-color: #FFFF00; text-align: center; font-weight: bold;">FINANCE</th>
@@ -57,8 +57,8 @@
         <th colspan="4" style="border: 1px solid black; background-color: #FFF2CC; text-align: center; font-weight: bold;">INFO PATIENT</th>
         <th colspan="4" style="border: 1px solid black; background-color: #FFF2CC; text-align: center; font-weight: bold;">INFO DEVIS</th>
         <th colspan="1" style="border: 1px solid black; background-color: #FFF2CC; text-align: center; font-weight: bold;">Observation</th>
-        <th colspan="4" style="border: 1px solid black; background-color: #FFF2CC; text-align: center; font-weight: bold;">INFO ACCORD PEC</th>
-        <th colspan="4" style="border: 1px solid black; background-color: #FFF2CC; text-align: center; font-weight: bold;">REGLEMENT</th>
+        <th colspan="8" style="border: 1px solid black; background-color: #FFF2CC; text-align: center; font-weight: bold;">INFO ACCORD PEC</th>
+        <th colspan="6" style="border: 1px solid black; background-color: #FFF2CC; text-align: center; font-weight: bold;">REGLEMENT</th>
         <th colspan="7" style="border: 1px solid black; background-color: #CFE2F3; text-align: center; font-weight: bold;">APPELS &amp; MAIL</th>
         <th colspan="5" style="border: 1px solid black; background-color: #D9EAD3; text-align: center; font-weight: bold;">INFO D'EMPREINTE</th>
         <th colspan="1" style="border: 1px solid black; background-color: #00FFFF; text-align: center; font-weight: bold;">OBS</th>
@@ -79,8 +79,14 @@
         <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 200px;">Observation</th>
         <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 75px;">Date d'envoi PEC</th>
         <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 75px;">Date fin validité PEC</th>
+        <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 100px;">Part sécu</th>
+        <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 100px;"></th>
         <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 100px;">Part mutuelle</th>
+        <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 100px;"></th>
         <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 100px;">Part RAC</th>
+        <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 100px;"></th>
+        <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 100px;">CB</th>
+        <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 100px;">Espèce</th>
         <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 75px;">Date paiement par CB ou Esp</th>
         <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 75px;">Date dépôt CHQ PEC</th>
         <th style="border: 1px solid black; background-color: #FFF2CC; font-weight: bold; width: 75px;">Date dépôt CHQ Part MUT</th>
@@ -131,8 +137,14 @@
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{!! nl2br($order->devis_observation) !!}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_envoi_pec ? \Carbon\Carbon::parse($order->date_envoi_pec)->format('d/m/Y') : '' }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_fin_validite_pec ? \Carbon\Carbon::parse($order->date_fin_validite_pec)->format('d/m/Y') : '' }}</td>
+            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->part_secu }}</td>
+            <td style="border: 1px solid black;">{{ $order->part_secu_status }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->part_mutuelle }}</td>
+            <td style="border: 1px solid black;">{{ $order->part_mutuelle_status }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->part_rac }}</td>
+            <td style="border: 1px solid black;">{{ $order->part_rac_status }}</td>
+            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->reglement_cb }}</td>
+            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->reglement_espece }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_paiement_cb_ou_esp ? \Carbon\Carbon::parse($order->date_paiement_cb_ou_esp)->format('d/m/Y') : '' }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_depot_chq_pec ? \Carbon\Carbon::parse($order->date_depot_chq_pec)->format('d/m/Y') : '' }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_depot_chq_part_mut ? \Carbon\Carbon::parse($order->date_depot_chq_part_mut)->format('d/m/Y') : '' }}</td>

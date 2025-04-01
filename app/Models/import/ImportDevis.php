@@ -31,8 +31,14 @@ class ImportDevis extends Model
         'devis_observation',
         'date_envoi_pec',
         'date_fin_validite_pec',
+        'part_secu',
+        'part_secu_status',
         'part_mutuelle',
+        'part_mutuelle_status',
         'part_rac',
+        'part_rac_status',
+        'reglement_cb',
+        'reglement_espece',
         'date_paiement_cb_ou_esp',
         'date_depot_chq_pec',
         'date_depot_chq_part_mut',
@@ -87,53 +93,30 @@ class ImportDevis extends Model
     {
         $formattedDate = trim($date);
 
-        // Si la date est au format texte déjà valide (YYYY-MM-DD)
-        if (strtotime($formattedDate)) {
-            return date('Y-m-d', strtotime($formattedDate));
-        }
-
         // Si la date est une valeur numérique (format Excel)
         if (is_numeric($formattedDate)) {
-            return Date::excelToDateTimeObject((float) $formattedDate)->format('Y-m-d');
+            return Date::excelToDateTimeObject((float)$formattedDate)->format('Y-m-d');
         }
 
-        // Gestion du format DD/MM/YYYY ou similaire
-        $dateParts = preg_split('/[\/.-]/', $formattedDate);
-        if (count($dateParts) === 3) {
-            $day = $dateParts[0];
-            $month = $dateParts[1];
-            $year = $dateParts[2];
-
-            if (checkdate($month, $day, $year)) {
-                return "$year-$month-$day";
+        // Si la date est au format d/m/Y
+        if (preg_match('/^\d{1,2}\/\d{1,2}\/\d{4}$/', $formattedDate)) {
+            $dt = \DateTime::createFromFormat('d/m/Y', $formattedDate);
+            if ($dt && $dt->format('d/m/Y') === $formattedDate) {
+                // Retourner au format souhaité (ici Y-m-d)
+                return $dt->format('Y-m-d');
+                // Si vous souhaitez conserver le format d/m/Y, utilisez :
+                // return $dt->format('d/m/Y');
             }
+        }
+
+        // Sinon, on tente strtotime sur d'autres formats (par ex. YYYY-MM-DD)
+        if (strtotime($formattedDate)) {
+            return date('Y-m-d', strtotime($formattedDate));
         }
 
         throw new Exception("Date non conforme : $date");
     }
 
-    /*
-    public function makeDate($date)
-    {
-        $date = trim($date);
-        if ($date && $date!='') {
-            $cleanedDate = preg_replace('/[^0-9\/\-]/', '', $date);
-            $formattedDate = str_replace("/", "-", $cleanedDate);
-            if (Str::contains($formattedDate, '-')){
-                $nouvelleDate = $formattedDate;
-            }
-            else{
-                $nouvelleDate = Date::excelToDateTimeObject((float) $formattedDate)->format('Y-m-d');
-            }
-            try {
-                return $nouvelleDate;
-            } catch (\Exception $e) {
-                return null;
-            }
-        }
-        return null ;
-    }
-    */
 
     public function makeDevisSigne($devis_signe)
     {

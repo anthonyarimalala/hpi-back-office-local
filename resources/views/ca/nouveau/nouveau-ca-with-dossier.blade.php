@@ -61,7 +61,7 @@
                                         <select class="form-select" name="statut" required>
                                             <option value="" disabled selected>Choix statut</option>
                                             @foreach($status as $st)
-                                                <option value="{{ $st->status }}" @if(old('statut') == $st->status) selected @endif @if($m_dossier) @if($m_dossier->status == $st->status) selected @endif @endif>{{ $st->status }}</option>
+                                                <option value="{{ $st->status }}" @if($m_dossier) @if($m_dossier->status == $st->status) selected @endif @endif>{{ $st->status }}</option>
                                             @endforeach
                                         </select>
                                     </td>

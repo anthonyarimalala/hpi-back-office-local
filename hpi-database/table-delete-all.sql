@@ -16,7 +16,6 @@ DELETE FROM info_cheques;
 DELETE FROM devis_appels_et_mails;
 DELETE FROM devis_reglements;
 DELETE FROM devis_accord_pecs;
-DELETE FROM devis_accord_pecs_status;
 DELETE FROM devis;
 DELETE FROM l_ca_actes_reglements;
 DELETE FROM ca_generales;

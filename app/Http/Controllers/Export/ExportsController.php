@@ -77,10 +77,13 @@ class ExportsController extends Controller
             if ($filters)
                 $m_v_devis->scopeFiltrer($query, $filters);
         }
-        $v_devis = $query->where('date', '>=', $date_devis_debut)
-            ->where('date', '<=', $date_devis_fin)
+        $v_devis = $query->where('date', '>=', $date_devis_debut. ' 00:00:00')
+            ->where('date', '<=', $date_devis_fin. ' 23:59:59')
             ->orderBy('date', 'asc')
             ->get();
+
+       // dd($query->toSql(), $query->getBindings());
+
         return Excel::download(new V_DevisExport($v_devis), $date_devis_debut . 'a' . $date_devis_fin . '.xlsx');
     }
     public function showDevisExportView(Request $request)
