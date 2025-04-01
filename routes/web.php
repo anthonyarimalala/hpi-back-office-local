@@ -126,7 +126,6 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::get('reinitializeFilterCa', [\App\Http\Controllers\Ca\Ca2Controller::class, 'reinitializeFilterCa']);
     Route::get('ca/{id_ca}/{dossier}/modifier', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showModifierCa']);
     Route::get('ca/nouveau/{dossier}', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showNouveauCaWithDossier']);
-    Route::post('ca/nouveau', [\App\Http\Controllers\Ca\Ca2Controller::class, 'saveCa']);
     Route::get('/get-patient-details', [\App\Http\Controllers\Ca\Ca2Controller::class, 'getPatientDetails'])->name('get.patient.details');
 
 

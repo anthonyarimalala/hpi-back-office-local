@@ -26,7 +26,7 @@
         </div>
     @endif
 
-    <form action="{{ asset('ca/nouveau') }}" method="POST">
+    <form action="{{ asset('ca/nouveau-2') }}" method="POST">
         @csrf
 
         <div class="row">
