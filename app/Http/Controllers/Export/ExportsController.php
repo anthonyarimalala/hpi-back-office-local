@@ -25,13 +25,6 @@ class ExportsController extends Controller
         $withFilters = $request->input('withFilters', []);
 
 
-        /*
-        $v_ca = V_CaActesReglement::where('date_derniere_modif', '>=', $date_ca_modif_debut)
-            ->where('date_derniere_modif', '<=', $date_ca_modif_fin)
-            ->orderBy('created_at', 'desc')
-            ->get();
-        */
-
         $filters = session()->get('ca_filters', []);
         $m_v_ca = new V_CaActesReglement();
         $query = $m_v_ca->query();
@@ -46,20 +39,42 @@ class ExportsController extends Controller
             $query->where('date_derniere_modif' , '<=' , $date_ca_create_fin);
         }
         if ($date_ca_create_debut && $date_ca_create_debut!=''){
-            $query->where('date_derniere_modif' , '>=' , $date_ca_create_debut);
+            $query->where('created_at' , '>=' , $date_ca_create_debut);
         }
         if ($date_ca_create_fin && $date_ca_create_fin!=''){
-            $query->orderBy('created_at', '<=', $date_ca_create_fin);
+            $query->where('created_at', '<=', $date_ca_create_fin);
         }
 
         $v_ca = $query->orderBy('created_at', 'desc')
             ->get();
 
+        $m_v_ca2 = new V_CaActesReglement();
+        $queryPraticiens = $m_v_ca2->select('praticien');
+        if ($date_ca_modif_debut && $date_ca_modif_debut!=''){
+            $queryPraticiens->where('date_derniere_modif' , '>=' , $date_ca_modif_debut);
+        }
+        if ($date_ca_modif_fin && $date_ca_modif_fin!=''){
+            $queryPraticiens->where('date_derniere_modif' , '<=' , $date_ca_modif_fin);
+        }
+        if ($date_ca_create_debut && $date_ca_create_debut!=''){
+            $queryPraticiens->where('created_at' , '>=' , $date_ca_create_debut);
+        }
+        if ($date_ca_create_fin && $date_ca_create_fin!=''){
+            $queryPraticiens->where('created_at' , '<=' , $date_ca_create_fin);
+        }
+        $praticiens = $queryPraticiens->groupBy('praticien')
+            ->get();
+
+
+        /*
         $praticiens = DB::select("SELECT
                                                             praticien
                                                         FROM ca_actes_reglements
                                                         WHERE date_derniere_modif >= ? AND date_derniere_modif <= ?
                                                         GROUP BY praticien", [$date_ca_modif_debut, $date_ca_modif_fin]);
+        */
+
+
         return Excel::download(new V_CaExport($v_ca, $praticiens), 'ca'.Carbon::parse($date_ca_modif_debut)->format('d-m-Y').'a'.Carbon::parse($date_ca_modif_fin)->format('d-m-Y').'.xlsx');
     }
     public function exportV_Devis(Request $request)

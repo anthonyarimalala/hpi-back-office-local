@@ -188,16 +188,6 @@
                                 <label for="caFile">Fichier Excel</label>
                                 <input type="file" class="form-control" id="caFile" name="caFile" accept=".xlsx">
                             </div>
-                            <div class="col-md-12 mb-12">
-                                <label for="caFile">Action</label>
-                                <div>
-                                    <input type="radio" id="modification" name="action" value="modification" required>
-                                    <label for="modification">Modification</label>
-
-                                    <input type="radio" id="nouveau" name="action" value="nouveau" required>
-                                    <label for="nouveau">Nouveau</label>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -23,11 +23,12 @@ Route::post('register', [ \App\Http\Controllers\Authentification\LoginController
 
 Route::middleware('auth')->group(function() {
     Route::get('/', function (){
+        if (\Illuminate\Support\Facades\Auth::user()->is_deleted == -1) return redirect('modify/mdp');
         return redirect()->route('dashboard');
     });
 });
 
-Route::middleware(['auth', 'role:admin,user'])->group(function () {
+Route::middleware(['auth', 'role:admin,user,responsableCA'])->group(function () {
     // Recherche
     Route::get('/search', [\App\Http\Controllers\GlobalController::class, 'search'])->name('search');
     Route::get('/search-dossier', [\App\Http\Controllers\GlobalController::class, 'searchDossier'])->name('search.dossier');
@@ -104,31 +105,6 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::get('historiques/modif-dev', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistDevis']);
     Route::get('historiques/modif-ca', [\App\Http\Controllers\Hist\HistoriqueController::class, 'showHistCa']);
 
-    // section: ca
-
-
-
-
-
-
-
-
-    // section: ca2
-    Route::get('ca/nouveau', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showNouveauCa']);
-    Route::get('liste-ca', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showListeCa'])->name('liste.ca');
-    Route::post('ca/nouveau-2', [\App\Http\Controllers\ca\Ca2Controller::class, 'insertCa']);
-    Route::get('ca/{id_ca_actes_reglement}/{dossier}/modifier', [\App\Http\Controllers\ca\Ca2Controller::class, 'showUpdateCa']);
-    Route::post('ca/modifier-2/{id_ca_actes_reglement}', [\App\Http\Controllers\ca\Ca2Controller::class, 'updateCa']);
-    Route::get('ca/{id_ca}/nouveau-acte',[\App\Http\Controllers\ca\Ca2Controller::class, 'showNouveauCaActe']);
-    Route::post('ca/{id_ca}/nouveau-acte', [\App\Http\Controllers\ca\Ca2Controller::class, 'insertNouveauCaActe']);
-    Route::get('delete-ca/{id_ca}', [\App\Http\Controllers\Ca\Ca2Controller::class, 'deleteCa']);
-    Route::get('getFilterCa', [\App\Http\Controllers\Ca\Ca2Controller::class, 'getFilterCa']);
-    Route::get('reinitializeFilterCa', [\App\Http\Controllers\Ca\Ca2Controller::class, 'reinitializeFilterCa']);
-    Route::get('ca/{id_ca}/{dossier}/modifier', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showModifierCa']);
-    Route::get('ca/nouveau/{dossier}', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showNouveauCaWithDossier']);
-    Route::get('/get-patient-details', [\App\Http\Controllers\Ca\Ca2Controller::class, 'getPatientDetails'])->name('get.patient.details');
-
-
     // section: anomalie
     Route::get('anomalies-ca', [\App\Http\Controllers\Anomalie\AnomalieCaController::class, 'showAnomalieCa']);
 
@@ -157,6 +133,25 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::post('modify/mail', [\App\Http\Controllers\Mail\MailController::class, 'modifyMail']);
     Route::get('modify/mail', [\App\Http\Controllers\Mail\MailController::class, 'showModidyMail']);
     Route::get('envoi-mail-2', [\App\Http\Controllers\Mail\MailController::class, 'envoiMail']);
+
+    Route::get('modify/mdp', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'showModifierMdp']);
+    Route::post('modify/mdp', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'modifierMdp']);
+});
+Route::middleware(['auth', 'role:admin,responsableCA'])->group(function () {
+    // section: ca2
+    Route::get('ca/nouveau', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showNouveauCa']);
+    Route::get('liste-ca', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showListeCa'])->name('liste.ca');
+    Route::post('ca/nouveau-2', [\App\Http\Controllers\ca\Ca2Controller::class, 'insertCa']);
+    Route::get('ca/{id_ca_actes_reglement}/{dossier}/modifier', [\App\Http\Controllers\ca\Ca2Controller::class, 'showUpdateCa']);
+    Route::post('ca/modifier-2/{id_ca_actes_reglement}', [\App\Http\Controllers\ca\Ca2Controller::class, 'updateCa']);
+    Route::get('ca/{id_ca}/nouveau-acte',[\App\Http\Controllers\ca\Ca2Controller::class, 'showNouveauCaActe']);
+    Route::post('ca/{id_ca}/nouveau-acte', [\App\Http\Controllers\ca\Ca2Controller::class, 'insertNouveauCaActe']);
+    Route::get('delete-ca/{id_ca}', [\App\Http\Controllers\Ca\Ca2Controller::class, 'deleteCa']);
+    Route::get('getFilterCa', [\App\Http\Controllers\Ca\Ca2Controller::class, 'getFilterCa']);
+    Route::get('reinitializeFilterCa', [\App\Http\Controllers\Ca\Ca2Controller::class, 'reinitializeFilterCa']);
+    Route::get('ca/{id_ca}/{dossier}/modifier', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showModifierCa']);
+    Route::get('ca/nouveau/{dossier}', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showNouveauCaWithDossier']);
+    Route::get('/get-patient-details', [\App\Http\Controllers\Ca\Ca2Controller::class, 'getPatientDetails'])->name('get.patient.details');
 });
 Route::middleware(['auth', 'role:admin'])->group(function () {
     // section: gestion

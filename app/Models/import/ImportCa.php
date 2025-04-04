@@ -39,6 +39,7 @@ class ImportCa extends Model
         'rac_especes',
         'rac_cb',
         'commentaire',
+        'date',
     ];
 
     public function makeNumericOrError($num){

@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Import;
 use App\Http\Controllers\Controller;
 use App\Imports\CaImport;
 use App\Imports\DevisImport;
-use App\Models\ca\CaActesReglement;
+use App\Models\ca\CaGeneral;
+use App\Models\ca\L_CaActesReglement;
 use App\Models\devis\cheque\InfoCheque;
 use App\Models\devis\cheque\InfoChequeNatureCheque;
 use App\Models\devis\cheque\InfoChequeSituationCheque;
@@ -30,6 +31,7 @@ use App\Models\import\ImportCa;
 use App\Models\import\ImportDevis;
 use App\Models\praticien\Praticien;
 use App\Models\views\V_Devis;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -44,18 +46,23 @@ class ImportsController extends Controller
     {
 
         $request->validate([
-           'caFile' => 'required|file|mimes:xlsx,xls',
-            'action' => 'required',
+            'caFile' => 'required|file|mimes:xlsx,xls',
         ]);
-        $action = $request->input('action');
+        // $action = $request->input('action');
         $file = $request->file('caFile');
         $m_import_ca = new ImportCa();
         DB::delete('DELETE FROM import_ca_actes_reglements');
         DB::delete('DELETE FROM errors_imports');
         Excel::import(new CaImport, $file);
-        $m_import_cas = ImportCa::all();
         $withErrors = false;
-        foreach ($m_import_cas as $mic){
+
+        $m_import_cas = ImportCa::all();
+        $m_import_devis = new ImportDevis();
+
+        foreach ($m_import_cas as $mic) {
+            if (!$mic->dossier || $mic->dossier == '') {
+                continue;
+            }
 
             $m_dossier = Dossier::firstOrNew(['dossier' => $mic->dossier]);
             $m_dossier->nom = $mic->nom_patient;
@@ -66,236 +73,265 @@ class ImportsController extends Controller
             // mise en place des erreurs
             $m_error_import = new ErrorImport();
             $m_error_import->type = 2; // ne change pas
-            $m_error_import->date = Date::excelToDateTimeObject((float) trim($mic->date_derniere_modif))->format('Y-m-d');
+            $m_error_import->date = Date::excelToDateTimeObject((float)trim($mic->date_derniere_modif))->format('Y-m-d');
             $m_error_import->dossier = $mic->dossier;
             $m_error_import->error_message = '';
 
-            if ($action == 'nouveau')
-                $m_ca = new CaActesReglement();
-            else
-                $m_ca = CaActesReglement::where('dossier', $mic->dossier)->where('date_derniere_modif', $m_import_ca->makeDate($mic->date_derniere_modif))->first();
-            if ($m_ca){
-            // Date dernière modif
-                try { $m_ca->date_derniere_modif = $mic->makeDateOrError($mic->date_derniere_modif); }
-                catch (Exception $e) {
-                    $m_ca->date_derniere_modif = null;
-                    $m_error_import->error_message .= 'Date non conforme, ';
-                    $m_error_import->description .= "<strong>Date de dernière modif: </strong>".$mic->date_derniere_modif."\n";
+
+            try {
+                if ($mic->date && $mic->date != '') {
+                    $date = $m_import_devis->makeDateOrError($mic->date);
+
+                } else {
+                    $date = date('Y-m-d');
                 }
-            // dossier
-                $m_ca->dossier = trim($mic->dossier);
-            // status
-                $m_ca->statut = trim($mic->statut);
-            // mutuelle
-                $m_ca->mutuelle = trim($mic->mutuelle);
+            } catch (Exception $e) {
+                $date = null;
+                $m_error_import->error_message .= 'Date : ' . $mic->date;;
+            }
+
+            $m_ca_generale = CaGeneral::where('dossier', $mic->dossier)
+                ->where('statut', $mic->statut)
+                ->where('mutuelle', $mic->mutuelle)
+                ->whereDate('created_at', $date)
+                ->first();
+            if (!$m_ca_generale) {
+                $m_ca_generale = new CaGeneral();
+                $m_ca_generale->dossier = $mic->dossier;
+                $m_ca_generale->nom_patient = $mic->nom_patient;
+                $m_ca_generale->statut = $mic->statut;
+                $m_ca_generale->mutuelle = $mic->mutuelle;
+                $m_ca_generale->created_at = $date;
+                $m_ca_generale->save();
+            }
+            $m_ca = L_CaActesReglement::where('id_ca', $m_ca_generale->id)
+                ->where('praticien', $m_praticien->praticien)
+                ->where('nom_acte', $mic->nom_acte)
+                ->whereDate('created_at', $date)
+                ->first();
+            echo '$m_ca_generale->id_ca= '.$m_ca_generale->id. '<br>';
+            echo 'ca: '. '<br>' .$m_ca. '<br>';
+
+
+            if (!$m_ca) {
+                $m_ca = new L_CaActesReglement();
+                $m_ca->id_ca = $m_ca_generale->id;
+                $m_ca->praticien = $m_praticien->praticien;
+                $m_ca->nom_acte = $mic->nom_acte;
+                $m_ca->created_at = $date;
+                //$m_ca->save();
+                echo '--- Mbola tsy misy ---: '.$date. ' ? '.$m_ca->created_at;
+            }else{
+                echo '--- Efa misy ---: '.$date. ' ? '.$m_ca->created_at;
+
+            }
+
+
+
+            try {
+                if ($mic->date_derniere_modif && $mic->date_derniere_modif != '') {
+                    $date_derniere_modif = $m_import_devis->makeDateOrError($mic->date_derniere_modif);
+                } else {
+                    $date_derniere_modif = date('Y-m-d');
+                }
+            } catch (Exception $e) {
+                $date_derniere_modif = null;
+                $m_error_import->error_message .= 'Date de dernière modification non conforme: ' . $mic->date_derniere_modif;;
+            }
+
+
+            // date de dernière modification
+            $m_ca->date_derniere_modif = $date_derniere_modif;
             // praticien
-                $m_ca->praticien = trim($mic->praticien);
+            $m_ca->praticien = trim($mic->praticien);
             // nom_acte
-                $m_ca->nom_acte = trim($mic->nom_acte);
+            $m_ca->nom_acte = trim($mic->nom_acte);
             // cotation
-                if($mic->cotation && $mic->cotation != ''){
-                    try {
-                        $m_ca->cotation = $mic->makeNumericOrError($mic->cotation);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'Cotation non conforme, ';
-                        $m_error_import->description .= "<strong>Cotation: </strong>".$mic->cotation."\n";
-                    }
+            if ($mic->cotation && $mic->cotation != '') {
+                try {
+                    $m_ca->cotation = $mic->makeNumericOrError($mic->cotation);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'Cotation non conforme, ';
+                    $m_error_import->description .= "<strong>Cotation: </strong>" . $mic->cotation . "\n";
                 }
+            }
             // controle_securisation
-                $m_ca->controle_securisation = trim($mic->controle_securisation);
+            $m_ca->controle_securisation = trim($mic->controle_securisation);
             // ro_part_secu
-                if($mic->ro_part_secu && $mic->ro_part_secu != ''){
-                    try {
-                        $m_ca->ro_part_secu = $mic->makeNumericOrError($mic->ro_part_secu);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'RO - Part Sécu non conforme, ';
-                        $m_error_import->description .= "<strong>ro_part_secu: </strong>".$mic->ro_part_secu."\n";
-                    }
+            if ($mic->ro_part_secu && $mic->ro_part_secu != '') {
+                try {
+                    $m_ca->ro_part_secu = $mic->makeNumericOrError($mic->ro_part_secu);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'RO - Part Sécu non conforme, ';
+                    $m_error_import->description .= "<strong>ro_part_secu: </strong>" . $mic->ro_part_secu . "\n";
                 }
+            }
 
             // ro_virement_recu
-                if($mic->ro_virement_recu && $mic->ro_virement_recu != ''){
-                    try {
-                        $m_ca->ro_virement_recu = $mic->makeNumericOrError($mic->ro_virement_recu);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'RO- Virement reçu, ';
-                        $m_error_import->description .= "<strong>ro_virement_recu: </strong>".$mic->ro_virement_recu."\n";
-                    }
+            if ($mic->ro_virement_recu && $mic->ro_virement_recu != '') {
+                try {
+                    $m_ca->ro_virement_recu = $mic->makeNumericOrError($mic->ro_virement_recu);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'RO- Virement reçu, ';
+                    $m_error_import->description .= "<strong>ro_virement_recu: </strong>" . $mic->ro_virement_recu . "\n";
                 }
+            }
 
-                // ro_indus_paye
-                if($mic->ro_indus_paye && $mic->ro_indus_paye != ''){
-                    try {
-                        $m_ca->ro_indus_paye = $mic->makeNumericOrError($mic->ro_indus_paye);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'RO - Indus payé , ';
-                        $m_error_import->description .= "<strong>ro_indus_paye: </strong>".$mic->ro_indus_paye."\n";
-                    }
+            // ro_indus_paye
+            if ($mic->ro_indus_paye && $mic->ro_indus_paye != '') {
+                try {
+                    $m_ca->ro_indus_paye = $mic->makeNumericOrError($mic->ro_indus_paye);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'RO - Indus payé , ';
+                    $m_error_import->description .= "<strong>ro_indus_paye: </strong>" . $mic->ro_indus_paye . "\n";
                 }
+            }
 
             // ro_indus_en_attente
-                if($mic->ro_indus_en_attente && $mic->ro_indus_en_attente != ''){
-                    try {
-                        $m_ca->ro_indus_en_attente = $mic->makeNumericOrError($mic->ro_indus_en_attente);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'RO - Indus en attente, ';
-                        $m_error_import->description .= "<strong>ro_indus_en_attente: </strong>".$mic->ro_indus_en_attente."\n";
-                    }
+            if ($mic->ro_indus_en_attente && $mic->ro_indus_en_attente != '') {
+                try {
+                    $m_ca->ro_indus_en_attente = $mic->makeNumericOrError($mic->ro_indus_en_attente);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'RO - Indus en attente, ';
+                    $m_error_import->description .= "<strong>ro_indus_en_attente: </strong>" . $mic->ro_indus_en_attente . "\n";
                 }
+            }
 
             // ro_indus_irrecouvrable
-                if($mic->ro_indus_irrecouvrable && $mic->ro_indus_irrecouvrable != ''){
-                    try {
-                        $m_ca->ro_indus_irrecouvrable = $mic->makeNumericOrError($mic->ro_indus_irrecouvrable);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'RO - Indus irrecouvrable, ';
-                        $m_error_import->description .= "<strong>ro_indus_irrecouvrable: </strong>".$mic->ro_indus_irrecouvrable."\n";
-                    }
+            if ($mic->ro_indus_irrecouvrable && $mic->ro_indus_irrecouvrable != '') {
+                try {
+                    $m_ca->ro_indus_irrecouvrable = $mic->makeNumericOrError($mic->ro_indus_irrecouvrable);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'RO - Indus irrecouvrable, ';
+                    $m_error_import->description .= "<strong>ro_indus_irrecouvrable: </strong>" . $mic->ro_indus_irrecouvrable . "\n";
                 }
+            }
 
             // part_mutuelle
-                if($mic->part_mutuelle && $mic->part_mutuelle != ''){
-                    try {
-                        $m_ca->part_mutuelle = $mic->makeNumericOrError($mic->part_mutuelle);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'Part mutuelle, ';
-                        $m_error_import->description .= "<strong>part_mutuelle: </strong>".$mic->part_mutuelle."\n";
-                    }
+            if ($mic->part_mutuelle && $mic->part_mutuelle != '') {
+                try {
+                    $m_ca->part_mutuelle = $mic->makeNumericOrError($mic->part_mutuelle);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'Part mutuelle, ';
+                    $m_error_import->description .= "<strong>part_mutuelle: </strong>" . $mic->part_mutuelle . "\n";
                 }
+            }
             // rcs_virement
-                if($mic->rcs_virement && $mic->rcs_virement != ''){
-                    try {
-                        $m_ca->rcs_virement = $mic->makeNumericOrError($mic->rcs_virement);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'RC SOINS - Virement, ';
-                        $m_error_import->description .= "<strong>rcs_virement: </strong>".$mic->rcs_virement."\n";
-                    }
+            if ($mic->rcs_virement && $mic->rcs_virement != '') {
+                try {
+                    $m_ca->rcs_virement = $mic->makeNumericOrError($mic->rcs_virement);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'RC SOINS - Virement, ';
+                    $m_error_import->description .= "<strong>rcs_virement: </strong>" . $mic->rcs_virement . "\n";
                 }
+            }
             // rcs_especes
-                if($mic->rcs_especes && $mic->rcs_especes != ''){
-                    try {
-                        $m_ca->rcs_especes = $mic->makeNumericOrError($mic->rcs_especes);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'RC SOINS - Espèces, ';
-                        $m_error_import->description .= "<strong>rcs_especes: </strong>".$mic->rcs_especes."\n";
-                    }
+            if ($mic->rcs_especes && $mic->rcs_especes != '') {
+                try {
+                    $m_ca->rcs_especes = $mic->makeNumericOrError($mic->rcs_especes);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'RC SOINS - Espèces, ';
+                    $m_error_import->description .= "<strong>rcs_especes: </strong>" . $mic->rcs_especes . "\n";
                 }
+            }
             // rcs_especes
-                if($mic->rcs_cb && $mic->rcs_cb!=''){
-                    try {
-                        $m_ca->rcs_cb = $mic->makeNumericOrError($mic->rcs_cb);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'RC SOINS - CB, ';
-                        $m_error_import->description .= "<strong>rcs_especes: </strong>".$mic->rcs_cb."\n";
-                    }
+            if ($mic->rcs_cb && $mic->rcs_cb != '') {
+                try {
+                    $m_ca->rcs_cb = $mic->makeNumericOrError($mic->rcs_cb);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'RC SOINS - CB, ';
+                    $m_error_import->description .= "<strong>rcs_especes: </strong>" . $mic->rcs_cb . "\n";
                 }
+            }
 
             // rcs_cb
-                if($mic->rcs_cb && $mic->rcs_cb != ''){
-                    try {
-                        $m_ca->rcs_cb = $mic->makeNumericOrError($mic->rcs_cb);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'RAC - Part patient, ';
-                        $m_error_import->description .= "<strong>Cotation: </strong>".$mic->cotation."\n";
-                    }
+            if ($mic->rcs_cb && $mic->rcs_cb != '') {
+                try {
+                    $m_ca->rcs_cb = $mic->makeNumericOrError($mic->rcs_cb);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'RAC - Part patient, ';
+                    $m_error_import->description .= "<strong>Cotation: </strong>" . $mic->cotation . "\n";
                 }
+            }
             // rcsd_cheque
-                if($mic->rcsd_cheque && $mic->rcsd_cheque != ''){
-                    try {
-                        $m_ca->rcsd_cheque = $mic->makeNumericOrError($mic->rcsd_cheque);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'RAC - Chèque, ';
-                        $m_error_import->description .= "<strong>Cotation: </strong>".$mic->cotation."\n";
-                    }
+            if ($mic->rcsd_cheque && $mic->rcsd_cheque != '') {
+                try {
+                    $m_ca->rcsd_cheque = $mic->makeNumericOrError($mic->rcsd_cheque);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'RAC - Chèque, ';
+                    $m_error_import->description .= "<strong>Cotation: </strong>" . $mic->cotation . "\n";
                 }
+            }
             // rcsd_especes
-                if($mic->rcsd_especes && $mic->rcsd_especes != ''){
-                    try {
-                        $m_ca->rcsd_especes = $mic->makeNumericOrError($mic->rcsd_especes);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'RAC - Espèces, ';
-                        $m_error_import->description .= "<strong>Cotation: </strong>".$mic->cotation."\n";
-                    }
+            if ($mic->rcsd_especes && $mic->rcsd_especes != '') {
+                try {
+                    $m_ca->rcsd_especes = $mic->makeNumericOrError($mic->rcsd_especes);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'RAC - Espèces, ';
+                    $m_error_import->description .= "<strong>Cotation: </strong>" . $mic->cotation . "\n";
                 }
+            }
             // rcsd_cb
-                if($mic->rcsd_cb && $mic->rcsd_cb != ''){
-                    try {
-                        $m_ca->rcsd_cb = $mic->makeNumericOrError($mic->rcsd_cb);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'RAC - CB, ';
-                        $m_error_import->description .= "<strong>Cotation: </strong>".$mic->cotation."\n";
-                    }
+            if ($mic->rcsd_cb && $mic->rcsd_cb != '') {
+                try {
+                    $m_ca->rcsd_cb = $mic->makeNumericOrError($mic->rcsd_cb);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'RAC - CB, ';
+                    $m_error_import->description .= "<strong>Cotation: </strong>" . $mic->cotation . "\n";
                 }
+            }
             // rac_part_patient
-                if($mic->rac_part_patient && $mic->rac_part_patient != ''){
-                    try {
-                        $m_ca->rac_part_patient = $mic->makeNumericOrError($mic->rac_part_patient);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'Cotation non conforme, ';
-                        $m_error_import->description .= "<strong>Cotation: </strong>".$mic->cotation."\n";
-                    }
+            if ($mic->rac_part_patient && $mic->rac_part_patient != '') {
+                try {
+                    $m_ca->rac_part_patient = $mic->makeNumericOrError($mic->rac_part_patient);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'Cotation non conforme, ';
+                    $m_error_import->description .= "<strong>Cotation: </strong>" . $mic->cotation . "\n";
                 }
+            }
             // rac_cheque
-                if($mic->rac_cheque && $mic->rac_cheque != ''){
-                    try {
-                        $m_ca->rac_cheque = $mic->makeNumericOrError($mic->rac_cheque);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'Cotation non conforme, ';
-                        $m_error_import->description .= "<strong>Cotation: </strong>".$mic->cotation."\n";
-                    }
+            if ($mic->rac_cheque && $mic->rac_cheque != '') {
+                try {
+                    $m_ca->rac_cheque = $mic->makeNumericOrError($mic->rac_cheque);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'Cotation non conforme, ';
+                    $m_error_import->description .= "<strong>Cotation: </strong>" . $mic->cotation . "\n";
                 }
+            }
             // rac_especes
-                if($mic->rac_especes && $mic->rac_especes != ''){
-                    try {
-                        $m_ca->rac_especes = $mic->makeNumericOrError($mic->rac_especes);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'Cotation non conforme, ';
-                        $m_error_import->description .= "<strong>Cotation: </strong>".$mic->cotation."\n";
-                    }
+            if ($mic->rac_especes && $mic->rac_especes != '') {
+                try {
+                    $m_ca->rac_especes = $mic->makeNumericOrError($mic->rac_especes);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'Cotation non conforme, ';
+                    $m_error_import->description .= "<strong>Cotation: </strong>" . $mic->cotation . "\n";
                 }
+            }
             // rac_cb
-                if($mic->rac_cb && $mic->rac_cb != ''){
-                    try {
-                        $m_ca->rac_cb = $mic->makeNumericOrError($mic->rac_cb);
-                    }
-                    catch (Exception $e) {
-                        $m_error_import->error_message .= 'Cotation non conforme, ';
-                        $m_error_import->description .= "<strong>Cotation: </strong>".$mic->cotation."\n";
-                    }
+            if ($mic->rac_cb && $mic->rac_cb != '') {
+                try {
+                    $m_ca->rac_cb = $mic->makeNumericOrError($mic->rac_cb);
+                } catch (Exception $e) {
+                    $m_error_import->error_message .= 'Cotation non conforme, ';
+                    $m_error_import->description .= "<strong>Cotation: </strong>" . $mic->cotation . "\n";
                 }
-                $m_ca->commentaire = trim($mic->commentaire);
-                $m_ca->save();
             }
-            else{
-                $m_error_import->error_message .= 'Dossier "'.$mic->dossier.'" non trouvé.';
-            }
-            if ($m_error_import->error_message != ''){
-                $m_error_import->save();
-                $withErrors = true;
-            }
+            $m_ca->commentaire = trim($mic->commentaire);
+
+
+            $m_ca->save();
+
+        }
+        if ($m_error_import->error_message != '') {
+            $m_error_import->save();
+            $withErrors = true;
         }
         if (!$withErrors)
             return back()->with('success', 'Fichier importé avec succès');
         else
             return back()->with('warning', 'Données importées mais contiennent des erreurs');
     }
+
 
     public function importerDevis(Request $request)
     {

@@ -42,34 +42,24 @@ class V_CaExport implements FromView, WithEvents, WithTitle
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
-                /*
-                $sheet->setCellValue('B2', 'Total Part Sécu');
-                $sheet->setCellValue('C2', '=SUM(J:J)');
-                $sheet->setCellValue('D2', '=SUM(J:J)-SUM(K:K)-SUM(L:L)-SUM(N:N)');
-                $sheet->setCellValue('E2', '=SUM(L:L)');
-                $sheet->setCellValue('F2', '=SUM(M:M)');
-                $sheet->setCellValue('G2', '=SUM(N:N)');
+                $highestRow = $sheet->getHighestRow() + 10;
 
-                $sheet->setCellValue('B3', 'Total Part Mut');
-                $sheet->setCellValue('C3', '=SUM(O:O)');
-                $sheet->setCellValue('D3', '=SUM(O:O)-SUM(P:U)');
-
-                $sheet->setCellValue('B4', 'Total Part patient');
-                $sheet->setCellValue('C4', '=SUM(V:V)');
-                $sheet->setCellValue('D4', '=SUM(V:V)-SUM(W:Y)');
-                */
+                $sheet->getStyle("A11:AA$highestRow")->getFont()->setSize(8);
 
                 $sheet->setCellValue('E5', '=H2/B7');
                 $sheet->getStyle('E5')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_PERCENTAGE_00);
 
-                $sheet->getStyle('A11:A'.$sheet->getHighestRow())
-                    ->getNumberFormat()
-                    ->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
-                $colNumbers = array_merge(['H'], range('J', 'Y'));
-                foreach ($colNumbers as $col) {
-                    $sheet->getStyle($col . '11:' . $col . $sheet->getHighestRow())
+                $colNumbers = ['H', 'J', 'K', 'L', 'M', 'N', '0', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y'];
+                foreach ($colNumbers as $colN) {
+                    $sheet->getStyle($colN . '11:' . $colN . $highestRow)
                         ->getNumberFormat()
                         ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+                }
+                $colDates = ['A', 'AA'];
+                foreach ($colDates as $colDate) {
+                    $sheet->getStyle($colDate . '11:' . $colDate . $highestRow)
+                        ->getNumberFormat()
+                        ->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
                 }
 
                 $columns = range('A', 'Z');
@@ -77,6 +67,8 @@ class V_CaExport implements FromView, WithEvents, WithTitle
                     $sheet->getColumnDimension($column)->setWidth(11.89);
                 }
                 $event->sheet->getDelegate()->freezePane('A11');
+
+                $sheet->getStyle("A11:AA$highestRow")->getFont()->setSize(8);
             },
         ];
     }

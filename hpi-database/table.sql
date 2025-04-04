@@ -375,6 +375,7 @@ CREATE TABLE import_ca_actes_reglements(
     rac_especes TEXT,
     rac_cb TEXT,
     commentaire TEXT,
+    date TEXT,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );

@@ -257,12 +257,15 @@
                             <span class="menu-title">DEVIS & <br>PROTHESE & CHQ</span>
                         </a>
                     </li>
+                @if(\Illuminate\Support\Facades\Auth::user()->role == 'admin' || \Illuminate\Support\Facades\Auth::user()->role == 'responsableCA')
                     <li class="nav-item">
                         <a class="nav-link" href="{{ asset('liste-ca') }}">
                             <i class="mdi mdi-cash-multiple menu-icon"></i>
                             <span class="menu-title">CA</span>
                         </a>
                     </li>
+                @endif
+
 
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#anomalies" aria-expanded="false" aria-controls="ui-basic">
@@ -339,6 +342,12 @@
                     <a class="nav-link" href="{{ asset('modify/mail') }}">
                         <i class="mdi mdi-mail-ru menu-icon"></i>
                         <span class="menu-title">Modifier l'adresse email</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ asset('modify/mdp') }}">
+                        <i class="mdi mdi-key menu-icon"></i>
+                        <span class="menu-title">Mot de passe</span>
                     </a>
                 </li>
             </ul>

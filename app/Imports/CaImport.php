@@ -42,6 +42,7 @@ class CaImport implements ToModel, WithStartRow
             'rac_especes' => $row[23],
             'rac_cb' => $row[24],
             'commentaire' => $row[25],
+            'date' => $row[26],
         ]);
     }
     public function startRow(): int

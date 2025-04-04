@@ -46,7 +46,7 @@ class LoginController extends Controller
         ]);
 
         $user = User::where('code_u', $request->code_u)
-            ->where('is_deleted', 0);
+            ->where('is_deleted', '!=', 1);
         if($user == null){
             return back()->withErrors([
                 'code_u' => 'Code Utilisateur non reconu.',

@@ -12,6 +12,30 @@ use Illuminate\Support\Facades\Hash;
 class GestionUtilisateurController extends Controller
 {
     //
+
+    public function modifierMdp(Request $request){
+        // Validation des données
+        $request->validate([
+            'old_password' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        // Vérifier si l'ancien mot de passe est correct
+        if (!Hash::check($request->old_password, Auth::user()->password)) {
+            return back()->withErrors(['old_password' => 'Ancien mot de passe invalide']);
+        }
+        $user = Auth::user();
+        $user->password = Hash::make($request->password);
+        $user->is_deleted = 0;
+        $user->save();
+        return back()->with('success', 'Mot de passe modifié avec succès.');
+    }
+    public function showModifierMdp(){
+        // Vérifier le mot de passe de l'utilisateur connecté
+        $user = Auth::user();
+        $data['m_user'] = User::where('code_u', $user->code_u)->first();
+        return view('gestion/modifier-mdp')->with($data);
+    }
     public function updateUtilisateur(Request $request, $code_u){
         // Vérifier le mot de passe de l'utilisateur connecté
         if (!Hash::check($request->password_confirmation, Auth::user()->password)) {
@@ -50,11 +74,12 @@ class GestionUtilisateurController extends Controller
             'role' => 'user',
             'email' => $newCodeU.'@gmail.com',
             'password' => Hash::make($validatedData['password']),
+            'is_deleted' => -1,
         ]);
         return back();
     }
     public function showListeUtilisateurs(){
-        $data['utilisateurs'] = User::where('is_deleted', 0)
+        $data['utilisateurs'] = User::where('is_deleted', '!=', 1)
             ->get();
         return view('gestion/utilisateur/liste-user')->with($data);
     }

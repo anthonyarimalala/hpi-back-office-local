@@ -175,6 +175,7 @@
                                 <select class="form-select" id="userRole" name="role">
                                     <option value="admin">Admin</option>
                                     <option value="user">Utilisateur</option>
+                                    <option value="responsableCA">Responsable CA</option>
                                 </select>
                             </div>
                             <div class="mb-3">

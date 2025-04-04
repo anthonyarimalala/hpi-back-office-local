@@ -12,7 +12,7 @@ class L_CaActesReglement extends Model
     use HasFactory;
     protected $table = 'l_ca_actes_reglements';
     protected $fillable = [
-        'id_ca_actes_reglement',
+        'id_ca',
         'praticien',
         'date_derniere_modif',
         'nom_acte',
