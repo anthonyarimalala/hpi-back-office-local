@@ -64,7 +64,6 @@
             <div class="col-md-12">
                 <div class="card shadow-sm">
                     <div class="card-header text-white">
-
                         <div class="d-sm-flex justify-content-between align-items-start">
                             <div>
                                 <h4 class="card-title mb-0" style="color: whitesmoke">ACTES</h4>

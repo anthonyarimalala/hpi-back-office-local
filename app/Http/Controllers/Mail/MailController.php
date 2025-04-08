@@ -50,8 +50,15 @@ class MailController extends Controller
         //echo $email;
         $user = Auth::user();
         $mail_sender = $user->mail_sender;
-        $mail_password = Crypt::decrypt($user->mail_password);
         $mail_name = $user->mail_name;
+
+        if (!$mail_sender || $mail_sender == '') {
+            return back()->withErrors([
+                'mail_sender' => "L'email n'a pas été envoyé.<br>Le champ expéditeur est requis. Veuillez aller dans « Modifier l'adresse mail »."
+            ]);
+
+        }
+
 
 
         /*
@@ -61,15 +68,25 @@ class MailController extends Controller
         Config::set('mail.from.name', $mail_name);
         */
 
-        config([
-            'mail.mailers.smtp.username' => $mail_sender,
-            'mail.mailers.smtp.password' => $mail_password,
-            'mail.from.name' => $mail_name,
-            'mail.from.address' => $mail_sender,
-        ]);
+        try {
+            $mail_password = Crypt::decrypt($user->mail_password);
+            config([
+                'mail.mailers.smtp.username' => $mail_sender,
+                'mail.mailers.smtp.password' => $mail_password,
+                'mail.from.name' => $mail_name,
+                'mail.from.address' => $mail_sender,
+            ]);
 
-        \Illuminate\Support\Facades\Mail::to($email)
-            ->send(new \App\Mail\HelloMail($objet, $message));
+            \Illuminate\Support\Facades\Mail::to($email)
+                ->send(new \App\Mail\HelloMail($objet, $message));
+        }
+        catch (\Exception $exception){
+            return back()->withErrors([
+                'mail_sender' => "L'email n'a pas été envoyé.<br>Une erreur est survenue. Vérifiez votre email ou retapez votre mot de passe.<br>Veuillez aller dans « Modifier l'adresse mail » et vérifier votre email ou retaper votre mot de passe."
+            ]);
+        }
+
+
         return back()->with('success', 'L\'email a bien été envoyé');
 
     }

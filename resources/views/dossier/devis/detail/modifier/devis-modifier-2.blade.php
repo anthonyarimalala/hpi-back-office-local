@@ -36,6 +36,15 @@
             </div>
         </div>
     @endif
+    @error('mail_sender')
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-danger">
+                {!! $message !!}
+            </div>
+        </div>
+    </div>
+    @enderror
 
     <form action="{{ asset('modifier-devis') }}" method="POST">
     @csrf

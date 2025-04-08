@@ -9,7 +9,7 @@
                 #575756 100%);
         }
     </style>
-    <div class="d-sm-flex align-items-center justify-content-between border-bottom pb-3 mb-4">
+    <div class="d-sm-flex align-items-center justify-content-between border-bottom">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
                 <a class="nav-link" id="home-tab" href="{{ asset($v_prothese->dossier.'/devis/'.$v_prothese->id_devis.'/detail') }}" role="tab" aria-controls="overview" aria-selected="false">Devis</a>
@@ -37,7 +37,16 @@
         <div class="col-md-12 grid-margin">
             <div class="card">
                 <div class="card-header text-white">
-                    <h4 class="card-title mb-0" style="color: whitesmoke">Empreintes</h4>
+                    <div class="d-sm-flex justify-content-between align-items-start">
+                        <div>
+                            <h4 class="card-title mb-0" style="color: whitesmoke">Empreintes</h4>
+                        </div>
+                        <div>
+                            <a href="#" class="text-primary">
+                                <i class="mdi mdi-plus mdi-24px">Nouveau</i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

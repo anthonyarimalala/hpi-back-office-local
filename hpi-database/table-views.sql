@@ -43,6 +43,7 @@ SELECT
     emp.date_empreinte,
     emp.date_envoi_labo,
     emp.travail_demande,
+    emp.montant_acte,
     emp.numero_dent,
     emp.observations AS empreinte_observation,
     emp.created_at,

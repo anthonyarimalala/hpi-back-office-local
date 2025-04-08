@@ -30,13 +30,28 @@
                     <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-pen"></i>Modifier</button>
                 </a>
             </div>
+            @if ($errors->has('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ $errors->first('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
         </div>
     </div>
     <div class="row">
         <div class="col-md-12 grid-margin">
             <div class="card">
                 <div class="card-header text-white">
-                    <h4 class="card-title mb-0" style="color: whitesmoke">Empreintes</h4>
+                    <div class="d-sm-flex justify-content-between align-items-start">
+                        <div>
+                            <h4 class="card-title mb-0" style="color: whitesmoke">Empreintes</h4>
+                        </div>
+                        <div>
+                            <a href="{{ asset($v_prothese->dossier.'/prothese/'.$v_prothese->id_devis.'/nouveau-acte') }}" class="text-primary">
+                                <i class="mdi mdi-plus mdi-24px">Nouveau</i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive mt-1"> <!-- Conteneur pour la responsivité -->

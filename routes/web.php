@@ -60,6 +60,7 @@ Route::middleware(['auth', 'role:admin,user,responsableCA'])->group(function () 
     Route::get('devis/modifier/{dossier}', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showModifierDevis']);
 
     // section: prothèse
+    Route::get('{dossier}/prothese/{id_devis}/nouveau-acte', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'showNouveauActe']);
     Route::get('{dossier}/prothese/{id_devis}/detail', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'showProthese']);
     Route::get('{dossier}/prothese/{id_devis}/modifier', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'showModifierProthese']);
     Route::post('modifier-prothese', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'modifierProthese']);

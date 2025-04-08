@@ -109,8 +109,8 @@ class ImportsController extends Controller
                 ->where('nom_acte', $mic->nom_acte)
                 ->whereDate('created_at', $date)
                 ->first();
-            echo '$m_ca_generale->id_ca= '.$m_ca_generale->id. '<br>';
-            echo 'ca: '. '<br>' .$m_ca. '<br>';
+            //echo '$m_ca_generale->id_ca= '.$m_ca_generale->id. '<br>';
+            //echo 'ca: '. '<br>' .$m_ca. '<br>';
 
 
             if (!$m_ca) {
@@ -317,8 +317,6 @@ class ImportsController extends Controller
                 }
             }
             $m_ca->commentaire = trim($mic->commentaire);
-
-
             $m_ca->save();
 
         }

@@ -7,6 +7,7 @@ use App\Models\devis\prothese\ProtheseEmpreinte;
 use App\Models\devis\prothese\ProtheseRetourLabo;
 use App\Models\devis\prothese\ProtheseTravaux;
 use App\Models\devis\prothese\ProtheseTravauxStatus;
+use App\Models\dossier\Dossier;
 use App\Models\hist\H_Prothese;
 use App\Models\views\V_Cheque;
 use App\Models\views\V_Prothese;
@@ -16,6 +17,17 @@ use Illuminate\Support\Facades\Auth;
 class ProtheseController extends Controller
 {
     //
+    public function showNouveauActe($dossier, $id_devis){
+        $m_prothese_empreinte = ProtheseEmpreinte::where('id_devis', $id_devis)->first();
+        if($m_prothese_empreinte == null){
+            return back()->withErrors(['error' => 'Il n\'y a aucun travail demandé dans ce devis. Cliquez d\'abord sur "Modifier" sur modifier et si\'il y\'a encore d\'autres travails à faire vous pouvez cliquer sur "Nouveau Acte".']);
+        }else if($m_prothese_empreinte->travail_demande == ''){
+            return back()->withErrors(['error' => 'Mettez d\'abord un nom dans le 1er acte(travail demandé)']);
+        }
+        $data['m_dossier'] = Dossier::where('dossier', $dossier)->first();
+        $data['status_poses'] = ProtheseTravauxStatus::where('is_deleted', '0')->where('travaux_status', '!=', '')->get();
+        return view()->with($data);
+    }
     public function modifierProthese(Request $request){
         $dossier = $request->input('dossier');
         $id_devis = $request->input('id_devis');
@@ -49,7 +61,6 @@ class ProtheseController extends Controller
             $m_h_prothese->save();
         }
         return redirect()->to($dossier."/prothese/".$id_devis."/detail");
-
     }
     public function showModifierProthese($dossier, $id_devis){
         $data['v_prothese'] = V_Prothese::where('dossier', $dossier)
