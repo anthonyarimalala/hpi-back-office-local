@@ -12,6 +12,7 @@ use App\Models\devis\DevisAccordPecStatus;
 use App\Models\devis\DevisAppelsEtMail;
 use App\Models\devis\DevisEtat;
 use App\Models\devis\DevisReglement;
+use App\Models\devis\prothese\ProtheseEmpreinte;
 use App\Models\devis\prothese\ProtheseTravauxStatus;
 use App\Models\dossier\Dossier;
 use App\Models\dossier\DossierStatus;
@@ -240,6 +241,9 @@ class DevisController extends Controller
         // pour l'envoi mail
         $devis_appels_mails = DevisAppelsEtMail::firstOrNew(['id_devis'=>$id_devis]);
         $devis_appels_mails->save();
+        $prothese_empreintes = new ProtheseEmpreinte();
+        $prothese_empreintes->id_devis = $id_devis;
+        $prothese_empreintes->save();
         return redirect()->to($dossier.'/devis/'.$id_devis.'/detail');
     }
     public function creerDevis(Request $request)
@@ -282,6 +286,9 @@ class DevisController extends Controller
             $m_h_devis->save();
             $devis_appels_mails = DevisAppelsEtMail::firstOrNew(['id_devis'=>$id_devis]);
             $devis_appels_mails->save();
+            $prothese_empreintes = new ProtheseEmpreinte();
+            $prothese_empreintes->id_devis = $id_devis;
+            $prothese_empreintes->save();
             return redirect()->to($dossier.'/details')->with('success', 'Le devis a été ajouté avec succès.');
         } catch (\Exception $e) {
             // print($e->getMessage());

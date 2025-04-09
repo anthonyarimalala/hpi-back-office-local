@@ -27,6 +27,12 @@
         <div class="col-12 text-center">
             <h1 class="display-5">Modifier Prothèse - Dossier: {{ $v_prothese->dossier }}</h1>
         </div>
+        @if ($errors->has('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ $errors->first('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
     </div>
 
     <form action="{{ asset('modifier-prothese') }}" method="POST">
@@ -42,8 +48,8 @@
                             <h4 class="card-title mb-0" style="color: whitesmoke">Empreintes</h4>
                         </div>
                         <div>
-                            <a href="#" class="text-primary">
-                                <i class="mdi mdi-plus mdi-24px">Nouveau</i>
+                            <a href="{{ asset($v_prothese->dossier.'/prothese/'.$v_prothese->id_devis.'/nouveau-acte') }}" class="text-primary">
+                                <i class="mdi mdi-plus mdi-24px">Ajouter un acte(travail demandé)</i>
                             </a>
                         </div>
                     </div>

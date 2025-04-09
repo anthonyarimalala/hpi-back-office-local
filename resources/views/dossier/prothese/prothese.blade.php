@@ -48,7 +48,7 @@
                         </div>
                         <div>
                             <a href="{{ asset($v_prothese->dossier.'/prothese/'.$v_prothese->id_devis.'/nouveau-acte') }}" class="text-primary">
-                                <i class="mdi mdi-plus mdi-24px">Nouveau</i>
+                                <i class="mdi mdi-plus mdi-24px">Ajouter un acte(travail demandé)</i>
                             </a>
                         </div>
                     </div>

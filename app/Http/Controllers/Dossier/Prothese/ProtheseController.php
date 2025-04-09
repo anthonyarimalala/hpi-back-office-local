@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dossier\Prothese;
 
 use App\Http\Controllers\Controller;
+use App\Models\devis\Devis;
 use App\Models\devis\prothese\ProtheseEmpreinte;
 use App\Models\devis\prothese\ProtheseRetourLabo;
 use App\Models\devis\prothese\ProtheseTravaux;
@@ -24,9 +25,9 @@ class ProtheseController extends Controller
         }else if($m_prothese_empreinte->travail_demande == ''){
             return back()->withErrors(['error' => 'Mettez d\'abord un nom dans le 1er acte(travail demandé)']);
         }
-        $data['m_dossier'] = Dossier::where('dossier', $dossier)->first();
+        $data['m_devis'] = Devis::where('id', $id_devis)->first();
         $data['status_poses'] = ProtheseTravauxStatus::where('is_deleted', '0')->where('travaux_status', '!=', '')->get();
-        return view()->with($data);
+        return view('dossier/prothese/nouveau/nouveau-acte')->with($data);
     }
     public function modifierProthese(Request $request){
         $dossier = $request->input('dossier');
