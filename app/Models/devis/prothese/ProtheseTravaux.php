@@ -11,14 +11,12 @@ class ProtheseTravaux extends Model
     use HasFactory;
     protected $table = 'prothese_travaux';
     protected $fillable = [
-        'id_devis'
+        'id_acte'
     ];
-    public static function createOrUpdateTravaux($m_h_prothese, $id_devis, $date_pose_prevue, $id_pose_statut, $date_pose_reel, $organisme_payeur, $montant_encaisse, $date_controle_paiement, &$withChangeProthese)
+    public static function createOrUpdateTravaux($m_h_prothese, $id_acte, $date_pose_prevue, $id_pose_statut, $date_pose_reel, $organisme_payeur, $montant_encaisse, $date_controle_paiement, &$withChangeProthese)
     {
-
-
         // Recherche ou création de l'empreinte
-        $travaux = self::firstOrNew(['id_devis' => $id_devis]);
+        $travaux = self::firstOrNew(['id_acte' => $id_acte]);
         $m_ancien_pose_status = ProtheseTravauxStatus::find($travaux->id_pose_statut);
         $m_nouveau_pose_status = ProtheseTravauxStatus::find($id_pose_statut);
 

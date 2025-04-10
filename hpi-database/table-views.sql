@@ -39,6 +39,7 @@ SELECT
     de.id AS id_devis_etat,
     de.etat,
     de.couleur,
+    emp.id AS id_acte,
     emp.laboratoire,
     emp.date_empreinte,
     emp.date_envoi_labo,
@@ -74,8 +75,8 @@ FROM devis d
          LEFT JOIN devis_reglements dr ON d.id = dr.id_devis
          LEFT JOIN devis_etats de ON d.id_devis_etat = de.id
          LEFT JOIN prothese_empreintes emp ON d.id = emp.id_devis
-         LEFT JOIN prothese_retour_labos rl ON d.id = rl.id_devis
-         LEFT JOIN prothese_travaux tra ON d.id = tra.id_devis
+         LEFT JOIN prothese_retour_labos rl ON emp.id = rl.id_acte
+         LEFT JOIN prothese_travaux tra ON emp.id = tra.id_acte
          LEFT JOIN info_cheques ic ON d.id = ic.id_devis
          LEFT JOIN prothese_travaux_status pts ON tra.id_pose_statut = pts.id;
 
@@ -101,11 +102,13 @@ FROM devis d
 CREATE VIEW v_protheses as
 SELECT
     dev.dossier,
-    dev.id as id_devis,
+    dev.id AS id_devis,
+    emp.id AS id_acte,
     emp.laboratoire,
     emp.date_empreinte,
     emp.date_envoi_labo,
     emp.travail_demande,
+    emp.montant_acte,
     emp.numero_dent,
     emp.observations,
     emp.created_at,
@@ -123,9 +126,9 @@ SELECT
 FROM
     devis dev
         LEFT JOIN prothese_empreintes emp ON dev.id = emp.id_devis
-        LEFT JOIN prothese_retour_labos rl ON dev.id = rl.id_devis
-        LEFT JOIN prothese_travaux tra ON dev.id = tra.id_devis
-       LEFT JOIN prothese_travaux_status pts ON tra.id_pose_statut = pts.id;
+        LEFT JOIN prothese_retour_labos rl ON emp.id = rl.id_acte
+        LEFT JOIN prothese_travaux tra ON emp.id = tra.id_acte
+        LEFT JOIN prothese_travaux_status pts ON tra.id_pose_statut = pts.id;
 
 CREATE OR REPLACE VIEW v_ca_actes_reglements AS
 SELECT

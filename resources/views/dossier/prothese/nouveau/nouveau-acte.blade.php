@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <form action="{{ asset('modifier-prothese') }}" method="POST">
+    <form action="{{ asset($m_devis->dossier.'/prothese/'.$m_devis->id.'/acte'.$id_acte.'/nouveau-acte') }}" method="POST">
         @csrf
         <input name="dossier" value="{{ $m_devis->dossier }}" hidden>
         <input name="id_devis" value="{{ $m_devis->id }}" hidden>
@@ -36,18 +36,30 @@
                                     <th>Date Empreinte</th>
                                     <th>Date Envoi Labo</th>
                                     <th>Travail Demandé</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td><input type="text" class="form-control" name="laboratoire" value="{{ $v_prothese->laboratoire }}" placeholder="Laboratoire" /></td>
+                                    <td><input type="date" class="form-control" name="date_empreinte" value="{{ $v_prothese->date_empreinte ? \Carbon\Carbon::parse($v_prothese->date_empreinte)->format('Y-m-d'):'' }}" placeholder="Date Empreinte" /></td>
+                                    <td><input type="date" class="form-control" name="date_envoi_labo" value="{{ $v_prothese->date_envoi_labo ? \Carbon\Carbon::parse($v_prothese->date_envoi_labo)->format('Y-m-d'):'' }}" placeholder="Date Envoi Labo" /></td>
+                                    <td><textarea class="form-control" name="travail_demande" rows="3" style="height: 100px" placeholder="Travail demandés">{{ $v_prothese->travail_demande }}</textarea></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>Montant</th>
                                     <th>Numéro Dent</th>
                                     <th>Observations</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="text" class="form-control" name="laboratoire" value="" placeholder="Laboratoire" /></td>
-                                    <td><input type="date" class="form-control" name="date_empreinte" value="" placeholder="Date Empreinte" /></td>
-                                    <td><input type="date" class="form-control" name="date_envoi_labo" value="" placeholder="Date Envoi Labo" /></td>
-                                    <td><textarea class="form-control" name="travail_demande" rows="3" style="height: 100px" placeholder="Travail demandés"></textarea></td>
-                                    <td><textarea class="form-control" name="numero_dent" rows="3" style="height: 100px" placeholder="Numéro Dent"></textarea></td>
-                                    <td><textarea class="form-control" name="observations" rows="3" style="height: 100px" placeholder="Observations"></textarea></td>
+                                    <td><input type="number" class="form-control" step="0.01" name="montant_acte" value="" placeholder="Montant" min="0"/></td>
+                                    <td><textarea class="form-control" name="numero_dent" rows="3" style="height: 100px" placeholder="Numéro Dent">{{ $v_prothese->numero_dent }}</textarea></td>
+                                    <td><textarea class="form-control" name="observations" rows="3" style="height: 100px" placeholder="Observations">{{ $v_prothese->observations }}</textarea></td>
                                 </tr>
                                 </tbody>
                             </table>

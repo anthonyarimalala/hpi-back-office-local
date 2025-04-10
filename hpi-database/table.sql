@@ -156,7 +156,7 @@
 
     CREATE TABLE prothese_retour_labos(
         id SERIAL PRIMARY KEY,
-        id_devis INTEGER REFERENCES devis(id),
+        id_acte INTEGER REFERENCES prothese_empreintes(id) NOT NULL,
         date_livraison DATE,
         numero_suivi VARCHAR(20),
         numero_facture_labo VARCHAR(20),
@@ -174,7 +174,7 @@
 
     CREATE TABLE prothese_travaux(
         id SERIAL PRIMARY KEY,
-        id_devis INTEGER REFERENCES devis(id),
+        id_acte INTEGER REFERENCES prothese_empreintes(id) NOT NULL,
         date_pose_prevue DATE,
         id_pose_statut INTEGER REFERENCES prothese_travaux_status(id),
         date_pose_reel DATE,

@@ -106,7 +106,7 @@ class DevisController extends Controller
         DB::delete('DELETE FROM devis WHERE id = ?', [$id_devis]);
         return back();
     }
-    public function modifierDevis(Request $request)
+    public function modifierDevis(Request $request, $id_acte)
     {
         try {
             // table: devis
@@ -169,7 +169,8 @@ class DevisController extends Controller
             if ($withChange) $m_h_devis->save();
             return redirect()->route('devis.detail', [
                 'dossier' => $m_devis->dossier,    // Remplacez par la valeur réelle de $dossier
-                'id_devis' => $id_devis      // Remplacez par la valeur réelle de $id_devis
+                'id_devis' => $id_devis,      // Remplacez par la valeur réelle de $id_devis
+                'id_acte' => $id_acte,
             ])->with('success', 'Le devis a été modifié avec succès.');
 
         } catch (\Exception $e) {
@@ -178,17 +179,18 @@ class DevisController extends Controller
         }
     }
 
-    public function showModifierDevis($dossier, $id_devis){
+    public function showModifierDevis($dossier, $id_devis, $id_acte){
         $data['v_devis'] = V_Devis::where('dossier',$dossier)
             ->where('id_devis', $id_devis)
             ->first();
         $data['etat_devis'] = DevisEtat::all();
         $data['devis_accord_pecs_status'] = DevisAccordPecStatus::all();
+        $data['id_acte'] = $id_acte;
         return view('dossier/devis/detail/modifier/devis-modifier-2')->with($data);
     }
 
 
-    public function getDevis($dossier, $id_devis){
+    public function getDevis($dossier, $id_devis, $id_acte){
         $data['v_devis'] = V_Devis::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
             ->first();
@@ -197,6 +199,7 @@ class DevisController extends Controller
             ->orderBy('created_at', 'desc')
             ->limit(7)
             ->get();
+        $data['id_acte'] = $id_acte;
         return view('dossier/devis/detail/devis')->with($data);
     }
 

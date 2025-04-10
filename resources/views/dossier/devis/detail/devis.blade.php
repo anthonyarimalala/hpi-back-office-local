@@ -15,17 +15,17 @@
                 <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#devis" role="tab" aria-controls="overview" aria-selected="true">Devis</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="profile-tab" href="{{ asset($v_devis->dossier.'/prothese/'.$v_devis->id_devis.'/detail') }}" role="tab" aria-selected="false">Prothèse</a>
+                <a class="nav-link" id="profile-tab" href="{{ asset($v_devis->dossier.'/prothese/'.$v_devis->id_devis.'/acte'.$id_acte.'/detail') }}" role="tab" aria-selected="false">Prothèse</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="contact-tab" href="{{ asset($v_devis->dossier.'/cheque/'.$v_devis->id_devis.'/detail') }}" role="tab" aria-selected="false">Chèque</a>
+                <a class="nav-link" id="contact-tab" href="{{ asset($v_devis->dossier.'/cheque/'.$v_devis->id_devis.'/acte'.$id_acte.'/detail') }}" role="tab" aria-selected="false">Chèque</a>
             </li>
         </ul>
     </div>
     <div class="row mb-4">
         <div class="col-12 d-flex align-items-center justify-content-center">
             <h1 class="display-4 me-3">Devis dossier: {{ $v_devis->dossier }}</h1>
-            <a href="{{ asset($v_devis->dossier.'/devis/'.$v_devis->id_devis.'/modifier') }}">
+            <a href="{{ asset($v_devis->dossier.'/devis/'.$v_devis->id_devis.'/acte'.$id_acte.'/modifier') }}">
                 <button class="btn btn-primary btn-lg text-white" type="button"><i class="mdi mdi-pen"></i>Modifier</button>
             </a>
         </div>

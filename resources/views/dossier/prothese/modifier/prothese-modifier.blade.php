@@ -12,13 +12,13 @@
     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link" id="home-tab" href="{{ asset($v_prothese->dossier.'/devis/'.$v_prothese->id_devis.'/detail') }}" role="tab" aria-controls="overview" aria-selected="false">Devis</a>
+                <a class="nav-link" id="home-tab" href="{{ asset($v_prothese->dossier.'/devis/'.$v_prothese->id_devis.'/acte'.$id_acte.'/detail') }}" role="tab" aria-controls="overview" aria-selected="false">Devis</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#prothese" role="tab" aria-selected="true">Prothèse</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="contact-tab" href="{{ asset($v_prothese->dossier.'/cheque/'.$v_prothese->id_devis.'/detail') }}" role="tab" aria-selected="false">Chèque</a>
+                <a class="nav-link" id="contact-tab" href="{{ asset($v_prothese->dossier.'/cheque/'.$v_prothese->id_devis.'/acte'.$id_acte.'/detail') }}" role="tab" aria-selected="false">Chèque</a>
             </li>
         </ul>
     </div>
@@ -35,7 +35,7 @@
         @endif
     </div>
 
-    <form action="{{ asset('modifier-prothese') }}" method="POST">
+    <form action="{{ asset('modifier-prothese/acte'.$id_acte) }}" method="POST">
         @csrf
         <input name="dossier" value="{{ $v_prothese->dossier }}" hidden>
         <input name="id_devis" value="{{ $v_prothese->id_devis }}" hidden>
@@ -48,7 +48,7 @@
                             <h4 class="card-title mb-0" style="color: whitesmoke">Empreintes</h4>
                         </div>
                         <div>
-                            <a href="{{ asset($v_prothese->dossier.'/prothese/'.$v_prothese->id_devis.'/nouveau-acte') }}" class="text-primary">
+                            <a href="{{ asset($v_prothese->dossier.'/prothese/'.$v_prothese->id_devis.'/acte'.$id_acte.'/nouveau-acte') }}" class="text-primary">
                                 <i class="mdi mdi-plus mdi-24px">Ajouter un acte(travail demandé)</i>
                             </a>
                         </div>
@@ -63,8 +63,6 @@
                                 <th>Date Empreinte</th>
                                 <th>Date Envoi Labo</th>
                                 <th>Travail Demandé</th>
-                                <th>Numéro Dent</th>
-                                <th>Observations</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -73,6 +71,20 @@
                                 <td><input type="date" class="form-control" name="date_empreinte" value="{{ $v_prothese->date_empreinte ? \Carbon\Carbon::parse($v_prothese->date_empreinte)->format('Y-m-d'):'' }}" placeholder="Date Empreinte" /></td>
                                 <td><input type="date" class="form-control" name="date_envoi_labo" value="{{ $v_prothese->date_envoi_labo ? \Carbon\Carbon::parse($v_prothese->date_envoi_labo)->format('Y-m-d'):'' }}" placeholder="Date Envoi Labo" /></td>
                                 <td><textarea class="form-control" name="travail_demande" rows="3" style="height: 100px" placeholder="Travail demandés">{{ $v_prothese->travail_demande }}</textarea></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Montant</th>
+                                <th>Numéro Dent</th>
+                                <th>Observations</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><input type="number" class="form-control" step="0.01" name="montant_acte" value="" placeholder="Montant" min="0"/></td>
                                 <td><textarea class="form-control" name="numero_dent" rows="3" style="height: 100px" placeholder="Numéro Dent">{{ $v_prothese->numero_dent }}</textarea></td>
                                 <td><textarea class="form-control" name="observations" rows="3" style="height: 100px" placeholder="Observations">{{ $v_prothese->observations }}</textarea></td>
                             </tr>

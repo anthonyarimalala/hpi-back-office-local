@@ -12,13 +12,13 @@ class ProtheseRetourLabo extends Model
 
     protected $table = 'prothese_retour_labos';
     protected $fillable = [
-        'id_devis'
+        'id_acte'
     ];
 
-    public static function createOrUpdateEmpreinte($m_h_prothese, $id_devis, $date_livraison, $numero_suivi, $numero_facture_labo, &$withChangeProthese)
+    public static function createOrUpdateEmpreinte($m_h_prothese, $id_acte, $date_livraison, $numero_suivi, $numero_facture_labo, &$withChangeProthese)
     {
         // Recherche ou création de l'empreinte
-        $retour_labo = self::firstOrNew(['id_devis' => $id_devis]);
+        $retour_labo = self::firstOrNew(['id_acte' => $id_acte]);
         if (($retour_labo->date_livraison ? Carbon::parse($retour_labo->date_livraison)->format('Y-m-d') : '') != $date_livraison) {
             $m_h_prothese->action .= "<strong>Date livraison:</strong> " . ($retour_labo->date_livraison ? Carbon::parse($retour_labo->date_livraison)->format('d-m-Y') : '...') . " => " . ($date_livraison ? Carbon::parse($date_livraison)->format('d-m-Y') : '...') . "\n";
             $retour_labo->date_livraison = $date_livraison;
@@ -36,12 +36,9 @@ class ProtheseRetourLabo extends Model
             $retour_labo->numero_facture_labo = $numero_facture_labo;
             $withChangeProthese = true;
         }
-
-
-
+        //echo '$retour_labo = '. $retour_labo."\n";
         // Enregistrement de l'empreinte (création ou mise à jour)
         $retour_labo->save();
-
         return $retour_labo;
     }
 }

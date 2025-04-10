@@ -14,6 +14,13 @@ class V_Prothese extends Model
 
 
 
+    public function getMontantActe()
+    {
+        if ($this->montant_acte == null){
+            return '...';
+        }
+        return $this->montant_acte;
+    }
     public function getDossier()
     {
         if ($this->dossier == null) {

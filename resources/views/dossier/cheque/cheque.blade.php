@@ -12,10 +12,10 @@
     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link" id="home-tab" href="{{ asset($v_cheque->dossier.'/devis/'.$v_cheque->id_devis.'/detail') }}" role="tab" aria-controls="overview" aria-selected="false">Devis</a>
+                <a class="nav-link" id="home-tab" href="{{ asset($v_cheque->dossier.'/devis/'.$v_cheque->id_devis.'/acte'.$id_acte.'/detail') }}" role="tab" aria-controls="overview" aria-selected="false">Devis</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="profile-tab" href="{{ asset($v_cheque->dossier.'/prothese/'.$v_cheque->id_devis.'/detail') }}" role="tab" aria-selected="false">Prothèse</a>
+                <a class="nav-link" id="profile-tab" href="{{ asset($v_cheque->dossier.'/prothese/'.$v_cheque->id_devis.'/acte'.$id_acte.'/detail') }}" role="tab" aria-selected="false">Prothèse</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" id="contact-tab" data-bs-toggle="tab" href="#cheque" role="tab" aria-selected="true">Chèque</a>
@@ -26,7 +26,7 @@
         <div class="col-12 text-center">
             <h1 class="display-4">Chèque dossier: {{ $v_cheque->dossier }}</h1>
             <div>
-                <a href="{{ asset($v_cheque->dossier.'/cheque/'.$v_cheque->id_devis.'/modifier') }}">
+                <a href="{{ asset($v_cheque->dossier.'/cheque/'.$v_cheque->id_devis.'/acte'.$id_acte.'/modifier') }}">
                     <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-pen"></i>Modifier</button>
                 </a>
             </div>

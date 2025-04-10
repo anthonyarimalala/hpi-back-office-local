@@ -15,10 +15,10 @@
                 <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#devis" role="tab" aria-controls="overview" aria-selected="true">Devis</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="profile-tab" href="{{ asset($v_devis->dossier.'/prothese/'.$v_devis->id_devis.'/detail') }}" role="tab" aria-selected="false">Prothèse</a>
+                <a class="nav-link" id="profile-tab" href="{{ asset($v_devis->dossier.'/prothese/'.$v_devis->id_devis.'/acte'.$id_acte.'/detail') }}" role="tab" aria-selected="false">Prothèse</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="contact-tab" href="{{ asset($v_devis->dossier.'/cheque/'.$v_devis->id_devis.'/detail') }}" role="tab" aria-selected="false">Chèque</a>
+                <a class="nav-link" id="contact-tab" href="{{ asset($v_devis->dossier.'/cheque/'.$v_devis->id_devis.'/acte'.$id_acte.'/detail') }}" role="tab" aria-selected="false">Chèque</a>
             </li>
         </ul>
     </div>
@@ -46,7 +46,7 @@
     </div>
     @enderror
 
-    <form action="{{ asset('modifier-devis') }}" method="POST">
+    <form action="{{ asset('modifier-devis/acte'.$id_acte) }}" method="POST">
     @csrf
     <label>
         <input type="text" name="id_devis" value="{{ $v_devis->id_devis }}" hidden>

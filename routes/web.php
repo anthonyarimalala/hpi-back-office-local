@@ -46,12 +46,12 @@ Route::middleware(['auth', 'role:admin,user,responsableCA'])->group(function () 
 
     // section: devis
     Route::get('deleteDevis/{id_devis}', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'deleteDevis'])->name('delete.devis');
-    Route::post('modifier-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'modifierDevis']);
-    Route::get('{dossier}/devis/{id_devis}/modifier', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showModifierDevis']);
+    Route::post('modifier-devis/acte{id_acte}', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'modifierDevis']);
+    Route::get('{dossier}/devis/{id_devis}/acte{id_acte}/modifier', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showModifierDevis']);
     Route::get('getFilterListeDevis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getFilterListeDevis']);
     Route::get('reinitializeFilterListeDevis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'reinitializeFilterListeDevis']);
     Route::get('liste/devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getAllListeDevis']);
-    Route::get('{dossier}/devis/{id_devis}/detail', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getDevis'])->name('devis.detail');;
+    Route::get('{dossier}/devis/{id_devis}/acte{id_acte}/detail', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getDevis'])->name('devis.detail');;
     Route::get('{dossier}/nouveau-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'nouveauDevis']);
     Route::post('{dossier}/nouveau-devis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'creerDevis']);
     Route::get('devis/nouveau', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showNouveauDevis']);
@@ -60,15 +60,16 @@ Route::middleware(['auth', 'role:admin,user,responsableCA'])->group(function () 
     Route::get('devis/modifier/{dossier}', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showModifierDevis']);
 
     // section: prothèse
-    Route::get('{dossier}/prothese/{id_devis}/nouveau-acte', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'showNouveauActe']);
-    Route::get('{dossier}/prothese/{id_devis}/detail', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'showProthese']);
-    Route::get('{dossier}/prothese/{id_devis}/modifier', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'showModifierProthese']);
-    Route::post('modifier-prothese', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'modifierProthese']);
+    Route::post('{dossier}/prothese/{id_devis}/acte{id_acte}/nouveau-acte', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'nouveauActe']);
+    Route::get('{dossier}/prothese/{id_devis}/acte{id_acte}/nouveau-acte', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'showNouveauActe']);
+    Route::get('{dossier}/prothese/{id_devis}/acte{id_acte}/detail', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'showProthese']);
+    Route::get('{dossier}/prothese/{id_devis}/acte{id_acte}/modifier', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'showModifierProthese']);
+    Route::post('modifier-prothese/acte{id_acte}', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class, 'modifierProthese']);
 
     // section: chèque
-    Route::get('{dossier}/cheque/{id_devis}/detail', [\App\Http\Controllers\Dossier\Cheque\ChequeController::class, 'showCheque'])->name('cheque.detail');
-    Route::get('{dossier}/cheque/{id_devis}/modifier', [\App\Http\Controllers\Dossier\Cheque\ChequeController::class, 'showModifierCheque']);
-    Route::post('modifier-cheque', [\App\Http\Controllers\Dossier\Cheque\ChequeController::class, 'modifierCheque']);
+    Route::get('{dossier}/cheque/{id_devis}/acte{id_acte}/detail', [\App\Http\Controllers\Dossier\Cheque\ChequeController::class, 'showCheque'])->name('cheque.detail');
+    Route::get('{dossier}/cheque/{id_devis}/acte{id_acte}/modifier', [\App\Http\Controllers\Dossier\Cheque\ChequeController::class, 'showModifierCheque']);
+    Route::post('modifier-cheque/acte{id_acte}', [\App\Http\Controllers\Dossier\Cheque\ChequeController::class, 'modifierCheque']);
 
     Route::post('saveTravauxDevis', [\App\Http\Controllers\Autre\InfoChequeTravauxDevisController::class, 'saveTravauxDevis']);
     Route::post('deleteTravauxDevis/{travaux_sur_devis}', [\App\Http\Controllers\Autre\InfoChequeTravauxDevisController::class, 'deleteTravauxDevis']);

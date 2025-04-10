@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 class ChequeController extends Controller
 {
     //
-    public function modifierCheque(Request $request)
+    public function modifierCheque(Request $request, $id_acte)
     {
 
         // Récupérer les valeurs du formulaire
@@ -55,9 +55,9 @@ class ChequeController extends Controller
 
         //print($dossier.' fd');
         // Retourner une réponse ou rediriger
-        return redirect()->to($dossier."/cheque/{$m_cheque->id_devis}/detail")->with('success', 'Chèque mis à jour avec succès');
+        return redirect()->to($dossier."/cheque/{$m_cheque->id_devis}/acte{$id_acte}/detail")->with('success', 'Chèque mis à jour avec succès');
     }
-    public function showModifierCheque($dossier, $id_devis)
+    public function showModifierCheque($dossier, $id_devis, $id_acte)
     {
         $data['v_cheque'] = V_Cheque::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
@@ -65,9 +65,10 @@ class ChequeController extends Controller
         $data['nature_cheques'] = InfoChequeNatureCheque::where('is_deleted', 0)->where('nature_cheque','!=','')->get();
         $data['travaux_sur_devis'] = InfoChequeTravauxDevis::where('is_deleted', 0)->where('travaux_sur_devis','!=','')->get();
         $data['situation_cheques'] = InfoChequeSituationCheque::where('is_deleted', 0)->where('situation_cheque','!=','')->get();
+        $data['id_acte'] = $id_acte;
         return view('dossier/cheque/modifier/cheque-modifier')->with($data);
     }
-    public function showCheque($dossier, $id_devis)
+    public function showCheque($dossier, $id_devis, $id_acte)
     {
         $data['v_cheque'] = V_Cheque::where('dossier', $dossier)
             ->where('id_devis', $id_devis)
@@ -77,6 +78,7 @@ class ChequeController extends Controller
             ->orderBy('created_at', 'desc')
             ->limit(7)
             ->get();
+        $data['id_acte'] = $id_acte;
         return view('dossier/cheque/cheque')->with($data);
     }
 }
