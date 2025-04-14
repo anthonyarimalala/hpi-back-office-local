@@ -7,8 +7,6 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Row;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
-use PhpOffice\PhpSpreadsheet\Cell\Cell;
 
 class DevisImport implements ToModel, WithStartRow
 {
@@ -82,26 +80,27 @@ class DevisImport implements ToModel, WithStartRow
                 'date_empreinte' => $row[31],
                 'date_envoi_labo' => $row[32],
                 'travail_demande' => $row[33],
-                'numero_dent' => $row[34],
-                'empreinte_observation' => $row[35],
-                'date_livraison' => $row[36],
-                'numero_suivi' => $row[37],
-                'numero_facture_labo' => $row[38],
-                'date_pose_prevue' => $row[39],
-                'pose_statut' => $row[40],
-                'date_pose_reel' => $row[41],
-                'organisme_payeur' => $row[42],
-                'montant_encaisse' => $row[43],
-                'date_controle_paiement' => $row[44],
-                'numero_cheque' => $row[45],
-                'montant_cheque' => $row[46],
-                'nom_document' => $row[47],
-                'date_encaissement_cheque' => $row[48],
-                'date_1er_acte' => $row[49],
-                'nature_cheque' => $row[50],
-                'travaux_sur_devis' => $row[51],
-                'situation_cheque' => $row[52],
-                'cheque_observation' => $row[53]
+                'montant_acte' => $row[34],
+                'numero_dent' => $row[35],
+                'empreinte_observation' => $row[36],
+                'date_livraison' => $row[37],
+                'numero_suivi' => $row[38],
+                'numero_facture_labo' => $row[39],
+                'date_pose_prevue' => $row[40],
+                'pose_statut' => $row[41],
+                'date_pose_reel' => $row[42],
+                'organisme_payeur' => $row[43],
+                'montant_encaisse' => $row[44],
+                'date_controle_paiement' => $row[45],
+                'numero_cheque' => $row[46],
+                'montant_cheque' => $row[47],
+                'nom_document' => $row[48],
+                'date_encaissement_cheque' => $row[49],
+                'date_1er_acte' => $row[50],
+                'nature_cheque' => $row[51],
+                'travaux_sur_devis' => $row[52],
+                'situation_cheque' => $row[53],
+                'cheque_observation' => $row[54]
 
             ]);
         } catch (\Exception $e) {

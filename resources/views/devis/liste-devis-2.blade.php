@@ -135,7 +135,7 @@
                                             style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">
                                             APPELS & MAIL
                                         </th>
-                                        <th class="infoEmpreinte" colspan="6"
+                                        <th class="infoEmpreinte" colspan="7"
                                             style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">
                                             INFO D'EMPREINTE
                                         </th>
@@ -232,6 +232,8 @@
                                         <th class="infoEmpreinte">Date d'envoi au labo</th>
                                         <!-- 23 -->
                                         <th class="infoEmpreinte">Travail demandé</th>
+                                        <!-- 23 -->
+                                        <th class="infoEmpreinte">Montant Acte</th>
                                         <!-- 24 -->
                                         <th class="infoEmpreinte">N° dent</th>
                                         <!-- 25 -->
@@ -419,6 +421,11 @@
                                             <td class="infoEmpreinte"
                                                 ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
                                                 style="cursor:pointer;">
+                                                {{ $devis->getMontantActe() }}
+                                            </td>
+                                            <td class="infoEmpreinte"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
                                                 {{ $devis->getNumero_dent() }}
                                             </td>
                                             <td class="infoEmpreinte"
@@ -524,7 +531,7 @@
                                                     ...
                                                 @endif
                                             </td>
-                                            <td ondblclick="event.stopPropagation()"><a href="{{ asset('deleteDevis/'.$devis->id_devis) }}" onclick="return deleteItem('<?= $devis->dossier ?>', '<?= $devis->date ?>')">Supprimer</a></td>
+                                            <td ondblclick="event.stopPropagation()"><a href="{{ asset('deleteDevis/'.$devis->id_devis.'/'.$devis->id_acte) }}" onclick="return deleteItem('<?= $devis->dossier ?>', '<?= $devis->date ?>')">Supprimer</a></td>
                                         </tr>
                                     @endforeach
                                     </tbody>

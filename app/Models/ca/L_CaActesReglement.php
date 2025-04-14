@@ -2,6 +2,7 @@
 
 namespace App\Models\ca;
 
+use App\Models\views\V_Devis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,7 @@ class L_CaActesReglement extends Model
     protected $table = 'l_ca_actes_reglements';
     protected $fillable = [
         'id_ca',
+        'id_acte',
         'praticien',
         'date_derniere_modif',
         'nom_acte',
@@ -36,6 +38,33 @@ class L_CaActesReglement extends Model
         'rac_cb',
         'commentaire'
     ];
+
+    public static function createCaAfterDevis($id_devis, $id_acte, $acte, $montant_acte, $changement_praticien=true, $changement_acte=true, $changement_montant = true){
+        $ca_generale = CaGeneral::where('id_devis', $id_devis)->first();
+        $devis = V_Devis::where('id_devis', $id_devis)->first();
+        if (!$ca_generale) {
+            # code...
+            $ca_generale = new CaGeneral();
+            $ca_generale->id_devis = $id_devis;
+            $ca_generale->dossier = $devis->dossier;
+            $ca_generale->nom_patient = $devis->nom;
+            $ca_generale->statut = $devis->status;
+            $ca_generale->mutuelle = $devis->mutuelle;
+            $ca_generale->save();
+        }
+        $ca = L_CaActesReglement::firstOrNew(['id_acte'=>$id_acte]);
+        $ca->id_ca = $ca_generale->id;
+        if($changement_praticien){
+            $ca->praticien = $devis->praticien;
+        }
+        if($changement_acte){
+            $ca->nom_acte = $acte;
+        }
+        if($changement_montant){
+            $ca->cotation = $montant_acte === '' ? null : $montant_acte;
+        }
+        $ca->save();
+    }
 
     public static function updateCaActesReglement(Request $request, $id_ca_actes_reglement){
 

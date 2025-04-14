@@ -45,7 +45,7 @@
                                 <th class="infoCheques" colspan="8" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO DEVIS</th>
                                 <th class="infoAccordPec" colspan="5" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO ACCORD PEC</th>
                                 <th class="appelsMail" colspan="7" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">APPELS & MAIL</th>
-                                <th class="infoEmpreinte" colspan="6" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO D'EMPREINTE</th>
+                                <th class="infoEmpreinte" colspan="7" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">INFO D'EMPREINTE</th>
                                 <th class="retourLabo" colspan="3" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">RETOUR LABO</th>
                                 <th class="pose" colspan="2" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">POSE</th>
                                 <th class="travauxCloture" colspan="4" style="background-color: #f8f9fa; text-align: center; border-right: 2px solid #000;">TRAVAUX CLOTURE</th>
@@ -103,6 +103,8 @@
                                 <th class="infoEmpreinte">Date d'envoi au labo</th>
                                 <!-- 22 -->
                                 <th class="infoEmpreinte">Travail demandé</th>
+                                <!-- 22 -->
+                                <th class="infoEmpreinte">Montant Acte</th>
                                 <!-- 23 -->
                                 <th class="infoEmpreinte">N° dent</th>
                                 <!-- 24 -->
@@ -222,6 +224,9 @@
                                         {{ $devis->getTravail_demande() }}
                                     </td>
                                     <td class="infoEmpreinte" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/acte{{ $devis->id_acte }}/detail';" style="cursor:pointer;">
+                                        {{ $devis->getMontantActe() }}
+                                    </td>
+                                    <td class="infoEmpreinte" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/acte{{ $devis->id_acte }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getNumero_dent() }}
                                     </td>
                                     <td class="infoEmpreinte" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/acte{{ $devis->id_acte }}/detail';" style="cursor:pointer; border-right: 2px solid #000;">
@@ -281,6 +286,7 @@
                                     <td class="infoCheques" ondblclick="window.location.href='devis/{{ $devis->id_devis }}/acte{{ $devis->id_acte }}/detail';" style="cursor:pointer;">
                                         {{ $devis->getCheque_observation() }}
                                     </td>
+                                    <td ondblclick="event.stopPropagation()"><a href="{{ asset('deleteDevis/'.$devis->id_devis.'/'.$devis->id_acte) }}" onclick="return deleteItem('<?= $devis->dossier ?>', '<?= $devis->date ?>')">Supprimer</a></td>
 
                                 </tr>
                             @endforeach
@@ -350,8 +356,14 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($ca_actes_reglements as $ca)
-                                <tr ondblclick="window.location.href='{{ asset('ca/'.$ca->id.'/'.$ca->dossier.'/modifier') }}';">
+                                @foreach($ca_actes_reglements as $ca)
+                                @php
+                                    $cotation_restant = $ca->cotation - $ca->cotation_paye;
+                                    $part_secu_restant = ($ca->ro_part_secu ?? 0) - $ca->ro_part_secu_paye;
+                                    $part_mutuelle_restant = ($ca->part_mutuelle ?? 0) - $ca->part_mutuelle_paye;
+                                    $rac_part_patient_restant = ($ca->rac_part_patient ?? 0) - $ca->rac_part_patient_paye;
+                                @endphp
+                                <tr ondblclick="window.location.href='{{ asset('ca/'.$ca->id_ca_actes_reglement.'/'.$ca->dossier.'/modifier') }}';">
                                     <td>
                                         @if($ca->date_derniere_modif)
                                             {{ \Carbon\Carbon::parse($ca->date_derniere_modif)->format('Y-m-d') }}
@@ -365,26 +377,33 @@
                                     <td style="border-right: 2px solid #000;">{{ $ca->mutuelle }}</td>
                                     <td>{{ $ca->praticien }}</td>
                                     <td>{{ $ca->nom_acte }}</td>
-                                    <td class="text-end">@if($ca->cotation){{ number_format($ca->cotation, 2, ',', ' ') }}@endif</td>
+                                    <!-- -->    <td class="text-end" style="@if($cotation_restant < 0) background-color: red; @elseif($cotation_restant > 0) background-color: orange; @endif">@if($ca->cotation){{ number_format($ca->cotation, 2, ',', ' ') }}@endif</td>
                                     <td style="border-right: 2px solid #000;">{{ $ca->controle_securisation }}</td>
-                                    <td class="text-end">@if($ca->ro_part_secu){{ number_format($ca->ro_part_secu, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end">@if($ca->ro_virement_recu){{ number_format($ca->ro_virement_recu, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end">@if($ca->ro_indus_paye){{ number_format($ca->ro_indus_paye, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end">@if($ca->ro_indus_en_attente){{ number_format($ca->ro_indus_en_attente, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end" style="border-right: 2px solid #000;">@if($ca->ro_indus_irrecouvrable){{ number_format($ca->ro_indus_irrecouvrable, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end" style="border-right: 2px solid #000;">@if($ca->part_mutuelle){{ number_format($ca->part_mutuelle, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end">@if($ca->rcs_virement){{ number_format($ca->rcs_virement, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end">@if($ca->rcs_especes){{ number_format($ca->rcs_especes, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end" style="border-right: 2px solid #000;">@if($ca->rcs_cb){{ number_format($ca->rcs_cb, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end">@if($ca->rcsd_cheque){{ number_format($ca->rcsd_cheque, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end">@if($ca->rcsd_especes){{ number_format($ca->rcsd_especes, 2, ',', ' ') }}@endif</td>
-                                    <td style="border-right: 2px solid #000;" class="text-end">@if($ca->rcsb_cb){{ number_format($ca->rcsb_cb, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end">@if($ca->rac_part_patient){{ number_format($ca->rac_part_patient, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end">@if($ca->rac_cheque){{ number_format($ca->rac_cheque, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end">@if($ca->rac_especes){{ number_format($ca->rac_especes, 2, ',', ' ') }}@endif</td>
-                                    <td class="text-end" style="border-right: 2px solid #000;">@if($ca->rac_cb){{ number_format($ca->rac_cb, 2, ',', ' ') }}@endif</td>
+                                    <!-- -->    <td class="text-end" style="@if($cotation_restant < 0 || $part_secu_restant < 0) background-color: red; @elseif($cotation_restant > 0 || $part_secu_restant > 0) background-color: orange; @endif">
+                                        @if($ca->ro_part_secu){{ number_format($ca->ro_part_secu, 2, ',', ' ') }}@endif
+                                    </td>
+                                    <td class="text-end" style="@if($part_secu_restant < 0) background-color: red; @elseif($part_secu_restant > 0) background-color: orange; @endif">@if($ca->ro_virement_recu){{ number_format($ca->ro_virement_recu, 2, ',', ' ') }}@endif</td>
+                                    <td class="text-end" style="@if($part_secu_restant < 0) background-color: red; @elseif($part_secu_restant > 0) background-color: orange; @endif">@if($ca->ro_indus_paye){{ number_format($ca->ro_indus_paye, 2, ',', ' ') }}@endif</td>
+                                    <td class="text-end" style="@if($part_secu_restant < 0) background-color: red; @elseif($part_secu_restant > 0) background-color: orange; @endif">@if($ca->ro_indus_en_attente){{ number_format($ca->ro_indus_en_attente, 2, ',', ' ') }}@endif</td>
+                                    <td class="text-end" style="@if($part_secu_restant < 0) background-color: red; @elseif($part_secu_restant > 0) background-color: orange; @endif border-right: 2px solid #000;">@if($ca->ro_indus_irrecouvrable){{ number_format($ca->ro_indus_irrecouvrable, 2, ',', ' ') }}@endif</td>
+                                    <!-- -->    <td class="text-end" style="@if($cotation_restant < 0 || $part_mutuelle_restant < 0) background-color: red; @elseif($cotation_restant > 0 || $part_mutuelle_restant > 0) background-color: orange; @endif border-right: 2px solid #000; ">
+                                        @if($ca->part_mutuelle){{ number_format($ca->part_mutuelle, 2, ',', ' ') }}@endif
+                                    </td>
+                                    <td class="text-end" style="@if($part_mutuelle_restant < 0) background-color: red; @elseif($part_mutuelle_restant > 0) background-color: orange; @endif">@if($ca->rcs_virement){{ number_format($ca->rcs_virement, 2, ',', ' ') }}@endif</td>
+                                    <td class="text-end" style="@if($part_mutuelle_restant < 0) background-color: red; @elseif($part_mutuelle_restant > 0) background-color: orange; @endif">@if($ca->rcs_especes){{ number_format($ca->rcs_especes, 2, ',', ' ') }}@endif</td>
+                                    <td class="text-end" style="@if($part_mutuelle_restant < 0) background-color: red; @elseif($part_mutuelle_restant > 0) background-color: orange; @endif border-right: 2px solid #000;">@if($ca->rcs_cb){{ number_format($ca->rcs_cb, 2, ',', ' ') }}@endif</td>
+                                    <td class="text-end" style="@if($part_mutuelle_restant < 0) background-color: red; @elseif($part_mutuelle_restant > 0) background-color: orange; @endif">@if($ca->rcsd_cheque){{ number_format($ca->rcsd_cheque, 2, ',', ' ') }}@endif</td>
+                                    <td class="text-end" style="@if($part_mutuelle_restant < 0) background-color: red; @elseif($part_mutuelle_restant > 0) background-color: orange; @endif">@if($ca->rcsd_especes){{ number_format($ca->rcsd_especes, 2, ',', ' ') }}@endif</td>
+                                    <td class="text-end" style="@if($part_mutuelle_restant < 0) background-color: red; @elseif($part_mutuelle_restant > 0) background-color: orange; @endif border-right: 2px solid #000;">@if($ca->rcsd_cb){{ number_format($ca->rcsd_cb, 2, ',', ' ') }}@endif</td>
+                                    <!-- -->    <td class="text-end" style="@if($cotation_restant < 0 || $rac_part_patient_restant < 0 ) background-color: red; @elseif($cotation_restant > 0 || $rac_part_patient_restant > 0) background-color: orange; @endif">
+                                        @if($ca->rac_part_patient){{ number_format($ca->rac_part_patient, 2, ',', ' ') }}@endif
+                                    </td>
+                                    <td class="text-end" style="@if($rac_part_patient_restant < 0) background-color: red; @elseif($rac_part_patient_restant > 0) background-color: orange; @endif">@if($ca->rac_cheque){{ number_format($ca->rac_cheque, 2, ',', ' ') }}@endif</td>
+                                    <td class="text-end" style="@if($rac_part_patient_restant < 0) background-color: red; @elseif($rac_part_patient_restant > 0) background-color: orange; @endif">@if($ca->rac_especes){{ number_format($ca->rac_especes, 2, ',', ' ') }}@endif</td>
+                                    <td class="text-end" style="@if($rac_part_patient_restant < 0) background-color: red; @elseif($rac_part_patient_restant > 0) background-color: orange; @endif border-right: 2px solid #000;">@if($ca->rac_cb){{ number_format($ca->rac_cb, 2, ',', ' ') }}@endif</td>
                                     <td>{{ $ca->commentaire ?: 'Aucun commentaire' }}</td>
-                                    <td ondblclick="event.stopPropagation()"><a href="{{ asset('delete-ca/'. $ca->id ) }}" ondblclick="return deleteItem('<?= $ca->dossier ?>', '<?= $ca->created_at ?>')">Supprimer</a></td>
+                                    <td>{{ \Carbon\Carbon::parse($ca->created_at)->format('d-m-Y') }}</td>
+                                    <td onclick="event.stopPropagation()"><a href="{{ asset('delete-ca/'. $ca->id ) }}" onclick="return deleteItem('<?= $ca->dossier ?>', '<?= $ca->created_at ?>')">Supprimer</a></td>
                                 </tr>
                             @endforeach
                             </tbody>

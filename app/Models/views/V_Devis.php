@@ -595,6 +595,14 @@ class V_Devis extends Model
         return Carbon::parse($this->date_envoi_labo)->format('d/m/Y');
     }
 
+    public function getMontantActe()
+    {
+        if ($this->montant_acte == null){
+            return '...';
+        }
+        return $this->montant_acte;
+    }
+
     public function getTravail_demande()
     {
         if ($this->travail_demande == null) {

@@ -42,7 +42,7 @@ class V_CaExport implements FromView, WithEvents, WithTitle
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
-                $highestRow = $sheet->getHighestRow() + 10;
+                $highestRow = $sheet->getHighestRow() + 1;
 
                 $sheet->getStyle("A11:AA$highestRow")->getFont()->setSize(8);
 

@@ -45,7 +45,7 @@ Route::middleware(['auth', 'role:admin,user,responsableCA'])->group(function () 
     Route::get('{dossier}/details', [\App\Http\Controllers\Dossier\DossierController::class, 'getDetailDossier'])->name('dossier.detail');
 
     // section: devis
-    Route::get('deleteDevis/{id_devis}', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'deleteDevis'])->name('delete.devis');
+    Route::get('deleteDevis/{id_devis}/{id_acte}', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'deleteDevis'])->name('delete.devis');
     Route::post('modifier-devis/acte{id_acte}', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'modifierDevis']);
     Route::get('{dossier}/devis/{id_devis}/acte{id_acte}/modifier', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'showModifierDevis']);
     Route::get('getFilterListeDevis', [\App\Http\Controllers\Dossier\Devis\DevisController::class, 'getFilterListeDevis']);
@@ -128,10 +128,12 @@ Route::middleware(['auth', 'role:admin,user,responsableCA'])->group(function () 
     Route::get('showDevisExportView', [\App\Http\Controllers\Export\ExportsController::class, 'showDevisExportView']);
     Route::get('showCaExportView', [\App\Http\Controllers\Export\ExportsController::class, 'showCaExportView']);
 
+    /*
     Route::get('envoi-mail', function (){
         \Illuminate\Support\Facades\Mail::to('cambellthony@gmail.com')
             ->send(new \App\Mail\HelloMail());
     });
+    */
     Route::post('modify/mail', [\App\Http\Controllers\Mail\MailController::class, 'modifyMail']);
     Route::get('modify/mail', [\App\Http\Controllers\Mail\MailController::class, 'showModidyMail']);
     Route::get('envoi-mail-2', [\App\Http\Controllers\Mail\MailController::class, 'envoiMail']);
@@ -148,7 +150,7 @@ Route::middleware(['auth', 'role:admin,responsableCA'])->group(function () {
     Route::post('ca/modifier-2/{id_ca_actes_reglement}', [\App\Http\Controllers\ca\Ca2Controller::class, 'updateCa']);
     Route::get('ca/{id_ca}/nouveau-acte',[\App\Http\Controllers\ca\Ca2Controller::class, 'showNouveauCaActe']);
     Route::post('ca/{id_ca}/nouveau-acte', [\App\Http\Controllers\ca\Ca2Controller::class, 'insertNouveauCaActe']);
-    Route::get('delete-ca/{id_ca}', [\App\Http\Controllers\Ca\Ca2Controller::class, 'deleteCa']);
+    Route::get('delete-ca/{id_acte}', [\App\Http\Controllers\Ca\Ca2Controller::class, 'deleteCa']);
     Route::get('getFilterCa', [\App\Http\Controllers\Ca\Ca2Controller::class, 'getFilterCa']);
     Route::get('reinitializeFilterCa', [\App\Http\Controllers\Ca\Ca2Controller::class, 'reinitializeFilterCa']);
     Route::get('ca/{id_ca}/{dossier}/modifier', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showModifierCa']);

@@ -93,40 +93,40 @@ class V_DevisExport implements FromView, WithEvents, WithTitle
                 $validationQ16->setFormula1('"' . implode(',', $devis_accord_pecs_status) . '"');
                 $validationQ16->setShowDropDown(true);
 
-                $rangeAO16 = 'AO16:AO'.$endRow;
-                $validationAO16 = $event->sheet->getDelegate()->getDataValidation($rangeAO16);
-                $validationAO16->setType(DataValidation::TYPE_LIST);
-                $validationAO16->setFormula1('"' . implode(',', $prothese_travaux_status) . '"');
-                $validationAO16->setShowDropDown(true);
-
-                $rangeAY16 = 'AY16:AY'.$endRow;
-                $validationAY16 = $event->sheet->getDelegate()->getDataValidation($rangeAY16);
-                $validationAY16->setType(DataValidation::TYPE_LIST);
-                $validationAY16->setFormula1('"' . implode(',', $info_cheques_nature_cheques) . '"');
-                $validationAY16->setShowDropDown(true);
+                $rangeAP16 = 'AP16:AP'.$endRow;
+                $validationAP16 = $event->sheet->getDelegate()->getDataValidation($rangeAP16);
+                $validationAP16->setType(DataValidation::TYPE_LIST);
+                $validationAP16->setFormula1('"' . implode(',', $prothese_travaux_status) . '"');
+                $validationAP16->setShowDropDown(true);
 
                 $rangeAZ16 = 'AZ16:AZ'.$endRow;
                 $validationAZ16 = $event->sheet->getDelegate()->getDataValidation($rangeAZ16);
                 $validationAZ16->setType(DataValidation::TYPE_LIST);
-                $validationAZ16->setFormula1('"' . implode(',', $info_cheques_travaux_sur_devis) . '"');
+                $validationAZ16->setFormula1('"' . implode(',', $info_cheques_nature_cheques) . '"');
                 $validationAZ16->setShowDropDown(true);
 
                 $rangeBA16 = 'BA16:BA'.$endRow;
                 $validationBA16 = $event->sheet->getDelegate()->getDataValidation($rangeBA16);
                 $validationBA16->setType(DataValidation::TYPE_LIST);
-                $validationBA16->setFormula1('"' . implode(',', $info_cheques_situation_cheques) . '"');
+                $validationBA16->setFormula1('"' . implode(',', $info_cheques_travaux_sur_devis) . '"');
                 $validationBA16->setShowDropDown(true);
+
+                $rangeBB16 = 'BB16:BB'.$endRow;
+                $validationBB16 = $event->sheet->getDelegate()->getDataValidation($rangeBB16);
+                $validationBB16->setType(DataValidation::TYPE_LIST);
+                $validationBB16->setFormula1('"' . implode(',', $info_cheques_situation_cheques) . '"');
+                $validationBB16->setShowDropDown(true);
 
 
                 $sheet = $event->sheet->getDelegate();
                 $highestRow = $sheet->getHighestRow();
-                $colNumbers = ['F', 'L', 'N', 'P', 'R', 'S', 'AR', 'AU'];
+                $colNumbers = ['F', 'L', 'N', 'P', 'R', 'S', 'AI', 'AS', 'AV'];
                 foreach ($colNumbers as $col) {
                     $sheet->getStyle($col . '16:' . $col . $highestRow)
                         ->getNumberFormat()
                         ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
                 }
-                $colDates = ['E', 'J', 'K', 'T', 'U', 'V', 'W', 'AX', 'AZ', 'AB', 'AD', 'AF', 'AG', 'AK', 'AN', 'AP', 'AS', 'AW', 'AX'];
+                $colDates = ['E', 'J', 'K', 'T', 'U', 'V', 'W', 'X', 'Z', 'AB', 'AD', 'AF', 'AG', 'AL', 'AO', 'AQ', 'AT', 'AX', 'AY'];
                 foreach ($colDates as $col){
                     $sheet->getStyle($col . '16:' . $col . $highestRow)
                         ->getNumberFormat()

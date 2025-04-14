@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 class Ca2Controller extends Controller
 {
 
+
     // debut: insertion d'un acte de CA s'il y'en a déjà
     public function insertNouveauCaActe(Request $request, $id_ca){
         $m_l_ca_actes_reglement = L_CaActesReglement::insertCaActesReglement($request, $id_ca);
@@ -85,18 +86,7 @@ class Ca2Controller extends Controller
         session()->forget('ca_filters');
         return back();
     }
-    public function saveCa(Request $request)
-    {
-        $m_ca = new CaActesReglement();
-        //echo ('input: '.$request->input('date_derniere_modif'). '<br>');
-        $m_ca->saveCa($request);
 
-        $dossier = $request->input('dossiers');
-        $m_dossier = Dossier::where('dossier', $dossier)->first();
-        if(!$m_dossier) return back()->withErrors('Le dossier "' . $dossier . '" n\'existe pas.')->withInput();
-        return redirect()->route('liste.ca');
-
-    }
     public function getPatientDetails(Request $request){
         $dossier = $request->query('dossier');
 
@@ -147,12 +137,11 @@ class Ca2Controller extends Controller
         if(!$data['v_ca_actes_reglement']) return back();
         return view('ca/modifier/modifier-ca')->with($data);
     }
-    public function deleteCa($id_ca){
+    public function deleteCa($id){
         $m_h_ca = new H_CaActesReglement();
-        $m_ca = CaActesReglement::find($id_ca);
+        $m_ca = V_CaActesReglement::where('id', $id)->first();
         $m_h_ca->code_u = Auth::user()->code_u;
         $m_h_ca->nom = Auth::user()->prenom. ' '. Auth::user()->nom;
-        $m_h_ca->id_ca_actes_reglement = $id_ca;
         $m_h_ca->dossier = $m_ca->dossier;
         $m_h_ca->categorie = 'delete';
         $m_h_ca->action .= "<strong>Date dernière modif: </strong> " . $m_ca->date_derniere_modif . "\n";
@@ -183,7 +172,15 @@ class Ca2Controller extends Controller
         $m_h_ca->action .= "<strong>Commentaire: </strong> " . $m_ca->commentaire . "\n";
         $m_h_ca->action .= "<strong>Date: </strong> " . Carbon::parse($m_ca->created_at)->format('d-m-Y') . "\n";
         $m_h_ca->save();
-        DB::delete('DELETE FROM ca_actes_reglements WHERE id = ?', [$id_ca]);
+        $l_ca_acte_reglement = L_CaActesReglement::find($id);
+        $nbr = L_CaActesReglement::where('id_ca', $l_ca_acte_reglement->id_ca)->count();
+
+        DB::delete('DELETE FROM l_ca_actes_reglements WHERE id = ?', [$id]);
+        if ($nbr == 1) {
+            # code...
+            DB::delete('DELETE FROM ca_generales WHERE id = ?',[$l_ca_acte_reglement->id_ca]);
+        }
+        //echo('$id_ca = '.$l_ca_acte_reglement->id_ca);
         return back();
     }
     public function showListeCa(Request $request){

@@ -40,10 +40,10 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="text" class="form-control" name="laboratoire" value="{{ $v_prothese->laboratoire }}" placeholder="Laboratoire" /></td>
-                                    <td><input type="date" class="form-control" name="date_empreinte" value="{{ $v_prothese->date_empreinte ? \Carbon\Carbon::parse($v_prothese->date_empreinte)->format('Y-m-d'):'' }}" placeholder="Date Empreinte" /></td>
-                                    <td><input type="date" class="form-control" name="date_envoi_labo" value="{{ $v_prothese->date_envoi_labo ? \Carbon\Carbon::parse($v_prothese->date_envoi_labo)->format('Y-m-d'):'' }}" placeholder="Date Envoi Labo" /></td>
-                                    <td><textarea class="form-control" name="travail_demande" rows="3" style="height: 100px" placeholder="Travail demandés">{{ $v_prothese->travail_demande }}</textarea></td>
+                                    <td><input type="text" class="form-control" name="laboratoire" value="{{ $m_prothese_empreinte->laboratoire }}" placeholder="Laboratoire" /></td>
+                                    <td><input type="date" class="form-control" name="date_empreinte" value="{{ $m_prothese_empreinte->date_empreinte ? \Carbon\Carbon::parse($m_prothese_empreinte->date_empreinte)->format('Y-m-d'):'' }}" placeholder="Date Empreinte" /></td>
+                                    <td><input type="date" class="form-control" name="date_envoi_labo" value="{{ $m_prothese_empreinte->date_envoi_labo ? \Carbon\Carbon::parse($m_prothese_empreinte->date_envoi_labo)->format('Y-m-d'):'' }}" placeholder="Date Envoi Labo" /></td>
+                                    <td><textarea class="form-control" name="travail_demande" rows="3" style="height: 100px" placeholder="Travail demandés"></textarea></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -58,8 +58,8 @@
                                 <tbody>
                                 <tr>
                                     <td><input type="number" class="form-control" step="0.01" name="montant_acte" value="" placeholder="Montant" min="0"/></td>
-                                    <td><textarea class="form-control" name="numero_dent" rows="3" style="height: 100px" placeholder="Numéro Dent">{{ $v_prothese->numero_dent }}</textarea></td>
-                                    <td><textarea class="form-control" name="observations" rows="3" style="height: 100px" placeholder="Observations">{{ $v_prothese->observations }}</textarea></td>
+                                    <td><textarea class="form-control" name="numero_dent" rows="3" style="height: 100px" placeholder="Numéro Dent"></textarea></td>
+                                    <td><textarea class="form-control" name="observations" rows="3" style="height: 100px" placeholder="Observations"></textarea></td>
                                 </tr>
                                 </tbody>
                             </table>

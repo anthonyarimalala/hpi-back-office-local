@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dossier\Prothese;
 
 use App\Http\Controllers\Controller;
+use App\Models\ca\CaGeneral;
 use App\Models\devis\Devis;
 use App\Models\devis\prothese\ProtheseEmpreinte;
 use App\Models\devis\prothese\ProtheseRetourLabo;
@@ -24,6 +25,7 @@ class ProtheseController extends Controller
         $dateEmpreinte = $request->input('date_empreinte');
         $dateEnvoiLabo = $request->input('date_envoi_labo');
         $travailDemande = $request->input('travail_demande');
+        $montant_acte = $request->input('montant_acte');
         $numeroDent = $request->input('numero_dent');
         $observations = $request->input('observations');
         $dateLivraison = $request->input('date_livraison');
@@ -43,7 +45,7 @@ class ProtheseController extends Controller
         echo '$id_devis = '.$id_devis.'<br>';
 
 
-        $empreinte = ProtheseEmpreinte::createEmpreinte($m_h_prothese, $id_devis, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $numeroDent, $observations, $withChangeProthese);
+        $empreinte = ProtheseEmpreinte::createEmpreinte($m_h_prothese, $id_devis, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $montant_acte, $numeroDent, $observations, $withChangeProthese);
         ProtheseRetourLabo::createOrUpdateEmpreinte($m_h_prothese, $empreinte->id, $dateLivraison, $numeroSuivi, $numeroFactureLabo, $withChangeProthese);
         ProtheseTravaux::createOrUpdateTravaux($m_h_prothese, $empreinte->id, $datePosePrevue, $id_pose_statut, $datePoseReel, $organismePayeur, $montantEncaisse, $dateControlePaiement, $withChangeProthese);
 
@@ -52,7 +54,8 @@ class ProtheseController extends Controller
         if($withChangeProthese){
             $m_h_prothese->save();
         }
-        return back();
+
+        return redirect($dossier.'/prothese/'.$id_devis.'/acte'.$empreinte->id.'/detail');
     }
     public function showNouveauActe($dossier, $id_devis, $id_acte){
         $m_prothese_empreinte = ProtheseEmpreinte::where('id_devis', $id_devis)->first();
@@ -74,6 +77,7 @@ class ProtheseController extends Controller
         $dateEmpreinte = $request->input('date_empreinte');
         $dateEnvoiLabo = $request->input('date_envoi_labo');
         $travailDemande = $request->input('travail_demande');
+        $montant_acte = $request->input('montant_acte');
         $numeroDent = $request->input('numero_dent');
         $observations = $request->input('observations');
         $dateLivraison = $request->input('date_livraison');
@@ -90,7 +94,7 @@ class ProtheseController extends Controller
         $m_h_prothese->code_u = Auth::user()->code_u;
         $m_h_prothese->id_devis = $id_devis;
 
-        ProtheseEmpreinte::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $id_acte, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $numeroDent, $observations, $withChangeProthese);
+        ProtheseEmpreinte::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $id_acte, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $montant_acte, $numeroDent, $observations, $withChangeProthese);
         ProtheseRetourLabo::createOrUpdateEmpreinte($m_h_prothese, $id_acte, $dateLivraison, $numeroSuivi, $numeroFactureLabo, $withChangeProthese);
         ProtheseTravaux::createOrUpdateTravaux($m_h_prothese, $id_acte, $datePosePrevue, $id_pose_statut, $datePoseReel, $organismePayeur, $montantEncaisse, $dateControlePaiement, $withChangeProthese);
 

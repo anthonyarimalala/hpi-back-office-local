@@ -33,16 +33,16 @@ class ExportsController extends Controller
                 $m_v_ca->scopeFilter($query, $filters);
         }
         if ($date_ca_modif_debut && $date_ca_create_debut!=''){
-            $query->where('date_derniere_modif' , '>=' , $date_ca_modif_debut);
+            $query->where('date_derniere_modif' , '>=' , $date_ca_modif_debut.' 00:00:00');
         }
         if ($date_ca_modif_fin && $date_ca_create_fin!=''){
-            $query->where('date_derniere_modif' , '<=' , $date_ca_create_fin);
+            $query->where('date_derniere_modif' , '<=' , $date_ca_create_fin.' 23:59:59');
         }
         if ($date_ca_create_debut && $date_ca_create_debut!=''){
-            $query->where('created_at' , '>=' , $date_ca_create_debut);
+            $query->where('created_at' , '>=' , $date_ca_create_debut.' 00:00:00');
         }
         if ($date_ca_create_fin && $date_ca_create_fin!=''){
-            $query->where('created_at', '<=', $date_ca_create_fin);
+            $query->where('created_at', '<=', $date_ca_create_fin.' 23:59:59');
         }
 
         $v_ca = $query->orderBy('created_at', 'desc')

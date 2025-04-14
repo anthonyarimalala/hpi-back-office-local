@@ -57,6 +57,7 @@ class ImportDevis extends Model
         'date_empreinte',
         'date_envoi_labo',
         'travail_demande',
+        'montant_acte',
         'numero_dent',
         'empreinte_observation',
         'created_at',

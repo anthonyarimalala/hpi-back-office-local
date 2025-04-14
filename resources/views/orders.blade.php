@@ -43,13 +43,13 @@
     <tr>
         <th colspan="4" style="background-color: #b4a7d6; text-align: center; font-weight: bold; border: 1px solid black;"> PATIENTS</th>
         <th colspan="26" style="border: 1px solid black; background-color: #ffd966; text-align: center; font-weight: bold;">DEVIS</th>
-        <th colspan="15" style="border: 1px solid black; background-color: #9fc5e8; text-align: center; font-weight: bold;">PROTHESE &amp; APPAREILLAGE DENTAIRE</th>
+        <th colspan="16" style="border: 1px solid black; background-color: #9fc5e8; text-align: center; font-weight: bold;">PROTHESE &amp; APPAREILLAGE DENTAIRE</th>
         <th colspan="9" style="border: 1px solid black; background-color: #34A853; text-align: center; font-weight: bold;">TRAITEMENTS CHEQUES</th>
     </tr>
     <tr>
         <th colspan="23" style="border: 1px solid black; background-color: #FFF2CC; text-align: center; font-weight: bold;">CHARGE D'ACCEUIL</th>
         <th colspan="7" style="border: 1px solid black; background-color: #CFE2F3; text-align: center; font-weight: bold;">ASSISTANT ADMINISTRATIF</th>
-        <th colspan="11" style="border: 1px solid black; background-color: #D9EAD3; text-align: center; font-weight: bold;">ADMIN</th>
+        <th colspan="12" style="border: 1px solid black; background-color: #D9EAD3; text-align: center; font-weight: bold;">ADMIN</th>
         <th colspan="4" style="border: 1px solid black; background-color: #FFFF00; text-align: center; font-weight: bold;">FINANCE</th>
         <th colspan="9" style="border: 1px solid black; background-color: #EA9999; text-align: center; font-weight: bold;">FINANCE</th>
     </tr>
@@ -60,7 +60,7 @@
         <th colspan="8" style="border: 1px solid black; background-color: #FFF2CC; text-align: center; font-weight: bold;">INFO ACCORD PEC</th>
         <th colspan="6" style="border: 1px solid black; background-color: #FFF2CC; text-align: center; font-weight: bold;">REGLEMENT</th>
         <th colspan="7" style="border: 1px solid black; background-color: #CFE2F3; text-align: center; font-weight: bold;">APPELS &amp; MAIL</th>
-        <th colspan="5" style="border: 1px solid black; background-color: #D9EAD3; text-align: center; font-weight: bold;">INFO D'EMPREINTE</th>
+        <th colspan="6" style="border: 1px solid black; background-color: #D9EAD3; text-align: center; font-weight: bold;">INFO D'EMPREINTE</th>
         <th colspan="1" style="border: 1px solid black; background-color: #00FFFF; text-align: center; font-weight: bold;">OBS</th>
         <th colspan="3" style="border: 1px solid black; background-color: #D9EAD3; text-align: center; font-weight: bold;">RETOUR LABO</th>
         <th colspan="2" style="border: 1px solid black; background-color: #00FF00; text-align: center; font-weight: bold;">POSE</th>
@@ -102,6 +102,7 @@
         <th style="border: 1px solid black; background-color: #D9EAD3; font-weight: bold; width: 75px;">Date empreinte</th>
         <th style="border: 1px solid black; background-color: #D9EAD3; font-weight: bold; width: 75px;">Date envoi au labo</th>
         <th style="border: 1px solid black; background-color: #D9EAD3; font-weight: bold; width: 100px;">Travail demandé</th>
+        <th style="border: 1px solid black; background-color: #D9EAD3; font-weight: bold; width: 100px;">Montant Acte</th>
         <th style="border: 1px solid black; background-color: #D9EAD3; font-weight: bold; width: 75px;">N° dent</th>
         <th style="border: 1px solid black; background-color: #00FFFF; font-weight: bold; width: 200px;">Observations</th>
         <th style="border: 1px solid black; background-color: #D9EAD3; font-weight: bold; width: 75px;">Date livraison</th>
@@ -160,6 +161,7 @@
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_empreinte ? \Carbon\Carbon::parse($order->date_empreinte)->format('d/m/Y') : '' }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_envoi_au_labo ? \Carbon\Carbon::parse($order->date_envoi_au_labo)->format('d/m/Y') : '' }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->travail_demande }}</td>
+            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->montant_acte }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->numero_dent }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{!! nl2br($order->empreinte_observation) !!}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_livraison ? \Carbon\Carbon::parse($order->date_livraison)->format('d/m/Y') : '' }}</td>

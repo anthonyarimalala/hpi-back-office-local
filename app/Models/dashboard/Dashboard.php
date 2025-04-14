@@ -66,7 +66,7 @@ class Dashboard extends Model
     public function getTotalPoseStatus($date_debut, $date_fin){
         $total = DB::select("
             SELECT
-                COUNT(pose_statut) AS nbr_pose_status,
+                COUNT(*) AS nbr_pose_status,
                 pose_statut
             FROM v_devis
             WHERE date >= ? AND date <= ?
@@ -100,8 +100,6 @@ class Dashboard extends Model
         ", [$date_debut, $date_fin]);
         return $total[0];
     }
-
-
     public function getReglementsAujourdHui()
     {
         $today = Carbon::today()->format('Y-m-d');

@@ -132,7 +132,8 @@ FROM
 
 CREATE OR REPLACE VIEW v_ca_actes_reglements AS
 SELECT
-    cg.id ,
+    lcar.id ,
+    cg.id AS id_ca,
     cg.dossier ,
     cg.nom_patient ,
     cg.statut ,

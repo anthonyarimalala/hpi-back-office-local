@@ -49,7 +49,7 @@
                     <div class="row">
                         <div class="col-md-12 mb-12">
                             <div class="steps">
-                                <h4 class="text-center">Étapes pour obtenir le mot de passe d'application</h4>
+                                <h4 class="text-center">Étapes pour obtenir le mot de passe d'application Gmail</h4>
                                 <p></p>
                                 <ul class="list-group">
                                     <li class="list-group-item text-center">

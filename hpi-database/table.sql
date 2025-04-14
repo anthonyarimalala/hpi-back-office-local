@@ -187,7 +187,7 @@
 
     CREATE TABLE ca_generales(
         id SERIAL PRIMARY KEY,
-        id_prothese_empreintes INTEGER,
+        id_devis INTEGER REFERENCES devis(id),
         dossier VARCHAR(20) REFERENCES dossiers(dossier),
         nom_patient VARCHAR(255),
         statut VARCHAR(50),
@@ -199,6 +199,7 @@
     CREATE TABLE l_ca_actes_reglements(
         id SERIAL PRIMARY KEY,
         id_ca INTEGER REFERENCES ca_generales(id),
+        id_acte INTEGER UNIQUE,
         date_derniere_modif DATE,
         praticien VARCHAR(10) REFERENCES praticiens(praticien),
         nom_acte VARCHAR(255),
@@ -325,6 +326,7 @@ CREATE TABLE import_devis (
     date_empreinte TEXT,
     date_envoi_labo TEXT,
     travail_demande TEXT,
+    montant_acte TEXT,
     numero_dent TEXT,
     empreinte_observation TEXT,
     created_at TEXT,

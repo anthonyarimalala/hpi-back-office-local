@@ -2,6 +2,9 @@
 
 namespace App\Models\ca;
 
+use App\Models\devis\Devis;
+use App\Models\views\V_CaActesReglement;
+use App\Models\views\V_Devis;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -12,11 +15,15 @@ class CaGeneral extends Model
     protected $table = 'ca_generales';
 
     protected $fillable = [
+        'id_devis',
         'dossier',
         'nom_patient',
         'statut',
         'mutuelle',
+        'created_at',
     ];
+
+
 
     public static function createCa(Request $request){
         $dossier = $request->input('dossiers');

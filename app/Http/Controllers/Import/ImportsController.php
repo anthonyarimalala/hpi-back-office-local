@@ -59,17 +59,23 @@ class ImportsController extends Controller
         $m_import_cas = ImportCa::all();
         $m_import_devis = new ImportDevis();
 
+        // Obtenir tous les clés primaires pour éviter de faire trop de requetes vers la base de donnée
+        $m_praticienS = Praticien::all()->keyBy('praticien');
+
         foreach ($m_import_cas as $mic) {
             if (!$mic->dossier || $mic->dossier == '') {
                 continue;
             }
-
+            // step 1: Dossier
             $m_dossier = Dossier::firstOrNew(['dossier' => $mic->dossier]);
             $m_dossier->nom = $mic->nom_patient;
             $m_dossier->save();
-            $m_praticien = Praticien::firstOrNew(['praticien' => trim($mic->praticien)]);
-            $m_praticien->is_deleted = 0;
-            if (!$m_praticien) $m_praticien->save();
+            $m_praticien = $m_praticienS->get(strtoupper(trim($mic->praticien)));
+            if (!$m_praticien) {
+                $m_praticien = new Praticien();
+                $m_praticien->praticien = strtoupper(trim($mic->praticien));
+                $m_praticien->save();
+            }
             // mise en place des erreurs
             $m_error_import = new ErrorImport();
             $m_error_import->type = 2; // ne change pas
@@ -96,12 +102,20 @@ class ImportsController extends Controller
                 ->whereDate('created_at', $date)
                 ->first();
             if (!$m_ca_generale) {
+                $m_devis = Devis::where('dossier', $mic->dossier)
+                                ->where('status', $mic->status)
+                                ->where('mutuelle', $mic->mutuelle)
+                                ->whereDate('date', $date)
+                                ->first();
                 $m_ca_generale = new CaGeneral();
                 $m_ca_generale->dossier = $mic->dossier;
                 $m_ca_generale->nom_patient = $mic->nom_patient;
                 $m_ca_generale->statut = $mic->statut;
                 $m_ca_generale->mutuelle = $mic->mutuelle;
                 $m_ca_generale->created_at = $date;
+                if($m_devis){
+                    $m_ca_generale->id_devis = $m_devis->id;
+                }
                 $m_ca_generale->save();
             }
             $m_ca = L_CaActesReglement::where('id_ca', $m_ca_generale->id)
@@ -327,7 +341,8 @@ class ImportsController extends Controller
         if (!$withErrors)
             return back()->with('success', 'Fichier importé avec succès');
         else
-            return back()->with('warning', 'Données importées mais contiennent des erreurs');
+            return redirect('erreur-import-1');
+            //return back()->with('warning', 'Données importées mais contiennent des erreurs');
     }
 
 
@@ -364,14 +379,14 @@ class ImportsController extends Controller
         $m_devis_accord_pecs_statusS = DevisAccordPecStatus::all()->keyBy('status');
 
         foreach ($m_import_deviss as $mid){
-            // déclaration de nouvelle variable d'historique
+//             // déclaration de nouvelle variable d'historique
 
             $withErrors = false;
             $m_error_import = new ErrorImport();
             $m_error_import->type = 1;
             $m_error_import->dossier = trim($mid->dossier);
 
-            // Step 1: dossier
+//             // Step 1: dossier
             $m_dossier = Dossier::firstOrNew(['dossier' => trim($mid->dossier)]);
             $m_devis_etat = $m_devis_etatsS->get(trim($mid->couleur));
             $m_dossier->nom = trim($mid->nom);
@@ -398,16 +413,16 @@ class ImportsController extends Controller
                     $withErrors = true;
                 }
             }
-            $prtc = $m_praticienS->get(strtoupper(trim($mid->praticien)));
-            if (!$prtc){
-                $prtc = '';
-            } else
-            {
-                $prtc = $prtc->praticien;
+            $m_prtc = $m_praticienS->get(strtoupper(trim($mid->praticien)));
+            $prtc = null;
+            if (!$m_prtc){
+                $m_prtc = new Praticien();
+                $m_prtc->praticien = strtoupper(trim($mid->praticien));
+                $m_prtc->save();
             }
+            $prtc = $m_prtc->praticien;
 
-            $m_devis = Devis::firstOrNew(['dossier' => $mid->dossier, 'date' => $date_devis, 'praticien' => $prtc]);
-            $m_devis->status = $m_dossier->status;
+            $m_devis = Devis::firstOrNew(['dossier' => $mid->dossier, 'status' => $m_dossier->status ,'date' => $date_devis, 'praticien' => $prtc]);
             $m_devis->mutuelle = trim($mid->mutuelle);
             if ($mid->montant && $mid->montant != ''){
                 try {
@@ -419,15 +434,8 @@ class ImportsController extends Controller
                     $withErrors = true;
                 }
             }
-            $m_devis->praticien = $m_praticienS->get(strtoupper(trim($mid->praticien)));
-            if (!$m_devis->praticien){
-                $m_error_import->error_message = "Le praticien ". trim($mid->praticien) . "n'est pas encore dans la base de donnée";
-                $m_dossier->praticien = '';
-                $withErrors = true;
-            }else{
-                $m_devis->praticien = $m_devis->praticien->praticien;
-            }
             $m_devis->save();
+            // pour l'historique de changement
             $m_devis_nouveau = clone $m_devis;
             $m_devis_nouveau->devis_signe = $imp_devis->makeDevisSigne($mid->devis_signe) ;
             $m_devis_nouveau->observation = $mid->devis_observation;
@@ -716,9 +724,14 @@ class ImportsController extends Controller
                     $withErrors = true;
                 }
             }
+
+            $m_prothese_empreinte = ProtheseEmpreinte::firstOrNew(['id_devis' => $m_devis->id, 'travail_demande' => trim($mid->travail_demande)]);
+            $m_prothese_empreinte->save();
+
             ProtheseEmpreinte::createOrUpdateEmpreinte(
                 $m_h_prothese,
                 $m_devis_nouveau->id,
+                $m_prothese_empreinte->id,
                 $laboratoire,
                 $date_empreinte,
                 $date_envoi_labo,
@@ -743,7 +756,7 @@ class ImportsController extends Controller
             }
             ProtheseRetourLabo::createOrUpdateEmpreinte(
                 $m_h_prothese,
-                $m_devis_nouveau->id,
+                $m_prothese_empreinte->id,
                 $date_livraison,
                 $numero_suivi,
                 $numero_facture_labo,
@@ -806,7 +819,7 @@ class ImportsController extends Controller
 
             ProtheseTravaux::createOrUpdateTravaux(
                 $m_h_prothese,
-                $m_devis_nouveau->id,
+                $m_prothese_empreinte->id,
                 $date_pose_prevue,
                 $id_pose_status,
                 $date_pose_reel,
@@ -933,7 +946,8 @@ class ImportsController extends Controller
         if (!$withErrorsAll)
             return back()->with('success', 'Fichier importé avec succès');
         else
-            return back()->with('warning', 'Données importées mais contiennent des erreurs');
+            return redirect('erreur-import-2');
+            //return back()->with('warning', 'Données importées mais contiennent des erreurs');
 
     }
     public function showImports(){
