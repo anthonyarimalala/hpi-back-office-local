@@ -36,23 +36,54 @@ class L_CaActesReglement extends Model
         'rac_cheque',
         'rac_especes',
         'rac_cb',
-        'commentaire'
+        'commentaire',
+        'created_at',
     ];
 
-    public static function createCaAfterDevis($id_devis, $id_acte, $acte, $montant_acte, $changement_praticien=true, $changement_acte=true, $changement_montant = true){
+    public static function createCaAfterDevis($id_devis, $id_acte, $acte, $montant_acte, $date_devis, $changement_praticien=true, $changement_acte=true, $changement_montant = true){
+
         $ca_generale = CaGeneral::where('id_devis', $id_devis)->first();
         $devis = V_Devis::where('id_devis', $id_devis)->first();
+        // raha manao import de ndraindray tsy hita ilay id_devis amle CA Generale
         if (!$ca_generale) {
-            # code...
-            $ca_generale = new CaGeneral();
+            // andramana tedavina am date sy ny tariny
+            $ca_generale = CaGeneral::where('dossier', $devis->dossier)
+            ->where('statut', $devis->status)
+            ->where(function ($query) use ($devis) {
+                $query->where('mutuelle', $devis->mutuelle)
+                      ->orWhereNull('mutuelle');
+            })
+            ->whereDate('created_at',  $date_devis)
+            ->first();
+            // rehefa tena tsy hita de mamorona vaovao
+            if (!$ca_generale)
+            {
+                $ca_generale = new CaGeneral();
+                $ca_generale->dossier = $devis->dossier;
+                $ca_generale->nom_patient = $devis->nom;
+                $ca_generale->statut = $devis->status;
+                $ca_generale->mutuelle = $devis->mutuelle;
+                $ca_generale->created_at = $date_devis;
+            }
             $ca_generale->id_devis = $id_devis;
-            $ca_generale->dossier = $devis->dossier;
-            $ca_generale->nom_patient = $devis->nom;
-            $ca_generale->statut = $devis->status;
-            $ca_generale->mutuelle = $devis->mutuelle;
             $ca_generale->save();
         }
-        $ca = L_CaActesReglement::firstOrNew(['id_acte'=>$id_acte]);
+        $ca = L_CaActesReglement::where('id_acte', $id_acte)
+            ->first();
+        if(!$ca){
+            $ca = L_CaActesReglement::where('id_ca', $ca_generale->id)
+                ->where('id_acte', $id_acte)
+                ->where('praticien',$devis->praticien)
+                ->where('nom_acte', $devis->travail_demande)
+                ->first();
+
+            if(!$ca){
+                $ca = new L_CaActesReglement();
+
+            }
+        }
+        $ca->id_acte = $id_acte;
+        $ca->created_at = $date_devis;
         $ca->id_ca = $ca_generale->id;
         if($changement_praticien){
             $ca->praticien = $devis->praticien;
@@ -63,6 +94,8 @@ class L_CaActesReglement extends Model
         if($changement_montant){
             $ca->cotation = $montant_acte === '' ? null : $montant_acte;
         }
+
+
         $ca->save();
     }
 

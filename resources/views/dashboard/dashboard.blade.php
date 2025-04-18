@@ -89,7 +89,7 @@
                                     <div class="col-md-6 grid-margin stretch-card">
                                         <div class="card">
                                             <div class="card-body">
-                                                <h4 class="card-title">Prothese Status</h4>
+                                                <h4 class="card-title">Prothese</h4>
                                                 <p class="card-description">
                                                     {{ \Carbon\Carbon::parse($date_debut)->format('d-m-Y') }} -> {{ \Carbon\Carbon::parse($date_fin)->format('d-m-Y') }}
                                                 </p>

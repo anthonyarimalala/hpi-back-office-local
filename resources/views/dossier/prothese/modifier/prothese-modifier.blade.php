@@ -84,7 +84,7 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td><input type="number" class="form-control" step="0.01" name="montant_acte" value="" placeholder="Montant" min="0"/></td>
+                                <td><input value="{{  $v_prothese->montant_acte }}" type="number" class="form-control" step="0.01" name="montant_acte" value="" placeholder="Montant" min="0"/></td>
                                 <td><textarea class="form-control" name="numero_dent" rows="3" style="height: 100px" placeholder="Numéro Dent">{{ $v_prothese->numero_dent }}</textarea></td>
                                 <td><textarea class="form-control" name="observations" rows="3" style="height: 100px" placeholder="Observations">{{ $v_prothese->observations }}</textarea></td>
                             </tr>

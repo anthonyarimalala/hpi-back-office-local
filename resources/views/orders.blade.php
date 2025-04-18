@@ -126,6 +126,19 @@
     </tr>
     <tbody>
     @foreach($data as $order)
+        @php
+            $couleur_reste_a_payer = '';
+            if($order->reste_a_payer > 0){
+                $couleur_reste_a_payer = 'red';
+            }else if($order->reste_a_payer < 0){
+                $couleur_reste_a_payer = 'red';
+            }else if($order->reste_a_payer == 0){
+                $couleur_reste_a_payer = 'green';
+            }
+            if($order->montant_acte == 0 || $order->montant_acte == null || $order->montant_acte == ''){
+                $couleur_reste_a_payer = 'red';
+            }
+        @endphp
         <tr>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->dossier }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->nom }}</td>
@@ -161,7 +174,7 @@
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_empreinte ? \Carbon\Carbon::parse($order->date_empreinte)->format('d/m/Y') : '' }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_envoi_au_labo ? \Carbon\Carbon::parse($order->date_envoi_au_labo)->format('d/m/Y') : '' }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->travail_demande }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->montant_acte }}</td>
+            <td style="border: 1px solid black; background-color: {{ $couleur_reste_a_payer }}">{{ $order->montant_acte }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->numero_dent }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{!! nl2br($order->empreinte_observation) !!}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_livraison ? \Carbon\Carbon::parse($order->date_livraison)->format('d/m/Y') : '' }}</td>

@@ -12,7 +12,11 @@ class ProtheseRetourLabo extends Model
 
     protected $table = 'prothese_retour_labos';
     protected $fillable = [
-        'id_acte'
+        'id_acte',
+        'id_acte',
+        'date_livraison',
+        'numero_suivi',
+        'numero_facture_labo'
     ];
 
     public static function createOrUpdateEmpreinte($m_h_prothese, $id_acte, $date_livraison, $numero_suivi, $numero_facture_labo, &$withChangeProthese)

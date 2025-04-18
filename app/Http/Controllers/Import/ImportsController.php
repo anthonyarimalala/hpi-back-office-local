@@ -98,9 +98,38 @@ class ImportsController extends Controller
 
             $m_ca_generale = CaGeneral::where('dossier', $mic->dossier)
                 ->where('statut', $mic->statut)
-                ->where('mutuelle', $mic->mutuelle)
+                ->where(function ($query) use ($mic) {
+                    $query->where('mutuelle', '')
+                        ->orWhere('mutuelle', $mic->mutuelle);
+                })
                 ->whereDate('created_at', $date)
                 ->first();
+
+            /*
+            $query = CaGeneral::where('dossier', $mic->dossier)
+            ->where('statut', $mic->statut)
+            ->where(function ($query) use ($mic) {
+                $query->whereNull('mutuelle')
+                        ->orWhere('mutuelle', $mic->mutuelle);
+            })
+            ->whereDate('created_at', $date);
+
+            // Récupérer la requête SQL brute
+            $sql = $query->toSql();
+
+            // Récupérer les valeurs bindées
+            $bindings = $query->getBindings();
+
+            // Remplacer les `?` dans la requête par les bindings (approche simple pour affichage/debug)
+            foreach ($bindings as $binding) {
+                // Ajouter des quotes autour des chaînes
+                $binding = is_numeric($binding) ? $binding : "'$binding'";
+                $sql = preg_replace('/\?/', $binding, $sql, 1);
+            }
+
+            echo $sql . '<br>';
+            */
+
             if (!$m_ca_generale) {
                 $m_devis = Devis::where('dossier', $mic->dossier)
                                 ->where('status', $mic->status)
@@ -728,6 +757,7 @@ class ImportsController extends Controller
             $m_prothese_empreinte = ProtheseEmpreinte::firstOrNew(['id_devis' => $m_devis->id, 'travail_demande' => trim($mid->travail_demande)]);
             $m_prothese_empreinte->save();
 
+
             ProtheseEmpreinte::createOrUpdateEmpreinte(
                 $m_h_prothese,
                 $m_devis_nouveau->id,
@@ -736,10 +766,13 @@ class ImportsController extends Controller
                 $date_empreinte,
                 $date_envoi_labo,
                 $travail_demande,
+                $mid->montant_acte,
                 $numero_dent,
                 $observation,
+                $date_devis,
                 $withChangeProthese
             );
+
 
             // step 6: prothese retour labo
             $date_livraison = null;
@@ -850,6 +883,7 @@ class ImportsController extends Controller
             $m_info_cheques->situation_cheque = trim($mid->situation_cheque);
             $m_info_cheques->observation = $mid->cheque_observation;
             */
+
             // step 8: cheque
             $numero_cheque = trim($mid->numero_cheque);
             $montant_cheque = null;

@@ -12,8 +12,14 @@ class ProtheseEmpreinte extends Model
     use HasFactory;
     protected $table = 'prothese_empreintes';
     protected $fillable = [
-        'id_devis',
-        'travail_demande'
+            'id_devis',
+          'laboratoire',
+          'date_empreinte',
+          'date_envoi_labo',
+          'travail_demande',
+          'montant_acte',
+          'numero_dent',
+          'observations'
     ];
     public static function createEmpreinte($m_h_prothese, $id_devis, $laboratoire, $date_empreinte, $date_envoi_labo, $travail_demande, $montant_acte, $numero_dent, $observations, &$withChangeProthese = false){
         $empreinte = ProtheseEmpreinte::firstOrNew(['id_devis' => $id_devis, 'travail_demande' => $travail_demande]);
@@ -47,10 +53,10 @@ class ProtheseEmpreinte extends Model
             $withChangeProthese = true;
         }
         $empreinte->save();
-        L_CaActesReglement::createCaAfterDevis($id_devis, $empreinte->id, $travail_demande, $montant_acte);
+        L_CaActesReglement::createCaAfterDevis($id_devis, $empreinte->id, $travail_demande, $montant_acte, $date_empreinte);
         return $empreinte;
     }
-    public static function createOrUpdateEmpreinte($m_h_prothese, $id_devis, $id_acte, $laboratoire, $date_empreinte, $date_envoi_labo, $travail_demande, $montant_acte, $numero_dent, $observations, &$withChangeProthese = false) {
+    public static function createOrUpdateEmpreinte($m_h_prothese, $id_devis, $id_acte, $laboratoire, $date_empreinte, $date_envoi_labo, $travail_demande, $montant_acte, $numero_dent, $observations, $date_devis, &$withChangeProthese = false) {
         // Recherche ou création de l'empreinte
         //$empreinte = self::firstOrNew(['id_acte' => $id_acte]);
         $empreinte = ProtheseEmpreinte::find($id_acte);
@@ -58,6 +64,7 @@ class ProtheseEmpreinte extends Model
             $empreinte = new ProtheseEmpreinte();
             $empreinte->id_devis = $id_devis;
         }
+        echo 'empreinte: '. $empreinte. '<br>';
         $m_h_prothese->action .= "<strong>Acte:</strong> " . ($empreinte->travail_demande ?: '...') ."\n";
 
         // Mise à jour des attributs
@@ -102,11 +109,14 @@ class ProtheseEmpreinte extends Model
             $empreinte->observations = $observations;
             $withChangeProthese = true;
         }
+        echo 'empreinte: '. $empreinte. '<br>';
         // Sauvegarde (création ou mise à jour)
+        if($date_devis == null){
+            $date_devis = Carbon::parse($empreinte->created_at)->format('Y-m-d') ;
+        }
+        L_CaActesReglement::createCaAfterDevis($id_devis, $id_acte, $travail_demande, $montant_acte, $date_devis);
+
         $empreinte->save();
-
-        L_CaActesReglement::createCaAfterDevis($id_devis, $id_acte, $travail_demande, $montant_acte);
-
         return $empreinte;
     }
 }

@@ -9,6 +9,19 @@
                 #575756 100%);
         }
     </style>
+    @php
+        $couleur_reste_a_payer = '';
+        if($v_prothese->reste_a_payer > 0){
+            $couleur_reste_a_payer = 'red';
+        }else if($v_prothese->reste_a_payer < 0){
+            $couleur_reste_a_payer = 'red';
+        }else if($v_prothese->reste_a_payer == 0){
+            $couleur_reste_a_payer = 'green';
+        }
+        if($v_prothese->montant_acte == 0 || $v_prothese->montant_acte == null || $v_prothese->montant_acte == ''){
+            $couleur_reste_a_payer = 'red';
+        }
+    @endphp
     <div class="d-sm-flex align-items-center justify-content-between border-bottom">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
@@ -73,7 +86,7 @@
                                 <td>{{ $v_prothese->getDate_empreinte() }}</td>
                                 <td>{{ $v_prothese->getDate_envoi_labo() }}</td>
                                 <td>{{ $v_prothese->getTravail_demande() }}</td>
-                                <td>{{ $v_prothese->getMontantActe() }}</td>
+                                <td style="background-color: {{ $couleur_reste_a_payer }}">{{ $v_prothese->getMontantActe() }}</td>
                                 <td>{{ $v_prothese->getNumero_dent() }}</td>
                                 <td>{{ $v_prothese->getObservations() }}</td>
                             </tr>

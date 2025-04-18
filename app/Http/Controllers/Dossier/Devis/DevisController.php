@@ -183,7 +183,8 @@ class DevisController extends Controller
         $prothese_empreintes = new ProtheseEmpreinte();
         $prothese_empreintes->id_devis = $id_devis;
         $prothese_empreintes->save();
-        L_CaActesReglement::createCaAfterDevis($id_devis, $prothese_empreintes->id, null, null);
+        $date = Carbon::parse($prothese_empreintes->created_at)->format('Y-m-d');
+        L_CaActesReglement::createCaAfterDevis($id_devis, $prothese_empreintes->id, null, null, $date);
         return redirect()->to($dossier.'/devis/'.$id_devis.'/detail');
     }
     public function creerDevis(Request $request)
@@ -229,8 +230,9 @@ class DevisController extends Controller
             $prothese_empreintes = new ProtheseEmpreinte();
             $prothese_empreintes->id_devis = $id_devis;
             $prothese_empreintes->save();
+            $date = Carbon::parse($prothese_empreintes->created_at)->format('Y-m-d');
             //echo($id_devis);
-            L_CaActesReglement::createCaAfterDevis($id_devis, $prothese_empreintes->id, null, null);
+            L_CaActesReglement::createCaAfterDevis($id_devis, $prothese_empreintes->id, null, null, $date);
             return redirect()->to($dossier.'/details')->with('success', 'Le devis a été ajouté avec succès.');
         } catch (\Exception $e) {
             // print($e->getMessage());
@@ -297,6 +299,7 @@ class DevisController extends Controller
             'date_envoi_labo_debut' => $request->input('date_envoi_labo_debut'),
             'date_envoi_labo_fin' => $request->input('date_envoi_labo_fin'),
             'date_envoi_labo_null' => $request->input('date_envoi_labo_null'),
+            'acte_non_regle' => $request->input('acte_non_regle'),
             'date_livraison_debut' => $request->input('date_livraison_debut'),
             'date_livraison_fin' => $request->input('date_livraison_fin'),
             'date_livraison_null' => $request->input('date_livraison_null'),
@@ -357,7 +360,18 @@ class DevisController extends Controller
         $data['devis_accord_pecs_status'] = DevisAccordPecStatus::where('is_deleted', 0)->get();
         $data['filters'] = $filters;
 
+        // $sql = $query->toSql();
+        // $bindings = $query->getBindings();
+
+        // echo vsprintf(str_replace('?', '%s', $query->toSql()), collect($query->getBindings())->map(function ($value) {
+        //     return is_numeric($value) ? $value : "'$value'";
+        // })->toArray());
+
+
         return view('devis/liste-devis-2')->with($data);
     }
+
+
+
 
 }

@@ -94,7 +94,7 @@ class ProtheseController extends Controller
         $m_h_prothese->code_u = Auth::user()->code_u;
         $m_h_prothese->id_devis = $id_devis;
 
-        ProtheseEmpreinte::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $id_acte, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $montant_acte, $numeroDent, $observations, $withChangeProthese);
+        ProtheseEmpreinte::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $id_acte, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $montant_acte, $numeroDent, $observations, null, $withChangeProthese);
         ProtheseRetourLabo::createOrUpdateEmpreinte($m_h_prothese, $id_acte, $dateLivraison, $numeroSuivi, $numeroFactureLabo, $withChangeProthese);
         ProtheseTravaux::createOrUpdateTravaux($m_h_prothese, $id_acte, $datePosePrevue, $id_pose_statut, $datePoseReel, $organismePayeur, $montantEncaisse, $dateControlePaiement, $withChangeProthese);
 

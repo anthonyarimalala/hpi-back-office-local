@@ -267,6 +267,16 @@ class V_Devis extends Model
             $filters['stringFilters'][] = 'Date envoi labo: sans valeur';
         }
 
+        if ($filters['acte_non_regle']) {
+            $query->where(function ($q) {
+                $q->whereRaw('COALESCE(montant_acte, 0) - COALESCE(montant_encaisse, 0) != 0')
+                  ->orWhereNull('montant_acte')
+                  ->orWhere('montant_acte', 0);
+            });
+
+            $filters['stringFilters'][] = 'Afficher que les actes non-réglés';
+        }
+
 
 // 'date_livraison_debut' => $request->input('date_livraison_debut'),
         if ($filters['date_livraison_debut']) {

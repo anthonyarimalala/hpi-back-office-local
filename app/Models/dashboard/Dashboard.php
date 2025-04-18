@@ -70,7 +70,7 @@ class Dashboard extends Model
                 pose_statut
             FROM v_devis
             WHERE date >= ? AND date <= ?
-            GROUP BY pose_statut;
+            GROUP BY pose_statut
         ", [$date_debut, $date_fin]);
         return $total;
     }
@@ -92,12 +92,12 @@ class Dashboard extends Model
     public function getTotalDevisSigne($date_debut, $date_fin){
         $total = DB::select("
         SELECT
-            COUNT(id_devis) AS nbr_devis,
-            COUNT(CASE WHEN devis_signe = 'oui' THEN 1 END) AS nbr_devis_signe,
-            COUNT(CASE WHEN devis_signe = 'non' THEN 1 END) AS nbr_devis_non_signe
-        FROM v_devis
+            COUNT(devis.id) AS nbr_devis,
+            COUNT(CASE WHEN devis.devis_signe = 'oui' THEN 1 END) AS nbr_devis_signe,
+            COUNT(CASE WHEN devis.devis_signe = 'non' THEN 1 END) AS nbr_devis_non_signe
+        FROM devis
         WHERE date >= ? AND date <= ?
-        ", [$date_debut, $date_fin]);
+        ", [$date_debut. ' 00:00:00', $date_fin.' 23:59:59']);
         return $total[0];
     }
     public function getReglementsAujourdHui()

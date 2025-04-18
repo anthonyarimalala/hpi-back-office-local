@@ -58,6 +58,7 @@ SELECT
     tra.date_pose_reel,
     tra.organisme_payeur,
     tra.montant_encaisse,
+    (COALESCE(emp.montant_acte, 0) - COALESCE(tra.montant_encaisse, 0)) AS reste_a_payer,
     tra.date_controle_paiement,
     ic.numero_cheque,
     ic.montant_cheque,
@@ -122,7 +123,8 @@ SELECT
     tra.date_pose_reel,
     tra.organisme_payeur,
     tra.montant_encaisse,
-    tra.date_controle_paiement
+    tra.date_controle_paiement,
+    (COALESCE(emp.montant_acte, 0) - COALESCE(tra.montant_encaisse, 0)) AS reste_a_payer
 FROM
     devis dev
         LEFT JOIN prothese_empreintes emp ON dev.id = emp.id_devis
@@ -173,8 +175,3 @@ SELECT
         FROM ca_generales cg
         JOIN l_ca_actes_reglements lcar ON cg.id = lcar.id_ca
         JOIN dossiers dos ON cg.dossier = dos.dossier;
-
-
-
-
-
