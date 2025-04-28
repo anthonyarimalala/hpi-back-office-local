@@ -88,7 +88,7 @@
                                 <td>{{ $v_prothese->getTravail_demande() }}</td>
                                 <td style="background-color: {{ $couleur_reste_a_payer }}">{{ $v_prothese->getMontantActe() }}</td>
                                 <td>{{ $v_prothese->getNumero_dent() }}</td>
-                                <td>{{ $v_prothese->getObservations() }}</td>
+                                <td style="white-space: pre-line; word-break: break-word; max-width:300px;">{{ $v_prothese->getObservations() }}</td>
                             </tr>
                             </tbody>
                         </table>

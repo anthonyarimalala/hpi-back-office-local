@@ -377,35 +377,29 @@
 
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Valeur totale initiale
-            const montantTotal = {{ $v_devis->montant }};
+    document.addEventListener("DOMContentLoaded", function() {
+        const montantTotal     = {{ $v_devis->montant }};
+        const partSecuInput    = document.getElementById('part_secu');
+        const partMutuelleInput= document.getElementById('part_mutuelle');
+        const partRacInput     = document.getElementById('part_rac');
 
-            // Récupérer les éléments des inputs
-            const partSecuInput = document.getElementById('part_secu');
-            const partMutuelleInput = document.getElementById('part_mutuelle');
-            const partRacInput = document.getElementById('part_rac');
+        function updatePartRac(e) {
+            // Ne rien faire si l'appel n'est pas issu d'un vrai événement utilisateur
+            if (!e || !e.isTrusted) return;
 
-            // Fonction pour mettre à jour la part RAC
-            function updatePartRac() {
-                // Récupérer les valeurs actuelles des inputs
-                const partSecu = parseFloat(partSecuInput.value) || 0;
-                const partMutuelle = parseFloat(partMutuelleInput.value) || 0;
+            const partSecu     = parseFloat(partSecuInput.value)    || 0;
+            const partMutuelle = parseFloat(partMutuelleInput.value) || 0;
+            const partRac      = montantTotal - (partSecu + partMutuelle);
 
-                // Calculer la part RAC
-                const partRac = montantTotal - (partSecu + partMutuelle);
+            partRacInput.value = partRac.toFixed(2);
+        }
 
-                // Mettre à jour la valeur de part RAC
-                partRacInput.value = partRac.toFixed(2);
-            }
+        partSecuInput.addEventListener('input', updatePartRac);
+        partMutuelleInput.addEventListener('input', updatePartRac);
 
-            // Ajouter des écouteurs d'événements pour mettre à jour partRac à chaque changement
-            partSecuInput.addEventListener('input', updatePartRac);
-            partMutuelleInput.addEventListener('input', updatePartRac);
-
-            // Initialiser la valeur de part RAC au chargement de la page
-            updatePartRac();
-        });
+        // Même si vous appelez updatePartRac() ici sans événement, rien ne se passera :
+        // updatePartRac();
+    });
     </script>
 
     <script>

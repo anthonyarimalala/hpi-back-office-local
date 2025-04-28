@@ -110,7 +110,7 @@ class ProtheseController extends Controller
         $data['v_prothese'] = V_Prothese::where('dossier', $dossier)
             ->where('id_acte', $id_acte)
             ->first();
-        $data['status_poses'] = ProtheseTravauxStatus::where('is_deleted', '0')->where('travaux_status', '!=', '')->get();
+        $data['status_poses'] = ProtheseTravauxStatus::where('is_deleted', '0')->get();
         return view('dossier/prothese/modifier/prothese-modifier')->with($data);
     }
     public function showProthese($dossier, $id_devis, $id_acte){

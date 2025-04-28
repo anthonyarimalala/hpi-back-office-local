@@ -287,6 +287,10 @@
                                             if($devis->montant_acte == 0 || $devis->montant_acte == null || $devis->montant_acte == ''){
                                                 $couleur_reste_a_payer = 'red';
                                             }
+                                            $couleur_info_accord_pec = "";
+                                            if($devis->part_secu == null && $devis->part_mutuelle == null && $devis->part_rac == null){
+                                                $couleur_info_accord_pec = 'red';
+                                            }
                                         @endphp
                                         <tr style="background-color: {{ $devis->couleur }};"
                                             onmouseover="this.style.backgroundColor='#d3d3d3';"
@@ -319,7 +323,7 @@
                                             </td>
                                             <td class="infoDevis"
                                                 ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                                style="cursor:pointer;">
+                                                style="cursor:pointer; background-color: {{ $couleur_info_accord_pec }};">
                                                 {{ $devis->getMontant() }}
                                             </td>
                                             <td class="infoDevis"

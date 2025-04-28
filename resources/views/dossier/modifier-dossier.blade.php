@@ -30,7 +30,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="date_naissance">Date naissance</label>
-                                            <input type="date" class="form-control" id="date_naissance" name="date_naissance" placeholder="Date de naissance" value="{{ $v_dossier->date_naissance }}" disabled>
+                                            <input type="date" class="form-control" id="date_naissance" name="date_naissance" placeholder="Date de naissance" value="{{ $v_dossier->date_naissance }}">
                                             @error('date_naissance')
                                             <div class="alert alert-danger mt-2">{{ $message }}</div>
                                             @enderror

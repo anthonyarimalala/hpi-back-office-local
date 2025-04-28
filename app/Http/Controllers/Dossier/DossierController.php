@@ -29,10 +29,11 @@ class DossierController extends Controller
         $i_dossier = $request->input('dossier');
         $i_nom = $request->input('nom');
         $i_status = $request->input('status');
+        $date_naissance = $request->input('date_naissance');
         $mutuelle = $request->input('mutuelle');
         $email = $request->input('email');
 
-        Dossier::modifierDossier($i_dossier, $i_nom, $i_status, $mutuelle, $email);
+        Dossier::modifierDossier($i_dossier, $i_nom, $date_naissance, $i_status, $mutuelle, $email);
         return redirect('dossiers');
     }
     public function showModifierDossier($dossier)
