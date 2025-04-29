@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{{ asset('star-admin2/vendors/mdi/css/materialdesignicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('star-admin2/css/vertical-layout-light/style.css') }}">
     <link rel="stylesheet" href="{{ asset('star-admin2-global/template.css') }}">
-    <link rel="icon" href="{{ asset('HPI/logo(1).ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('HPI/logoo-removebg-preview.ico') }}" type="image/x-icon">
     <style>
         #deconnection{
             color: whitesmoke;
@@ -129,10 +129,10 @@
             </div>
             <div>
                 <a class="navbar-brand brand-logo" href="">
-                    <img src="{{ asset('HPI/logo.jpg') }}" alt="logo" style="width: 100px; height: auto; object-fit: contain;" />
+                    <img src="{{ asset('HPI/logoo-removebg-preview.png') }}" alt="logo" style="width: 100px; height: auto; object-fit: contain;" />
                 </a>
                 <a class="navbar-brand brand-logo-mini" href="index.html">
-                    <img src="{{ asset('HPI/logo.jpg') }}" alt="logo" style="width: 75px; height: auto; object-fit: contain;" />
+                    <img src="{{ asset('HPI/logoo-removebg-preview.png') }}" alt="logo" style="width: 75px; height: auto; object-fit: contain;" />
                 </a>
             </div>
 

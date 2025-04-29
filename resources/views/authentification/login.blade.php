@@ -5,16 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription</title>
     <link href="{{ asset('bootstrap-offline-docs-5.1\dist\css\bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="icon" href="{{ asset('HPI/logoo-removebg-preview.ico') }}" type="image/x-icon">
 </head>
 <body>
 <div class="container">
     <div class="row justify-content-center">
+        <center>
+            <img src="{{ asset('HPI/logoo-removebg-preview.png') }}" alt="logo" style="width: 150px; height: auto; object-fit: contain;" />
+        </center>
         <div class="col-md-6">
             <div class="card">
+
                 <div class="card-header">Connection</div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
+
                         <div class="form-group">
                             <label for="code_u">Code Utilisateur :</label>
                             <input type="text" id="code_u" name="code_u" class="form-control" value="U0001" required>

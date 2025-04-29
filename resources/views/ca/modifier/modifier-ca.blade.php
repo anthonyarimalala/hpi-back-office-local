@@ -16,6 +16,47 @@
             <h1 class="display-4">CA: Modification</h1>
         </div>
     </div>
+    @php
+        $cotation_restant = $v_ca_actes_reglement->cotation - $v_ca_actes_reglement->cotation_paye;
+        $part_secu_restant = ($v_ca_actes_reglement->ro_part_secu ?? 0) - $v_ca_actes_reglement->ro_part_secu_paye;
+        $part_mutuelle_restant = ($v_ca_actes_reglement->part_mutuelle ?? 0) - $v_ca_actes_reglement->part_mutuelle_paye;
+        $rac_part_patient_restant = ($v_ca_actes_reglement->rac_part_patient ?? 0) - $v_ca_actes_reglement->rac_part_patient_paye;
+        // echo '$cotation_restant = '.$cotation_restant.'<br>';
+        // echo '$part_secu_restant = '.$part_secu_restant.'<br>';
+        // echo '$part_mutuelle_restant = '.$part_mutuelle_restant.'<br>';
+        // echo '$rac_part_patient_restant = '.$rac_part_patient_restant.'<br>';
+
+        $couleur_cotation = "";
+        $couleur_secu = "";
+        $couleur_mutuelle = "";
+        $couleur_rac = "";
+
+        if($cotation_restant < 0){
+            $couleur_cotation = "red";
+        }elseif($cotation_restant > 0) {
+            $couleur_cotation = "orange";
+        }
+
+        if($part_secu_restant < 0){
+            $couleur_secu = "red";
+        }elseif($part_secu_restant > 0) {
+            $couleur_secu = "orange";
+        }
+
+        if($part_mutuelle_restant < 0){
+            $couleur_mutuelle = "red";
+        }elseif($part_mutuelle_restant > 0) {
+            $couleur_mutuelle = "orange";
+        }
+
+        if($rac_part_patient_restant < 0){
+            $couleur_rac = "red";
+        }
+        elseif($rac_part_patient_restant > 0){
+            $couleur_rac = "orange";
+        }
+
+    @endphp
 
     <form action="{{ asset('ca/modifier-2/'.$v_ca_actes_reglement->id_ca_actes_reglement) }}" method="POST">
         @csrf
@@ -97,7 +138,7 @@
                                         </select>
                                     </td>
                                     <td><input type="text" class="form-control" id="nom_acte" name="nom_acte" value="{{ $v_ca_actes_reglement->nom_acte }}" placeholder="Nom de l'acte"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="cotation" name="cotation" value="{{ $v_ca_actes_reglement->cotation }}" placeholder="Cotation"></td>
+                                    <td style="background-color : {{ $couleur_cotation }}"><input type="number" min="0" step="0.01" class="form-control" id="cotation" name="cotation" value="{{ $v_ca_actes_reglement->cotation }}" placeholder="Cotation"></td>
                                     <td><input type="text" class="form-control" id="controle_securisation" name="controle_securisation" value="{{ $v_ca_actes_reglement->controle_securisation }}" placeholder="Contrôle sécurisation"></td>
                                 </tr>
                                 </tbody>
@@ -130,11 +171,11 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_part_secu" name="ro_part_secu" value="{{ $v_ca_actes_reglement->ro_part_secu }}" placeholder="Part Sécu"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_virement_recu" name="ro_virement_recu" value="{{ $v_ca_actes_reglement->ro_virement_recu }}" placeholder="Virement reçu"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_indus_paye" name="ro_indus_paye" value="{{ $v_ca_actes_reglement->ro_indus_paye }}" placeholder="Indus payé"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_indus_en_attente" name="ro_indus_en_attente" value="{{ $v_ca_actes_reglement->ro_indus_en_attente }}" placeholder="Indus en attente"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="ro_indus_irrecouvrable" name="ro_indus_irrecouvrable" value="{{ $v_ca_actes_reglement->ro_indus_irrecouvrable }}" placeholder="Indus irrecouvrable"></td>
+                                    <td style="background-color : {{ $couleur_secu }}"><input type="number" min="0" step="0.01" class="form-control" id="ro_part_secu" name="ro_part_secu" value="{{ $v_ca_actes_reglement->ro_part_secu }}" placeholder="Part Sécu"></td>
+                                    <td style="background-color : {{ $couleur_secu }}"><input type="number" min="0" step="0.01" class="form-control" id="ro_virement_recu" name="ro_virement_recu" value="{{ $v_ca_actes_reglement->ro_virement_recu }}" placeholder="Virement reçu"></td>
+                                    <td style="background-color : {{ $couleur_secu }}"><input type="number" min="0" step="0.01" class="form-control" id="ro_indus_paye" name="ro_indus_paye" value="{{ $v_ca_actes_reglement->ro_indus_paye }}" placeholder="Indus payé"></td>
+                                    <td style="background-color : {{ $couleur_secu }}"><input type="number" min="0" step="0.01" class="form-control" id="ro_indus_en_attente" name="ro_indus_en_attente" value="{{ $v_ca_actes_reglement->ro_indus_en_attente }}" placeholder="Indus en attente"></td>
+                                    <td style="background-color : {{ $couleur_secu }}"><input type="number" min="0" step="0.01" class="form-control" id="ro_indus_irrecouvrable" name="ro_indus_irrecouvrable" value="{{ $v_ca_actes_reglement->ro_indus_irrecouvrable }}" placeholder="Indus irrecouvrable"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -162,7 +203,7 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="part_mutuelle" name="part_mutuelle" value="{{ $v_ca_actes_reglement->part_mutuelle }}" placeholder="Part Mutuelle"></td>
+                                    <td style="background-color: {{ $couleur_mutuelle }}"><input type="number" min="0" step="0.01" class="form-control" id="part_mutuelle" name="part_mutuelle" value="{{ $v_ca_actes_reglement->part_mutuelle }}" placeholder="Part Mutuelle"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -188,9 +229,9 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcs_virement" name="rcs_virement" value="{{ $v_ca_actes_reglement->rcs_virement }}" placeholder="Montant virement"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcs_especes" name="rcs_especes" value="{{ $v_ca_actes_reglement->rcs_especes }}" placeholder="Montant espèces"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcs_cb" name="rcs_cb" value="{{ $v_ca_actes_reglement->rcs_cb }}" placeholder="Montant CB"></td>
+                                    <td style="background-color: {{ $couleur_mutuelle }}"><input type="number" min="0" step="0.01" class="form-control" id="rcs_virement" name="rcs_virement" value="{{ $v_ca_actes_reglement->rcs_virement }}" placeholder="Montant virement"></td>
+                                    <td style="background-color: {{ $couleur_mutuelle }}"><input type="number" min="0" step="0.01" class="form-control" id="rcs_especes" name="rcs_especes" value="{{ $v_ca_actes_reglement->rcs_especes }}" placeholder="Montant espèces"></td>
+                                    <td style="background-color: {{ $couleur_mutuelle }}"><input type="number" min="0" step="0.01" class="form-control" id="rcs_cb" name="rcs_cb" value="{{ $v_ca_actes_reglement->rcs_cb }}" placeholder="Montant CB"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -219,9 +260,9 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcsd_cheque" name="rcsd_cheque" value="{{ $v_ca_actes_reglement->rcsd_cheque }}" placeholder="Montant chèque"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcsd_especes" name="rcsd_especes" value="{{ $v_ca_actes_reglement->rcsd_especes }}" placeholder="Montant espèces"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rcsd_cb" name="rcsd_cb" value="{{ $v_ca_actes_reglement->rcsd_cb }}" placeholder="Montant CB"></td>
+                                    <td style="background-color: {{ $couleur_mutuelle }}"><input type="number" min="0" step="0.01" class="form-control" id="rcsd_cheque" name="rcsd_cheque" value="{{ $v_ca_actes_reglement->rcsd_cheque }}" placeholder="Montant chèque"></td>
+                                    <td style="background-color: {{ $couleur_mutuelle }}"><input type="number" min="0" step="0.01" class="form-control" id="rcsd_especes" name="rcsd_especes" value="{{ $v_ca_actes_reglement->rcsd_especes }}" placeholder="Montant espèces"></td>
+                                    <td style="background-color: {{ $couleur_mutuelle }}"><input type="number" min="0" step="0.01" class="form-control" id="rcsd_cb" name="rcsd_cb" value="{{ $v_ca_actes_reglement->rcsd_cb }}" placeholder="Montant CB"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -251,10 +292,10 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rac_part_patient" name="rac_part_patient" value="{{ $v_ca_actes_reglement->rac_part_patient }}" placeholder="Part patient"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rac_cheque" name="rac_cheque" value="{{ $v_ca_actes_reglement->rac_cheque }}" placeholder="Montant chèque"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rac_especes" name="rac_especes" value="{{ $v_ca_actes_reglement->rac_especes }}" placeholder="Montant espèces"></td>
-                                    <td><input type="number" min="0" step="0.01" class="form-control" id="rac_cb" name="rac_cb" value="{{ $v_ca_actes_reglement->rac_cb }}" placeholder="Montant CB"></td>
+                                    <td style="background-color: {{ $couleur_rac }}"><input type="number" min="0" step="0.01" class="form-control" id="rac_part_patient" name="rac_part_patient" value="{{ $v_ca_actes_reglement->rac_part_patient }}" placeholder="Part patient"></td>
+                                    <td style="background-color: {{ $couleur_rac }}"><input type="number" min="0" step="0.01" class="form-control" id="rac_cheque" name="rac_cheque" value="{{ $v_ca_actes_reglement->rac_cheque }}" placeholder="Montant chèque"></td>
+                                    <td style="background-color: {{ $couleur_rac }}"><input type="number" min="0" step="0.01" class="form-control" id="rac_especes" name="rac_especes" value="{{ $v_ca_actes_reglement->rac_especes }}" placeholder="Montant espèces"></td>
+                                    <td style="background-color: {{ $couleur_rac }}"><input type="number" min="0" step="0.01" class="form-control" id="rac_cb" name="rac_cb" value="{{ $v_ca_actes_reglement->rac_cb }}" placeholder="Montant CB"></td>
                                 </tr>
                                 </tbody>
                             </table>
