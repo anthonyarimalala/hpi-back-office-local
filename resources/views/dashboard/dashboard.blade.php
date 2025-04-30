@@ -127,16 +127,16 @@
             var labels = [];
             var data = [];
             var colors = [
-                '#FF0000', // Rouge
-                '#00FF00', // Vert
-                '#0000FF', // Bleu
-                '#808000', // Olive
-                '#FFFF00', // Jaune
-                '#FF00FF', // Magenta
-                '#00FFFF', // Cyan
-                '#800080', // Violet
-                '#800000', // Marron
-                '#008080'  // Bleu-vert
+                '#4E79A7', // Rouge
+                '#F28E2B', // Vert
+                '#59A14F', // Bleu
+                '#E15759', // Olive
+                '#B07AA1', // Jaune
+                '#76B7B2', // Magenta
+                '#EDC948', // Cyan
+                '#444E65', // Violet
+                '#FF9DA7', // Marron
+                '#9C755F'  // Bleu-vert
             ];
 
 

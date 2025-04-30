@@ -103,7 +103,7 @@
                                                 @endforeach
                                             </tr>
                                             <tr>
-                                                <td style="text-align: right"><strong>{{ number_format($bilan_financier->ca_global, 2, ',', ' ') }}</strong></td>
+                                                <td style=""><strong>{{ number_format($bilan_financier->ca_global, 2, ',', ' ') }}</strong></td>
                                                 @foreach($ca_praticiens as $ca_p)
                                                     <td style="text-align: right"><strong>{{ number_format($ca_p->sum_cotation_praticien, 2, ',', ' ') }}</strong></td>
                                                 @endforeach

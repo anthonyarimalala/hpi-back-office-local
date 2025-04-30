@@ -267,7 +267,7 @@
                 @endif
 
 
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#anomalies" aria-expanded="false" aria-controls="ui-basic">
                             <i class="menu-icon mdi mdi-alert-octagon-outline"></i>
                             <span class="menu-title">Anomalies</span>
@@ -278,7 +278,7 @@
                                 <li class="nav-item"> <a class="nav-link" href="{{ asset('anomalies-ca') }}">CA</a></li>
                             </ul>
                         </div>
-                    </li>
+                    </li> --}}
                 <!--
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#autre" aria-expanded="false" aria-controls="ui-basic">

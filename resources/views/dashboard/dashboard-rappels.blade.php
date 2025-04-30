@@ -59,7 +59,7 @@
                                                     <tr style="background-color: {{ $dev->couleur }}"
                                                         onmouseover="this.style.backgroundColor='#d3d3d3';"
                                                         onmouseout="this.style.backgroundColor='{{ $dev->couleur }}';"
-                                                        onclick="window.location.href='{{ asset($dev->dossier.'/devis/'.$dev->id_devis.'/modifier')  }}';">
+                                                        onclick="window.location.href='{{ asset($dev->dossier.'/devis/'.$dev->id_devis.'/acte'.$dev->id_acte.'/modifier')  }}';">
                                                         <td>{{ $dev->dossier }}</td>
                                                         <td>{{ $dev->nom }}</td>
                                                         <td style="background-color: {{ $couleur1erAppel }}">
@@ -87,7 +87,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-12 col-lg-12 grid-margin stretch-card">
+                        {{-- <div class="col-md-12 col-lg-12 grid-margin stretch-card">
                             <div class="card card-rounded">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-between mb-3">
@@ -141,7 +141,7 @@
 
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
