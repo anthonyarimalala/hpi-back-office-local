@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Gantt Stage HPI" company="" webLink="http://" view-date="2025-02-05" view-index="0" gantt-divider-location="511" resource-divider-location="300" version="3.3.3316" locale="fr_FR">
+    <description/>
+    <view zooming-state="default:2" id="gantt-chart">
+        <field id="tpd3" name="Nom" width="290" order="0"/>
+        <field id="tpd4" name="Date de début" width="109" order="1"/>
+        <field id="tpd5" name="Date de fin" width="111" order="2"/>
+        <field id="tpd15" name="Notes" width="20" order="3"/>
+        <option id="filter.completedTasks" value="false"/>
+        <option id="filter.dueTodayTasks" value="false"/>
+        <option id="filter.overdueTasks" value="false"/>
+        <option id="filter.inProgressTodayTasks" value="false"/>
+        <option id="color.recent"><![CDATA[#6666ff #00cc33 #ffff66]]></option>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Nom" width="210" order="0"/>
+        <field id="1" name="Rôle par défaut" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="6" uid="70a3e74402d440a79b6c8de9517d1454" name="Préparation" meeting="false" start="2024-12-02" duration="12" complete="0" priority="4" expand="false">
+            <task id="1" uid="bc0132088e45445eb4143d252820d2b3" name="Analyse des besoins" meeting="false" start="2024-12-02" duration="2" complete="0" expand="true"/>
+            <task id="2" uid="4f8b1498a84944d293fbcf67c04a2099" name="Installation des environnements" meeting="false" start="2024-12-04" duration="2" complete="0" expand="true"/>
+            <task id="3" uid="4b530d03ab284443b390772492f331e2" name="Apprentissage des nouvelles technologies" meeting="false" start="2024-12-06" duration="4" complete="0" expand="true"/>
+            <task id="4" uid="c7a68dbb301848feb89f55f9ba29bdba" name="Conception" meeting="false" start="2024-12-12" duration="2" complete="0" expand="true"/>
+            <task id="5" uid="6ede93a20b8840f5aab537cd9d986d23" name="Personnalisation de l'interface utilisateur" meeting="false" start="2024-12-17" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="10" uid="77f0988d4a92483a83a95b2a18890c78" name="Développement" meeting="false" start="2024-12-18" duration="37" complete="0" expand="true">
+            <task id="7" uid="3218098f60f14cdba424a67131c9eba4" name="Sprint 1: Authentification" color="#00cc33" meeting="false" start="2024-12-18" duration="3" complete="0" expand="false">
+                <task id="8" uid="6169602f6ff748c4bb61cac52a22c988" name="Authentification" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2024-12-18" duration="2" complete="0" expand="true"/>
+                <task id="9" uid="dc10392e9fab4f04a36116ce67620460" name="Gestion des droits des utilisateurs" meeting="false" start="2024-12-20" duration="1" complete="0" expand="true"/>
+            </task>
+            <task id="13" uid="e1a051327a1148388c01944ea6308691" name="Sprint 2: Devis" color="#00cc33" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2024-12-23" duration="34" complete="0" expand="false">
+                <task id="15" uid="3a230e011d244a1a9db84602ab6c1a46" name="Crud dossier" meeting="false" start="2024-12-23" duration="1" complete="0" expand="true"/>
+                <task id="16" uid="e5a7b612be7246a6a46fefdd15807d66" name="Crud devis" meeting="false" start="2024-12-24" duration="1" complete="0" expand="true"/>
+                <task id="17" uid="445e79ce78e840fcbe0296e54f529903" name="Crud retour mutuelle" meeting="false" start="2024-12-25" duration="1" complete="0" expand="true"/>
+                <task id="18" uid="e1aa40e2e1794db38dad1e8e900deeac" name="Crud paiement" meeting="false" start="2024-12-26" duration="1" complete="0" expand="true"/>
+                <task id="19" uid="868acad61a004fa788f1cdfbe4ca8d30" name="Crud des notes des appels" meeting="false" start="2024-12-27" duration="1" complete="0" expand="true"/>
+                <task id="33" uid="b2373aa7b3bf44efae2ce0129f982a33" name="Filtrage et Recherche dans le tableau" meeting="false" start="2025-01-23" duration="2" complete="0" expand="true"/>
+                <task id="40" uid="f95800a26f7241d0a702ef713dc73582" name="Historique des modifications" meeting="false" start="2025-02-03" duration="4" complete="0" expand="true"/>
+            </task>
+            <task id="20" uid="d220097b86f644b1acc797f65ce008a4" name="Sprint 3: Prothese &amp; Appareillage dentaire" color="#00cc33" meeting="false" start="2024-12-30" duration="29" complete="0" expand="false">
+                <task id="21" uid="dfad203b25bb403e919cb85b4109aa08" name="Crud info d'empreinte" meeting="false" start="2024-12-30" duration="1" complete="0" expand="true"/>
+                <task id="22" uid="b273a4ac9ec7495698af8aa7374079f2" name="Crud Retour labo et pose" meeting="false" start="2024-12-31" duration="2" complete="0" expand="true"/>
+                <task id="23" uid="4d9e6006ee404c5e80ac1749f67baedc" name="Crud travaux cloture" meeting="false" start="2025-01-02" duration="2" complete="0" expand="true"/>
+                <task id="41" uid="7a1dd8fcb6374af7b75cb7da3eac9430" name="Historique des modifications" color="#8cb6ce" meeting="false" start="2025-02-03" duration="4" complete="0" expand="true"/>
+            </task>
+            <task id="24" uid="e1c8325fd3c04e3cae34424b5d18aca7" name="Sprint 4: Traitement Cheque" color="#00cc33" meeting="false" start="2025-01-06" duration="24" complete="0" expand="false">
+                <task id="25" uid="15adad73629c4476b76f3f2d6dbe1926" name="Crud Cheque et information associé" meeting="false" start="2025-01-06" duration="3" complete="0" expand="true"/>
+                <task id="29" uid="edeaba8a30634a9992d89dfeb88c06cf" name="Import/Export .xlsx Devis &amp; Prothèse &amp; Chèque" meeting="false" start="2025-01-16" duration="3" complete="0" expand="true"/>
+                <task id="42" uid="d2f72733590c4e3780a1b6ebb23015d0" name="Historique des modifications" color="#8cb6ce" meeting="false" start="2025-02-03" duration="4" complete="0" expand="true"/>
+            </task>
+            <task id="26" uid="43bdfa2eea50416ca3b1fe873a2680a7" name="Sprint 5: CA" color="#00cc33" meeting="false" start="2025-01-09" duration="21" complete="0" expand="false">
+                <task id="27" uid="b1d8a6b1d3b346e392fac0bb45de2578" name="Crud CA" meeting="false" start="2025-01-09" duration="4" complete="0" expand="true"/>
+                <task id="28" uid="2a450cb73f9a4905b4329a36e0454c8c" name="Statistiques CA" meeting="false" start="2025-01-15" duration="1" complete="0" expand="true"/>
+                <task id="30" uid="92e5e90808b545e190b51e5d2fc7718c" name="Import/Export .xlsx CA" meeting="false" start="2025-01-21" duration="2" complete="0" expand="true"/>
+                <task id="34" uid="cb7df4b63f014756b09429016f1f0209" name="Filtrage et Recherche dans le tableau" color="#8cb6ce" meeting="false" start="2025-01-23" duration="2" complete="0" expand="true"/>
+                <task id="43" uid="f9e93834133d4b669a7ca7577ba157b2" name="Historique des modifications" color="#8cb6ce" meeting="false" start="2025-02-03" duration="4" complete="0" expand="true"/>
+            </task>
+            <task id="31" uid="a0e2f7d68edd42e197922a004ac9df7e" name="Sprint 6: Autres fonctionnalités intéressantes" color="#00cc33" meeting="false" start="2025-01-27" duration="7" complete="0" expand="true">
+                <task id="32" uid="f1ade31e9b5d42efb653e9672d4d7e14" name="Recherche de dossier" meeting="false" start="2025-01-27" duration="1" complete="0" expand="true"/>
+                <task id="35" uid="71f6dc74526e4b3f82327c45b818753d" name="Dashboards" color="#6666ff" meeting="false" start="2025-01-29" duration="3" complete="0" expand="false">
+                    <task id="37" uid="ce6a45b4673343229275588d46a1fb89" name="Statistique devis entre deux dates" meeting="false" start="2025-01-29" duration="1" complete="0" expand="true"/>
+                    <task id="38" uid="ef9937075c6d4d1d880cddd5e4f1b1de" name="Statistiques CA entre deux dates" meeting="false" start="2025-01-30" duration="1" complete="0" expand="true"/>
+                    <task id="39" uid="f6dcef636fc8463ab725fe9028bbb6f8" name="Rappels de dates importantes" meeting="false" start="2025-01-31" duration="1" complete="0" expand="true"/>
+                </task>
+                <task id="44" uid="b731ff0cd6a74e45b1f16422ab45fb6a" name="Envoie Email" meeting="false" start="2025-02-03" duration="2" complete="0" expand="true"/>
+            </task>
+        </task>
+        <task id="45" uid="f79433f0dac44c4485e39085c5c85b06" name="Test et Déploiement" meeting="false" start="2025-02-07" duration="11" complete="0" expand="true">
+            <task id="46" uid="812368dfbd1c475f9b169c74ee7af268" name="Test" meeting="false" start="2025-02-07" duration="6" complete="0" expand="true"/>
+            <task id="47" uid="8a8af8bb115349dba97d5ba59f21a3c5" name="Correction des bugs" meeting="false" start="2025-02-11" duration="8" complete="0" expand="true"/>
+            <task id="48" uid="a2a0d584029f40fcaa8e7779f2689aee" name="Déploiement Local" meeting="false" start="2025-02-21" duration="1" complete="0" expand="true"/>
+            <task id="49" uid="70407ffc946f433886083c154b059901" name="Formation Utilisateurs" meeting="false" start="2025-02-07" duration="2" complete="0" expand="true"/>
+        </task>
+    </tasks>
+    <resources/>
+    <allocations/>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>
