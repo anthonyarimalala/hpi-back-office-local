@@ -395,7 +395,7 @@ class ImportsController extends Controller
         Excel::import(new DevisImport($file), $file);
 
 // step-2: mise à jour et insertion des données, celà peut prendre un certain moment
-        $m_import_deviss = ImportDevis::all();
+        $m_import_deviss = ImportDevis::where('dossier', '!=', null)->get();
 
         // Obtenir tous les clés primaires pour éviter de faire trop de requetes vers la base de donnée
         $m_protheseTravauxStatusS = ProtheseTravauxStatus::all()->keyBy('travaux_status');
