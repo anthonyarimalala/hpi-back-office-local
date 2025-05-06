@@ -30,31 +30,12 @@
         $couleur_secu = "";
         $couleur_mutuelle = "";
         $couleur_rac = "";
+        $couleur_dossier = "";
 
-        if($cotation_restant < 0){
-            $couleur_cotation = "red";
-        }elseif($cotation_restant > 0) {
-            $couleur_cotation = "orange";
-        }
-
-        if($part_secu_restant < 0){
-            $couleur_secu = "red";
-        }elseif($part_secu_restant > 0) {
-            $couleur_secu = "orange";
-        }
-
-        if($part_mutuelle_restant < 0){
-            $couleur_mutuelle = "red";
-        }elseif($part_mutuelle_restant > 0) {
-            $couleur_mutuelle = "orange";
-        }
-
-        if($rac_part_patient_restant < 0){
-            $couleur_rac = "red";
-        }
-        elseif($rac_part_patient_restant > 0){
-            $couleur_rac = "orange";
-        }
+        if($cotation_restant < 0){$couleur_cotation = "orange"; $couleur_dossier = "orange"; }elseif($cotation_restant > 0) {$couleur_cotation = "red"; $couleur_dossier = "red";}
+                                            if($part_secu_restant < 0){$couleur_secu = "orange"; $couleur_dossier = "orange";}elseif($part_secu_restant > 0) {$couleur_secu = "red"; $couleur_dossier = "red";}
+                                            if($part_mutuelle_restant < 0){$couleur_mutuelle = "orange"; $couleur_dossier = "orange";}elseif($part_mutuelle_restant > 0) {$couleur_mutuelle = "red"; $couleur_dossier = "red";}
+                                            if($rac_part_patient_restant < 0){$couleur_rac = "orange"; $couleur_dossier = "orange";}elseif($rac_part_patient_restant > 0) {$couleur_rac = "red"; $couleur_dossier = "red";}
 
     @endphp
 
@@ -81,10 +62,10 @@
                                 <tbody>
                                 <tr>
                                     <td><input type="date" class="form-control" id="date_derniere_modif" name="date_derniere_modif" value="" placeholder="Date de modification" readonly></td>
-                                    <td><input type="text" class="form-control" id="dossierr" name="dossierr" value="{{ $v_ca_actes_reglement->dossier }}" placeholder="Numéro de dossier" required readonly></td>
+                                    <td style="background-color: {{ $couleur_dossier }};"><input type="text" class="form-control" id="dossierr" name="dossierr" value="{{ $v_ca_actes_reglement->dossier }}" placeholder="Numéro de dossier" requiorange readonly></td>
                                     <td><input type="text" class="form-control" id="nom_patient" name="nom_patient" value="@if($v_ca_actes_reglement->nom) {{ $v_ca_actes_reglement->nom }} @else {{ old("nom_patient") }} @endif" placeholder="Nom du patient" readonly></td>
                                     <td>
-                                        <select class="form-select" name="statut" id="statut" required readonly>
+                                        <select class="form-select" name="statut" id="statut" requiorange readonly>
                                             <option value="" disabled selected>Choix statut</option>
                                             @foreach($status as $st)
                                                 <option value="{{ $st->status }}" @if($v_ca_actes_reglement->statut == $st->status) selected @endif>{{ $st->status }}</option>
@@ -130,7 +111,7 @@
                                 <tbody>
                                 <tr>
                                     <td>
-                                        <select class="form-select" name="praticien" required>
+                                        <select class="form-select" name="praticien" requiorange>
                                             <option value="" disabled>Choix praticien</option>
                                             @foreach($praticiens as $pra)
                                                 <option value="{{ $pra->praticien }}" @if($v_ca_actes_reglement->praticien == $pra->praticien) selected @endif>{{ $pra->praticien }}</option>

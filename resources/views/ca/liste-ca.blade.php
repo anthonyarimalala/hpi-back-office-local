@@ -69,7 +69,7 @@
                                 {{ $ca_actes_reglements->links('pagination::bootstrap-4') }}
                             </div>
                             <div class="table-responsive  mt-1">
-                                <table class="table table-bordered">
+                                <table class="table table-bordeorange">
                                     <thead>
                                     <tr>
                                         <th colspan="5" style="background-color: #f3f3f3; text-align: center; border-right: 2px solid #000;"></th>
@@ -124,11 +124,11 @@
                                             $couleur_rac = "";
                                             $couleur_dossier = "";
 
-                                            if($cotation_restant < 0){$couleur_cotation = "red"; $couleur_dossier = "red"; }elseif($cotation_restant > 0) {$couleur_cotation = "orange"; $couleur_dossier = "orange";}
-                                            if($part_secu_restant < 0){$couleur_secu = "red"; $couleur_dossier = "red";}elseif($part_secu_restant > 0) {$couleur_secu = "orange"; $couleur_dossier = "orange";}
-                                            if($part_mutuelle_restant < 0){$couleur_mutuelle = "red"; $couleur_dossier = "red";}elseif($part_mutuelle_restant > 0) {$couleur_mutuelle = "orange"; $couleur_dossier = "orange";}
-                                            if($rac_part_patient_restant < 0){$couleur_rac = "red"; $couleur_dossier = "red";}elseif($rac_part_patient_restant > 0) {$couleur_rac = "orange"; $couleur_dossier = "orange";}
-                                            //if($couleur_cotation!=""||$couleur_secu!=""||$couleur_mutuelle!=""||$couleur_rac!=""){ $couleur_dossier = "orange"; }
+                                            if($cotation_restant < 0){$couleur_cotation = "orange"; $couleur_dossier = "orange"; }elseif($cotation_restant > 0) {$couleur_cotation = "red"; $couleur_dossier = "red";}
+                                            if($part_secu_restant < 0){$couleur_secu = "orange"; $couleur_dossier = "orange";}elseif($part_secu_restant > 0) {$couleur_secu = "red"; $couleur_dossier = "red";}
+                                            if($part_mutuelle_restant < 0){$couleur_mutuelle = "orange"; $couleur_dossier = "orange";}elseif($part_mutuelle_restant > 0) {$couleur_mutuelle = "red"; $couleur_dossier = "red";}
+                                            if($rac_part_patient_restant < 0){$couleur_rac = "orange"; $couleur_dossier = "orange";}elseif($rac_part_patient_restant > 0) {$couleur_rac = "red"; $couleur_dossier = "red";}
+                                            //if($couleur_cotation!=""||$couleur_secu!=""||$couleur_mutuelle!=""||$couleur_rac!=""){ $couleur_dossier = "red"; }
 
                                         @endphp
                                         <tr ondblclick="window.location.href='{{ asset('ca/'.$ca->id_ca_actes_reglement.'/'.$ca->dossier.'/modifier') }}';">

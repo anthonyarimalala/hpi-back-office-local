@@ -183,8 +183,8 @@ class DevisController extends Controller
         $prothese_empreintes = new ProtheseEmpreinte();
         $prothese_empreintes->id_devis = $id_devis;
         $prothese_empreintes->save();
-        $date = Carbon::parse($prothese_empreintes->created_at)->format('Y-m-d');
-        L_CaActesReglement::createCaAfterDevis($id_devis, $prothese_empreintes->id, null, null, $date);
+        // $date = Carbon::parse($prothese_empreintes->created_at)->format('Y-m-d');
+        // L_CaActesReglement::createCaAfterDevis($id_devis, $prothese_empreintes->id, null, null, $date);
         return redirect()->to($dossier.'/devis/'.$id_devis.'/detail');
     }
     public function creerDevis(Request $request)
@@ -230,9 +230,9 @@ class DevisController extends Controller
             $prothese_empreintes = new ProtheseEmpreinte();
             $prothese_empreintes->id_devis = $id_devis;
             $prothese_empreintes->save();
-            $date = Carbon::parse($prothese_empreintes->created_at)->format('Y-m-d');
+            // $date = Carbon::parse($prothese_empreintes->created_at)->format('Y-m-d');
             //echo($id_devis);
-            L_CaActesReglement::createCaAfterDevis($id_devis, $prothese_empreintes->id, null, null, $date);
+            // L_CaActesReglement::createCaAfterDevis($id_devis, $prothese_empreintes->id, null, null, $date);
             return redirect()->to($dossier.'/details')->with('success', 'Le devis a été ajouté avec succès.');
         } catch (\Exception $e) {
             // print($e->getMessage());

@@ -114,7 +114,7 @@ class ProtheseEmpreinte extends Model
         if($date_devis == null){
             $date_devis = Carbon::parse($empreinte->created_at)->format('Y-m-d') ;
         }
-        L_CaActesReglement::createCaAfterDevis($id_devis, $id_acte, $travail_demande, $montant_acte, $date_devis);
+        //L_CaActesReglement::createCaAfterDevis($id_devis, $id_acte, $travail_demande, $montant_acte, $date_devis);
 
         $empreinte->save();
         return $empreinte;

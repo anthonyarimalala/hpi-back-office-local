@@ -871,19 +871,6 @@ class ImportsController extends Controller
             $m_h_cheque->action .= "Données importés: (Date devis: ". $m_devis_nouveau->date .")" . "\n";
             $withChangeCheque = false;
 
-            /*
-            $m_info_cheques = InfoCheque::firstOrNew(['id_devis' => $m_devis->id]);
-            $m_info_cheques->numero_cheque = trim($mid->numero_cheque);
-            if ($mid->montant_cheque && $mid->montant_cheque != '') $m_info_cheques->montant_cheque = trim($mid->montant_cheque);
-            $m_info_cheques->nom_document = trim($mid->nom_document);
-            $m_info_cheques->date_encaissement_cheque = $imp_devis->makeDate($mid->date_encaissement_cheque);
-            $m_info_cheques->date_1er_acte = $imp_devis->makeDate($mid->date_1er_acte);
-            $m_info_cheques->nature_cheque = trim($mid->nature_cheque); // ao amle table ilay izy misy valeurs dooly ny primary key fa ato otrany to tsisy
-            $m_info_cheques->travaux_sur_devis = trim($mid->travaux_sur_devis);
-            $m_info_cheques->situation_cheque = trim($mid->situation_cheque);
-            $m_info_cheques->observation = $mid->cheque_observation;
-            */
-
             // step 8: cheque
             $numero_cheque = trim($mid->numero_cheque);
             $montant_cheque = null;

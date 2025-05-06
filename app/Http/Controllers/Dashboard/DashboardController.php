@@ -45,15 +45,21 @@ class DashboardController extends Controller
         $m_dashboard = new Dashboard();
         $today = Carbon::today();
         $data['today'] = $today;
-        $data['appoche_validite_pecs'] = V_Devis::where('date_fin_validite_pec', '>=', $today)
-            ->orderBy('date_fin_validite_pec', 'asc')->get();
-        $data['reglements'] = V_Devis::where('date_paiement_cb_ou_esp', $today)
-            ->orWhere('date_depot_chq_pec', $today)
-            ->orWhere('date_depot_chq_part_mut', $today)
-            ->orWhere('date_depot_chq_rac', $today)
-            ->get();
+
+        // $data['appoche_validite_pecs'] = V_Devis::where('date_fin_validite_pec', '>=', $today)
+        //     ->orderBy('date_fin_validite_pec', 'asc')->get();
+
+        // $data['reglements'] = V_Devis::where('date_paiement_cb_ou_esp', $today)
+        //     ->orWhere('date_depot_chq_pec', $today)
+        //     ->orWhere('date_depot_chq_part_mut', $today)
+        //     ->orWhere('date_depot_chq_rac', $today)
+        //     ->get();
+        $data['validite_pecs'] = $m_dashboard->getFinValiditePecs();
         $data['appels_mails_ajdss'] = $m_dashboard->getAppelsMailsAujourdHui();
+        $data['m_dash'] = $m_dashboard;
         return view('dashboard/dashboard-rappels')->with($data);
     }
+
+
 
 }

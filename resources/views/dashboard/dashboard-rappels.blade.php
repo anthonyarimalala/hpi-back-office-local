@@ -40,6 +40,9 @@
                                             </tr>
                                             </thead>
                                             <tbody  id="reglement-body">
+                                                @php
+                                                    $id_devis = null;
+                                                @endphp
                                                 @foreach($appels_mails_ajdss as $dev)
                                                     @php
                                                         $today = \Carbon\Carbon::today()->format('Y-m-d');
@@ -47,16 +50,21 @@
                                                         $couleur2emeAppel = null;
                                                         $couleur3emeAppel = null;
                                                         $couleurMail = null;
-                                                        if ($dev->date_1er_appel == $today) $couleur1erAppel = '#B7A28A';
+                                                        if ($dev->date_1er_appel == $today) $couleur1erAppel = 'red';
                                                         if ($dev->note_1er_appel != null && $dev->note_1er_appel != '') $couleur1erAppel = '#73E55D';
-                                                        if ($dev->date_2eme_appel == $today) $couleur2emeAppel = '#B7A28A';
+                                                        if ($dev->date_2eme_appel == $today) $couleur2emeAppel = 'red';
                                                         if ($dev->note_2eme_appel != null && $dev->note_2eme_appel != '') $couleur2emeAppel = '#73E55D';
-                                                        if ($dev->date_3eme_appel == $today) $couleur3emeAppel = '#B7A28A';
+                                                        if ($dev->date_3eme_appel == $today) $couleur3emeAppel = 'red';
                                                         if ($dev->note_3eme_appel != null && $dev->note_3eme_appel != '') $couleur3emeAppel = '#73E55D';
-                                                        if ($dev->date_envoi_mail == $today) $couleurMail = '#B7A28A';
+                                                        if ($dev->date_envoi_mail == $today) $couleurMail = 'red';
                                                         if ($dev->email_sent == 1) $couleurMail = '#73E55D';
+
+                                                        $couleur_font = '';
+                                                        if ($id_devis == $dev->id_devis) {
+                                                            $couleur_font = "gray";
+                                                        }
                                                     @endphp
-                                                    <tr style="background-color: {{ $dev->couleur }}"
+                                                    <tr style="background-color: {{ $dev->couleur }}; color: {{ $couleur_font }}"
                                                         onmouseover="this.style.backgroundColor='#d3d3d3';"
                                                         onmouseout="this.style.backgroundColor='{{ $dev->couleur }}';"
                                                         onclick="window.location.href='{{ asset($dev->dossier.'/devis/'.$dev->id_devis.'/acte'.$dev->id_acte.'/modifier')  }}';">
@@ -78,6 +86,9 @@
                                                             {{ $dev->date_envoi_mail ? \Carbon\Carbon::parse($dev->date_envoi_mail)->format('d-m-Y') : '' }}
                                                         </td>
                                                     </tr>
+                                                    @php
+                                                        $id_devis = $dev->id_devis;
+                                                    @endphp
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -86,7 +97,63 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div class="col-md-12 col-lg-12 grid-margin stretch-card">
+                            <div class="card card-rounded">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <h4 class="card-title card-title-dash">Validite PEC</h4>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>Dossier</th>
+                                                <th>Patient</th>
+                                                <th>Date d'envoi PEC</th>
+                                                <th>Date fin validité PEC</th>
+                                                <th>Part sécu</th>
+                                                <th>Part mutuelle</th>
+                                                <th>Part RAC</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody  id="reglement-body">
+                                                @php
+                                                    $id_devis = null;
+                                                @endphp
+                                                @foreach($validite_pecs as $dev)
+                                                    @php
+                                                        $today = \Carbon\Carbon::today()->format('Y-m-d');
+                                                        $couleur_today = "";
+                                                        if($dev->date_fin_validite_pec == $today){
+                                                            $couleur_today = '#73E55D';
+                                                        }
+                                                        $couleur_font = '';
+                                                        if ($id_devis == $dev->id_devis) {
+                                                            $couleur_font = "gray";
+                                                        }
+                                                    @endphp
+                                                    <tr style="background-color: {{ $dev->couleur }}; color: {{ $couleur_font }};"
+                                                        onmouseover="this.style.backgroundColor='#d3d3d3';"
+                                                        onmouseout="this.style.backgroundColor='{{ $dev->couleur }}';"
+                                                        onclick="window.location.href='{{ asset($dev->dossier.'/devis/'.$dev->id_devis.'/acte'.$dev->id_acte.'/modifier')  }}';">
+                                                        <td>{{ $dev->dossier }}</td>
+                                                        <td>{{ $dev->nom }}</td>
+                                                        <td>{{  $m_dash->formatDate($dev->date_envoi_pec) }}</td>
+                                                        <td style="background-color: {{ $couleur_today }};">{{ $m_dash->formatDate($dev->date_fin_validite_pec) }}</td>
+                                                        <td>{{ $dev->part_secu }}</td>
+                                                        <td>{{ $dev->part_mutuelle }}</td>
+                                                        <td>{{ $dev->part_rac }}</td>
+                                                    </tr>
+                                                    @php
+                                                        $id_devis = $dev->id_devis;
+                                                    @endphp
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         {{-- <div class="col-md-12 col-lg-12 grid-margin stretch-card">
                             <div class="card card-rounded">
                                 <div class="card-body">

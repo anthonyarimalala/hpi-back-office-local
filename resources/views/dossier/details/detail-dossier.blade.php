@@ -194,281 +194,295 @@
 
                                 </tr>
                                 </thead>
-                            <tbody>
-                                @foreach($deviss as $devis)
-                                @php
-                                    $couleur_reste_a_payer = '';
-                                    if($devis->reste_a_payer > 0){
-                                        $couleur_reste_a_payer = 'red';
-                                    }else if($devis->reste_a_payer < 0){
-                                        $couleur_reste_a_payer = 'red';
-                                    }else if($devis->reste_a_payer == 0){
-                                        $couleur_reste_a_payer = 'green';
-                                    }
-                                    if($devis->montant_acte == 0 || $devis->montant_acte == null || $devis->montant_acte == ''){
-                                        $couleur_reste_a_payer = 'red';
-                                    }
-                                @endphp
-                                <tr style="background-color: {{ $devis->couleur }};"
-                                    onmouseover="this.style.backgroundColor='#d3d3d3';"
-                                    onmouseout="this.style.backgroundColor='{{ $devis->couleur }}';">
-                                    <!-- INFO DEVIS -->
-                                    <td class="infoDevis"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        <strong>{{ $devis->dossier }}</strong>
-                                    </td>
-                                    <td class="infoDevis"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer; word-wrap: break-word; max-width: 150px; overflow: hidden; text-overflow: ellipsis;">
-                                        {{ $devis->nom }}
-                                    </td>
-                                    <td class="infoDevis"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->mutuelle }}
-                                    </td>
-                                    <td class="infoDevis"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->status }}
-                                    </td>
-                                    <td class="infoDevis"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate() }}
-                                    </td>
-                                    <td class="infoDevis"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getMontant() }}
-                                    </td>
-                                    <td class="infoDevis"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        @if($devis->devis_signe == 'oui')
-                                            <label class="badge badge-info">Oui</label>
-                                        @else
-                                            Non
-                                        @endif
-                                    </td>
-                                    <td class="infoDevis" style="border-right: 2px solid #000;"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->praticien }}
-                                    </td>
-                                    <td class="infoDevis" style="border-right: 2px solid #000;"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ Str::limit($devis->devis_observation, 50) }}
-                                    </td>
-
-                                    <!-- INFO ACCORD PEC -->
-                                    <td class="infoAccordPec"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate_envoi_pec() }}
-                                    </td>
-                                    <td class="infoAccordPec"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate_fin_validite_pec() }}
-                                    </td>
-                                    <td class="infoAccordPec"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer; @foreach($devis_accord_pecs_status as $da) @if($da->status == $devis->part_secu_status) background-color: {{ $da->couleur }} @endif @endforeach">
-                                        {{ $devis->getPart_secu() }}
-                                    </td>
-                                    <td class="infoAccordPec"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer; @foreach($devis_accord_pecs_status as $da) @if($da->status == $devis->part_mutuelle_status) background-color: {{ $da->couleur }} @endif @endforeach">
-                                        {{ $devis->getPart_mutuelle() }}
-                                    </td>
+                                <tbody>
                                     @php
-                                        foreach ($devis_accord_pecs_status as $da) {
-                                            if($da->status == $devis->part_rac_status){
-                                                $couleur = $da->couleur;
-                                            }
-                                        }
+                                        $id_devis = null;
                                     @endphp
-                                    <td class="infoAccordPec" style="border-right: 2px solid #000; cursor:pointer; background-color: {{ $couleur }}"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';">
-                                        {{ $devis->getPart_rac() }}
-                                    </td>
+                                    @foreach($deviss as $devis)
+                                        @php
+                                            $couleur_reste_a_payer = '';
+                                            if($devis->reste_a_payer > 0){
+                                                $couleur_reste_a_payer = 'red';
+                                            }else if($devis->reste_a_payer < 0){
+                                                $couleur_reste_a_payer = 'red';
+                                            }else if($devis->reste_a_payer == 0){
+                                                $couleur_reste_a_payer = 'green';
+                                            }
+                                            if($devis->montant_acte == 0 || $devis->montant_acte == null || $devis->montant_acte == ''){
+                                                $couleur_reste_a_payer = 'red';
+                                            }
+                                            $couleur_info_accord_pec = "";
+                                            if($devis->part_secu == null && $devis->part_mutuelle == null && $devis->part_rac == null){
+                                                $couleur_info_accord_pec = 'red';
+                                            }
+                                            $couleur_font = '';
+                                            if ($id_devis == $devis->id_devis) {
+                                                $couleur_font = "transparent";
+                                            }
+                                        @endphp
+                                        <tr style="background-color: {{ $devis->couleur }};"
+                                            onmouseover="this.style.backgroundColor='#d3d3d3';"
+                                            onmouseout="this.style.backgroundColor='{{ $devis->couleur }}';">
+                                            <!-- INFO DEVIS -->
+                                            <td class="infoDevis"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                <strong>{{ $devis->dossier }}</strong>
+                                            </td>
+                                            <td class="infoDevis"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; word-wrap: break-word; max-width: 150px; overflow: hidden; text-overflow: ellipsis; color: {{ $couleur_font }};">
+                                                {{ $devis->nom }}
+                                            </td>
+                                            <td class="infoDevis"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->mutuelle }}
+                                            </td>
+                                            <td class="infoDevis"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->status }}
+                                            </td>
+                                            <td class="infoDevis"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getDate() }}
+                                            </td>
+                                            <td class="infoDevis"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; background-color: {{ $couleur_info_accord_pec }}; color: {{ $couleur_font }};">
+                                                {{ $devis->getMontant() }}
+                                            </td>
+                                            <td class="infoDevis"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                @if($devis->devis_signe == 'oui')
+                                                    <label class="badge badge-info">Oui</label>
+                                                @else
+                                                    Non
+                                                @endif
+                                            </td>
+                                            <td class="infoDevis" style="border-right: 2px solid #000; color: {{ $couleur_font }};"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ $devis->praticien }}
+                                            </td>
+                                            <td class="infoDevis" style="border-right: 2px solid #000; color: {{ $couleur_font }};"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ Str::limit($devis->devis_observation, 50) }}
+                                            </td>
 
-                                    <!-- APPELS & MAIL -->
-                                    <td class="appelsMail"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate_1er_appel() }}
-                                    </td>
-                                    <td class="appelsMail"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
-                                        {{ $devis->getNote_1er_appel() }}
-                                    </td>
-                                    <td class="appelsMail"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate_2eme_appel() }}
-                                    </td>
-                                    <td class="appelsMail"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
-                                        {{ $devis->getNote_2eme_appel() }}
-                                    </td>
-                                    <td class="appelsMail"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate_3eme_appel() }}
-                                    </td>
-                                    <td class="appelsMail"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
-                                        {{ $devis->getNote_3eme_appel() }}
-                                    </td>
-                                    <td class="appelsMail"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer; border-right: 2px solid #000;">
-                                        {{ $devis->getDate_envoi_mail() }}
-                                    </td>
-                                    <td class="infoEmpreinte"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getLaboratoire() }}
-                                    </td>
-                                    <td class="infoEmpreinte"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate_empreinte() }}
-                                    </td>
-                                    <td class="infoEmpreinte"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate_envoi_labo() }}
-                                    </td>
-                                    <td class="infoEmpreinte"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getTravail_demande() }}
-                                    </td>
-                                    <td class="infoEmpreinte"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer; background-color: {{ $couleur_reste_a_payer }}">
-                                        {{ $devis->getMontantActe() }}
-                                    </td>
-                                    <td class="infoEmpreinte"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getNumero_dent() }}
-                                    </td>
-                                    <td class="infoEmpreinte"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer; border-right: 2px solid #000;">
-                                        @if($devis->empreinte_observation)
-                                            {{ Str::limit($devis->empreinte_observation, 50) }}
-                                        @else
-                                            ...
-                                        @endif
-                                    </td>
-                                    <td class="retourLabo"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate_livraison() }}
-                                    </td>
-                                    <td class="retourLabo"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getNumero_suivi() }}
-                                    </td>
-                                    <td class="retourLabo"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer; border-right: 2px solid #000;">
-                                        {{ $devis->getNumero_facture_labo() }}
-                                    </td>
-                                    <td class="pose"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate_pose_prevue() }}
-                                    </td>
-                                    <td class="pose"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer; border-right: 2px solid #000;">
-                                        {{ $devis->getPoseStatut() }}
-                                    </td>
-                                    <td class="travauxCloture"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate_pose_reel() }}
-                                    </td>
-                                    <td class="travauxCloture"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getOrganisme_payeur() }}
-                                    </td>
-                                    <td class="travauxCloture"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getMontant_encaisse() }}
-                                    </td>
-                                    <td class="travauxCloture" style="border-right: 2px solid #000;"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate_controle_paiement() }}
-                                    </td>
-                                    <td class="infoCheques"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getNumero_cheque() }}
-                                    </td>
-                                    <td class="infoCheques"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getMontant_cheque() }}
-                                    </td>
-                                    <td class="infoCheques"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getNom_document() }}
-                                    </td>
-                                    <td class="infoCheques"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate_encaissement_cheque() }}
-                                    </td>
-                                    <td class="infoCheques"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getDate_1er_acte() }}
-                                    </td>
-                                    <td class="infoCheques"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getNature_cheque() }}
-                                    </td>
-                                    <td class="infoCheques"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getTravaux_sur_devis() }}
-                                    </td>
-                                    <td class="infoCheques"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        {{ $devis->getSituation_cheque() }}
-                                    </td>
-                                    <td class="infoCheques"
-                                        ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                        style="cursor:pointer;">
-                                        @if($devis->cheque_observation)
-                                            {{ Str::limit($devis->cheque_observation, 50) }}
-                                        @else
-                                            ...
-                                        @endif
-                                    </td>
-                                    <td ondblclick="event.stopPropagation()"><a href="{{ asset('deleteDevis/'.$devis->id_devis.'/'.$devis->id_acte) }}" onclick="return deleteItem('<?= $devis->dossier ?>', '<?= $devis->date ?>')">Supprimer</a></td>
-                                </tr>
-                            @endforeach
-                            </tbody>
+                                            <!-- INFO ACCORD PEC -->
+                                            <td class="infoAccordPec"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getDate_envoi_pec() }}
+                                            </td>
+                                            <td class="infoAccordPec"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getDate_fin_validite_pec() }}
+                                            </td>
+                                            <td class="infoAccordPec"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer color: {{ $couleur_font }};; @foreach($devis_accord_pecs_status as $da) @if($da->status == $devis->part_secu_status) background-color: {{ $da->couleur }} @endif @endforeach">
+                                                {{ $devis->getPart_secu() }}
+                                            </td>
+                                            <td class="infoAccordPec"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }}; @foreach($devis_accord_pecs_status as $da) @if($da->status == $devis->part_mutuelle_status) background-color: {{ $da->couleur }} @endif @endforeach">
+                                                {{ $devis->getPart_mutuelle() }}
+                                            </td>
+                                            @php
+                                                foreach ($devis_accord_pecs_status as $da) {
+                                                    if($da->status == $devis->part_rac_status){
+                                                        $couleur = $da->couleur;
+                                                    }
+                                                }
+                                            @endphp
+                                            <td class="infoAccordPec" style="border-right: 2px solid #000; cursor:pointer; background-color: {{ $couleur }}; color: {{ $couleur_font }};"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';">
+                                                {{ $devis->getPart_rac() }}
+                                            </td>
+
+                                            <!-- APPELS & MAIL -->
+                                            <td class="appelsMail"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getDate_1er_appel() }}
+                                            </td>
+                                            <td class="appelsMail"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis; color: {{ $couleur_font }};">
+                                                {{ $devis->getNote_1er_appel() }}
+                                            </td>
+                                            <td class="appelsMail"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getDate_2eme_appel() }}
+                                            </td>
+                                            <td class="appelsMail"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis; color: {{ $couleur_font }};">
+                                                {{ $devis->getNote_2eme_appel() }}
+                                            </td>
+                                            <td class="appelsMail"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getDate_3eme_appel() }}
+                                            </td>
+                                            <td class="appelsMail"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }}; word-wrap: break-word; max-width: 175px; overflow: hidden; text-overflow: ellipsis;">
+                                                {{ $devis->getNote_3eme_appel() }}
+                                            </td>
+                                            <td class="appelsMail"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; border-right: 2px solid #000; color: {{ $couleur_font }};">
+                                                {{ $devis->getDate_envoi_mail() }}
+                                            </td>
+                                            <td class="infoEmpreinte"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ $devis->getLaboratoire() }}
+                                            </td>
+                                            <td class="infoEmpreinte"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ $devis->getDate_empreinte() }}
+                                            </td>
+                                            <td class="infoEmpreinte"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ $devis->getDate_envoi_labo() }}
+                                            </td>
+                                            <td class="infoEmpreinte"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ $devis->getTravail_demande() }}
+                                            </td>
+                                            <td class="infoEmpreinte"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; background-color: {{ $couleur_reste_a_payer }}">
+                                                {{ $devis->getMontantActe() }}
+                                            </td>
+                                            <td class="infoEmpreinte"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ $devis->getNumero_dent() }}
+                                            </td>
+                                            <td class="infoEmpreinte"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; border-right: 2px solid #000;">
+                                                @if($devis->empreinte_observation)
+                                                    {{ Str::limit($devis->empreinte_observation, 50) }}
+                                                @else
+                                                    ...
+                                                @endif
+                                            </td>
+                                            <td class="retourLabo"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ $devis->getDate_livraison() }}
+                                            </td>
+                                            <td class="retourLabo"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ $devis->getNumero_suivi() }}
+                                            </td>
+                                            <td class="retourLabo"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; border-right: 2px solid #000;">
+                                                {{ $devis->getNumero_facture_labo() }}
+                                            </td>
+                                            <td class="pose"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ $devis->getDate_pose_prevue() }}
+                                            </td>
+                                            <td class="pose"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; border-right: 2px solid #000;">
+                                                {{ $devis->getPoseStatut() }}
+                                            </td>
+                                            <td class="travauxCloture"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ $devis->getDate_pose_reel() }}
+                                            </td>
+                                            <td class="travauxCloture"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ $devis->getOrganisme_payeur() }}
+                                            </td>
+                                            <td class="travauxCloture"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ $devis->getMontant_encaisse() }}
+                                            </td>
+                                            <td class="travauxCloture" style="border-right: 2px solid #000;"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer;">
+                                                {{ $devis->getDate_controle_paiement() }}
+                                            </td>
+                                            <td class="infoCheques"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getNumero_cheque() }}
+                                            </td>
+                                            <td class="infoCheques"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getMontant_cheque() }}
+                                            </td>
+                                            <td class="infoCheques"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getNom_document() }}
+                                            </td>
+                                            <td class="infoCheques"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getDate_encaissement_cheque() }}
+                                            </td>
+                                            <td class="infoCheques"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getDate_1er_acte() }}
+                                            </td>
+                                            <td class="infoCheques"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getNature_cheque() }}
+                                            </td>
+                                            <td class="infoCheques"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getTravaux_sur_devis() }}
+                                            </td>
+                                            <td class="infoCheques"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                {{ $devis->getSituation_cheque() }}
+                                            </td>
+                                            <td class="infoCheques"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }};">
+                                                @if($devis->cheque_observation)
+                                                    {{ Str::limit($devis->cheque_observation, 50) }}
+                                                @else
+                                                    ...
+                                                @endif
+                                            </td>
+                                            <td ondblclick="event.stopPropagation()"><a href="{{ asset('deleteDevis/'.$devis->id_devis.'/'.$devis->id_acte) }}" onclick="return deleteItem('<?= $devis->dossier ?>', '<?= $devis->date ?>')">Supprimer</a></td>
+                                        </tr>
+                                        @php
+                                            $id_devis = $devis->id_devis;
+                                        @endphp
+                                    @endforeach
+                                    </tbody>
                         </table>
 
 
@@ -591,5 +605,10 @@
             </div>
         </div>
     </div>
+    <script>
+        function deleteItem(dossier, dateCreated) {
+            return confirm(`Voulez-vous vraiment supprimer cela ?\nDossier: ${dossier}\nDate: ${dateCreated}`);
+        }
+    </script>
 
 @endsection

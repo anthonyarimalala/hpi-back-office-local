@@ -112,6 +112,25 @@ class Dashboard extends Model
         return $rappels;
     }
 
+    public function getFinValiditePecs(){
+        $today = Carbon::today();
+        if ($today->isMonday()) {
+            $startDate = $today->copy()->subDays(2); // samedi
+        } else if($today->isTuesday()) {
+            $startDate = $today->copy()->subDays(3);
+        } else {
+            $startDate = $today;
+        }
+        $endDate = $today->copy()->addDays(5);
+        $rappels = V_Devis::whereBetween('date_fin_validite_pec', values: [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+        ->orderBy('date_fin_validite_pec', 'asc')
+        ->get();
+        // echo 'isMonday= '.$today->isMonday(). '<br>';
+        // echo 'isTuesday= '.$today->isTuesday(). '<br>';
+        // echo 'start_date= '.$startDate;
+        return $rappels;
+    }
+
     public function getAppelsMailsAujourdHui(){
         $today = Carbon::today()->format('Y-m-d');
         $appels = V_Devis::where('date_1er_appel', $today)
@@ -120,6 +139,13 @@ class Dashboard extends Model
             ->orWhere('date_envoi_mail', $today)
             ->get();
         return $appels;
+    }
+
+    public function formatDate($date){
+        if($date && $date !=''){
+            return Carbon::parse($date)->format('d-m-Y');
+        }
+        return null;
     }
 
 }
