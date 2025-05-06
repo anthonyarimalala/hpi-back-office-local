@@ -140,29 +140,6 @@
         created_at TIMESTAMP,
         updated_at TIMESTAMP
     );
-    CREATE TABLE prothese_empreintes(
-        id SERIAL PRIMARY KEY,
-        id_devis SERIAL REFERENCES devis(id),
-        laboratoire VARCHAR(255),
-        date_empreinte DATE,
-        date_envoi_labo DATE,
-        travail_demande TEXT,
-        montant_acte DECIMAL(10, 2),
-        numero_dent VARCHAR(255),
-        observations TEXT,
-        created_at TIMESTAMP,
-        updated_at TIMESTAMP
-    );
-
-    CREATE TABLE prothese_retour_labos(
-        id SERIAL PRIMARY KEY,
-        id_acte INTEGER REFERENCES prothese_empreintes(id) NOT NULL,
-        date_livraison DATE,
-        numero_suivi VARCHAR(20),
-        numero_facture_labo VARCHAR(20),
-        created_at TIMESTAMP,
-        updated_at TIMESTAMP
-    );
 
     CREATE TABLE prothese_travaux_status(
         id SERIAL PRIMARY KEY,
@@ -172,9 +149,19 @@
         updated_at TIMESTAMP
     );
 
-    CREATE TABLE prothese_travaux(
+    CREATE TABLE protheses(
         id SERIAL PRIMARY KEY,
-        id_acte INTEGER REFERENCES prothese_empreintes(id) NOT NULL,
+        id_devis SERIAL REFERENCES devis(id),
+        laboratoire VARCHAR(255),
+        date_empreinte DATE,
+        date_envoi_labo DATE,
+        travail_demande TEXT,
+        montant_acte DECIMAL(10, 2),
+        numero_dent VARCHAR(255),
+        observations TEXT,
+        date_livraison DATE,
+        numero_suivi VARCHAR(20),
+        numero_facture_labo VARCHAR(20),
         date_pose_prevue DATE,
         id_pose_statut INTEGER REFERENCES prothese_travaux_status(id),
         date_pose_reel DATE,

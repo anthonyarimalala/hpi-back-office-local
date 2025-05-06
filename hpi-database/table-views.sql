@@ -39,27 +39,27 @@ SELECT
     de.id AS id_devis_etat,
     de.etat,
     de.couleur,
-    emp.id AS id_acte,
-    emp.laboratoire,
-    emp.date_empreinte,
-    emp.date_envoi_labo,
-    emp.travail_demande,
-    emp.montant_acte,
-    emp.numero_dent,
-    emp.observations AS empreinte_observation,
-    emp.created_at,
-    emp.updated_at,
-    rl.date_livraison,
-    rl.numero_suivi,
-    rl.numero_facture_labo,
-    tra.date_pose_prevue,
+    pro.id AS id_acte,
+    pro.laboratoire,
+    pro.date_empreinte,
+    pro.date_envoi_labo,
+    pro.travail_demande,
+    pro.montant_acte,
+    pro.numero_dent,
+    pro.observations AS empreinte_observation,
+    pro.created_at,
+    pro.updated_at,
+    pro.date_livraison,
+    pro.numero_suivi,
+    pro.numero_facture_labo,
+    pro.date_pose_prevue,
     pts.id AS id_pose_statut,
     pts.travaux_status AS pose_statut,
-    tra.date_pose_reel,
-    tra.organisme_payeur,
-    tra.montant_encaisse,
-    (COALESCE(emp.montant_acte, 0) - COALESCE(tra.montant_encaisse, 0)) AS reste_a_payer,
-    tra.date_controle_paiement,
+    pro.date_pose_reel,
+    pro.organisme_payeur,
+    pro.montant_encaisse,
+    (COALESCE(pro.montant_acte, 0) - COALESCE(pro.montant_encaisse, 0)) AS reste_a_payer,
+    pro.date_controle_paiement,
     ic.numero_cheque,
     ic.montant_cheque,
     ic.nom_document,
@@ -75,11 +75,9 @@ FROM devis d
          LEFT JOIN devis_appels_et_mails dam ON d.id = dam.id_devis
          LEFT JOIN devis_reglements dr ON d.id = dr.id_devis
          LEFT JOIN devis_etats de ON d.id_devis_etat = de.id
-         LEFT JOIN prothese_empreintes emp ON d.id = emp.id_devis
-         LEFT JOIN prothese_retour_labos rl ON emp.id = rl.id_acte
-         LEFT JOIN prothese_travaux tra ON emp.id = tra.id_acte
+         LEFT JOIN protheses pro ON d.id = pro.id_devis
          LEFT JOIN info_cheques ic ON d.id = ic.id_devis
-         LEFT JOIN prothese_travaux_status pts ON tra.id_pose_statut = pts.id;
+         LEFT JOIN prothese_travaux_status pts ON pro.id_pose_statut = pts.id;
 
 CREATE OR REPLACE VIEW v_cheques AS
 SELECT
@@ -104,33 +102,31 @@ CREATE VIEW v_protheses as
 SELECT
     dev.dossier,
     dev.id AS id_devis,
-    emp.id AS id_acte,
-    emp.laboratoire,
-    emp.date_empreinte,
-    emp.date_envoi_labo,
-    emp.travail_demande,
-    emp.montant_acte,
-    emp.numero_dent,
-    emp.observations,
-    emp.created_at,
-    emp.updated_at,
-    rl.date_livraison,
-    rl.numero_suivi,
-    rl.numero_facture_labo,
-    tra.date_pose_prevue,
+    pro.id AS id_acte,
+    pro.laboratoire,
+    pro.date_empreinte,
+    pro.date_envoi_labo,
+    pro.travail_demande,
+    pro.montant_acte,
+    pro.numero_dent,
+    pro.observations,
+    pro.created_at,
+    pro.updated_at,
+    pro.date_livraison,
+    pro.numero_suivi,
+    pro.numero_facture_labo,
+    pro.date_pose_prevue,
     pts.id AS id_pose_statut,
     pts.travaux_status AS statut,
-    tra.date_pose_reel,
-    tra.organisme_payeur,
-    tra.montant_encaisse,
-    tra.date_controle_paiement,
-    (COALESCE(emp.montant_acte, 0) - COALESCE(tra.montant_encaisse, 0)) AS reste_a_payer
+    pro.date_pose_reel,
+    pro.organisme_payeur,
+    pro.montant_encaisse,
+    pro.date_controle_paiement,
+    (COALESCE(pro.montant_acte, 0) - COALESCE(pro.montant_encaisse, 0)) AS reste_a_payer
 FROM
     devis dev
-        LEFT JOIN prothese_empreintes emp ON dev.id = emp.id_devis
-        LEFT JOIN prothese_retour_labos rl ON emp.id = rl.id_acte
-        LEFT JOIN prothese_travaux tra ON emp.id = tra.id_acte
-        LEFT JOIN prothese_travaux_status pts ON tra.id_pose_statut = pts.id;
+        LEFT JOIN protheses pro ON dev.id = pro.id_devis
+        LEFT JOIN prothese_travaux_status pts ON pro.id_pose_statut = pts.id;
 
 CREATE OR REPLACE VIEW v_ca_actes_reglements AS
 SELECT

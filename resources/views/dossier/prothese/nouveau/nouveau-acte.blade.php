@@ -40,9 +40,9 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td><input type="text" class="form-control" name="laboratoire" value="{{ $m_prothese_empreinte->laboratoire }}" placeholder="Laboratoire" /></td>
-                                    <td><input type="date" class="form-control" name="date_empreinte" value="{{ $m_prothese_empreinte->date_empreinte ? \Carbon\Carbon::parse($m_prothese_empreinte->date_empreinte)->format('Y-m-d'):'' }}" placeholder="Date Empreinte" /></td>
-                                    <td><input type="date" class="form-control" name="date_envoi_labo" value="{{ $m_prothese_empreinte->date_envoi_labo ? \Carbon\Carbon::parse($m_prothese_empreinte->date_envoi_labo)->format('Y-m-d'):'' }}" placeholder="Date Envoi Labo" /></td>
+                                    <td><input type="text" class="form-control" name="laboratoire" value="{{ $m_prothese->laboratoire }}" placeholder="Laboratoire" /></td>
+                                    <td><input type="date" class="form-control" name="date_empreinte" value="{{ $m_prothese->date_empreinte ? \Carbon\Carbon::parse($m_prothese->date_empreinte)->format('Y-m-d'):'' }}" placeholder="Date Empreinte" /></td>
+                                    <td><input type="date" class="form-control" name="date_envoi_labo" value="{{ $m_prothese->date_envoi_labo ? \Carbon\Carbon::parse($m_prothese->date_envoi_labo)->format('Y-m-d'):'' }}" placeholder="Date Envoi Labo" /></td>
                                     <td><textarea class="form-control" name="travail_demande" rows="3" style="height: 100px" placeholder="Travail demandés"></textarea></td>
                                 </tr>
                                 </tbody>

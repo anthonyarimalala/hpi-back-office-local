@@ -17,6 +17,7 @@ use App\Models\devis\DevisAccordPecStatus;
 use App\Models\devis\DevisAppelsEtMail;
 use App\Models\devis\DevisEtat;
 use App\Models\devis\DevisReglement;
+use App\Models\devis\prothese\Prothese;
 use App\Models\devis\prothese\ProtheseEmpreinte;
 use App\Models\devis\prothese\ProtheseRetourLabo;
 use App\Models\devis\prothese\ProtheseTravaux;
@@ -754,24 +755,10 @@ class ImportsController extends Controller
                 }
             }
 
-            $m_prothese_empreinte = ProtheseEmpreinte::firstOrNew(['id_devis' => $m_devis->id, 'travail_demande' => trim($mid->travail_demande)]);
-            $m_prothese_empreinte->save();
 
 
-            ProtheseEmpreinte::createOrUpdateEmpreinte(
-                $m_h_prothese,
-                $m_devis_nouveau->id,
-                $m_prothese_empreinte->id,
-                $laboratoire,
-                $date_empreinte,
-                $date_envoi_labo,
-                $travail_demande,
-                $mid->montant_acte,
-                $numero_dent,
-                $observation,
-                $date_devis,
-                $withChangeProthese
-            );
+
+
 
 
             // step 6: prothese retour labo
@@ -787,14 +774,7 @@ class ImportsController extends Controller
                     $withErrors = true;
                 }
             }
-            ProtheseRetourLabo::createOrUpdateEmpreinte(
-                $m_h_prothese,
-                $m_prothese_empreinte->id,
-                $date_livraison,
-                $numero_suivi,
-                $numero_facture_labo,
-                $withChangeProthese
-            );
+
 
             // step 7: prothese travaux
             $m_protheseTravauxStatus = $m_protheseTravauxStatusS->get(trim($mid->pose_statut));
@@ -850,9 +830,23 @@ class ImportsController extends Controller
                 }
             }
 
-            ProtheseTravaux::createOrUpdateTravaux(
+            $m_prothese = Prothese::firstOrNew(['id_devis' => $m_devis->id, 'travail_demande' => trim($mid->travail_demande), 'numero_dent' => $numero_dent]);
+            $m_prothese->save();
+            Prothese::createOrUpdateProthese(
                 $m_h_prothese,
-                $m_prothese_empreinte->id,
+                $m_devis_nouveau->id,
+                $m_prothese->id,
+                $laboratoire,
+                $date_empreinte,
+                $date_envoi_labo,
+                $travail_demande,
+                $mid->montant_acte,
+                $numero_dent,
+                $observation,
+                $date_devis,
+                $date_livraison,
+                $numero_suivi,
+                $numero_facture_labo,
                 $date_pose_prevue,
                 $id_pose_status,
                 $date_pose_reel,
@@ -861,7 +855,6 @@ class ImportsController extends Controller
                 $date_controle_paiement,
                 $withChangeProthese
             );
-
 
             $m_h_cheque = new H_Cheque();
             $m_h_cheque->code_u = Auth::user()->code_u;
@@ -949,6 +942,8 @@ class ImportsController extends Controller
                 $observation,
                 $withChangeCheque
             );
+
+
             if ($withChangeCheque){
                 $m_h_cheque->save();
             }

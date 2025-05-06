@@ -59,14 +59,14 @@ class Devis extends Model
         $m_h_devis->action .= "<strong>Date contrôle paiement: </strong> " . $m_devis->date_controle_paiement . "\n";
 
         $m_h_devis->save();
+
         try {
-            //code...
-            DB::delete('DELETE FROM prothese_travaux WHERE id_acte = ?', [$id_acte]);
-        DB::delete('DELETE FROM prothese_retour_labos WHERE id_acte = ?', [$id_acte]);
-        DB::delete('DELETE FROM prothese_empreintes WHERE id_acte = ?', [$id_acte]);
+            echo 'tokony delete izy ato';
+            DB::delete('DELETE FROM protheses WHERE id = ?', [$id_acte]);
         } catch (Exception $e) {
             //throw $th;
         }
+
 
     }
     public static function deleteDevis($id_devis, $id_acte){
@@ -137,19 +137,15 @@ class Devis extends Model
         $m_h_devis->action .= "<strong>Chèque observation: </strong> " . $m_devis->cheque_observation . "\n";
         $m_h_devis->save();
         try{
-            DB::delete('DELETE FROM prothese_travaux WHERE id_acte = ?', [$id_acte]);
-            DB::delete('DELETE FROM prothese_retour_labos WHERE id_acte = ?', [$id_acte]);
-            DB::delete('DELETE FROM prothese_empreintes WHERE id = ?', [$id_acte]);
+            DB::delete('DELETE FROM protheses WHERE id = ?', [$id_acte]);
             DB::delete('DELETE FROM info_cheques WHERE id_devis = ?', [$id_devis]);
             DB::delete('DELETE FROM devis_appels_et_mails WHERE id_devis = ?', [$id_devis]);
             DB::delete('DELETE FROM devis_reglements WHERE id_devis = ?', [$id_devis]);
             DB::delete('DELETE FROM devis_accord_pecs WHERE id_devis = ?', [$id_devis]);
             DB::delete('DELETE FROM devis WHERE id = ?', [$id_devis]);
         }catch(Exception $e){
-
+            echo $e;
         }
-
-
     }
 
     public static function createDevisSansDossier($dossier, $nom, $status, $mutuelle, $date, $montant, $devis_signe, $praticien, $observation){

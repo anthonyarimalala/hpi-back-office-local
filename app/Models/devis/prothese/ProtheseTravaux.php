@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProtheseTravaux extends Model
 {
     use HasFactory;
+    /*
     protected $table = 'prothese_travaux';
     protected $fillable = [
         'id_acte'
@@ -73,4 +74,5 @@ class ProtheseTravaux extends Model
 
         return $travaux;
     }
+    */
 }

@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Dossier\Devis;
 
 use App\Http\Controllers\Controller;
-use App\Models\ca\CaGeneral;
-use App\Models\ca\L_CaActesReglement;
 use App\Models\devis\cheque\InfoChequeNatureCheque;
 use App\Models\devis\cheque\InfoChequeSituationCheque;
 use App\Models\devis\cheque\InfoChequeTravauxDevis;
@@ -14,13 +12,13 @@ use App\Models\devis\DevisAccordPecStatus;
 use App\Models\devis\DevisAppelsEtMail;
 use App\Models\devis\DevisEtat;
 use App\Models\devis\DevisReglement;
-use App\Models\devis\prothese\ProtheseEmpreinte;
+use App\Models\devis\Prothese as DevisProthese;
+use App\Models\devis\prothese\Prothese;
 use App\Models\devis\prothese\ProtheseTravauxStatus;
 use App\Models\dossier\Dossier;
 use App\Models\dossier\DossierStatus;
 use App\Models\hist\H_Devis;
 use App\Models\praticien\Praticien;
-use App\Models\views\V_CaActesReglement;
 use App\Models\views\V_Devis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -30,16 +28,20 @@ use Illuminate\Support\Facades\DB;
 class DevisController extends Controller
 {
     //
+
     public function deleteDevis($id_devis, $id_acte){
-        $m_v_devis = ProtheseEmpreinte::where('id', $id_acte)->get();
+        $m_v_devis = Prothese::where('id_devis', $id_devis)->get();
         $nombre = $m_v_devis->count();
         if($nombre == 1){
             Devis::deleteDevis($id_devis, $id_acte);
+            //echo 'delete 1';
         }else{
             Devis::deleteActe($id_devis, $id_acte);
+            //echo 'delete 2';
         }
         return back();
     }
+
 
 
     public function modifierDevis(Request $request, $id_acte)
@@ -180,13 +182,14 @@ class DevisController extends Controller
         // pour l'envoi mail
         $devis_appels_mails = DevisAppelsEtMail::firstOrNew(['id_devis'=>$id_devis]);
         $devis_appels_mails->save();
-        $prothese_empreintes = new ProtheseEmpreinte();
-        $prothese_empreintes->id_devis = $id_devis;
-        $prothese_empreintes->save();
+        $prothese = new Prothese();
+        $prothese->id_devis = $id_devis;
+        $prothese->save();
         // $date = Carbon::parse($prothese_empreintes->created_at)->format('Y-m-d');
         // L_CaActesReglement::createCaAfterDevis($id_devis, $prothese_empreintes->id, null, null, $date);
         return redirect()->to($dossier.'/devis/'.$id_devis.'/detail');
     }
+
     public function creerDevis(Request $request)
     {
         // Validation des données
@@ -227,15 +230,11 @@ class DevisController extends Controller
             $m_h_devis->save();
             $devis_appels_mails = DevisAppelsEtMail::firstOrNew(['id_devis'=>$id_devis]);
             $devis_appels_mails->save();
-            $prothese_empreintes = new ProtheseEmpreinte();
-            $prothese_empreintes->id_devis = $id_devis;
-            $prothese_empreintes->save();
-            // $date = Carbon::parse($prothese_empreintes->created_at)->format('Y-m-d');
-            //echo($id_devis);
-            // L_CaActesReglement::createCaAfterDevis($id_devis, $prothese_empreintes->id, null, null, $date);
+            $prothese = new Prothese();
+            $prothese->id_devis = $id_devis;
+            $prothese->save();
             return redirect()->to($dossier.'/details')->with('success', 'Le devis a été ajouté avec succès.');
         } catch (\Exception $e) {
-            // print($e->getMessage());
             return back()->with('error', 'Une erreur est survenue lors de la modification du devis : ' . $e->getMessage());
         }
     }
@@ -251,7 +250,6 @@ class DevisController extends Controller
         $data['praticiens'] = Praticien::where('is_deleted', 0)->where('praticien', '!=','')->get();
         return view('devis/nouveau/nouveau-devis')->with($data);
     }
-
     public function reinitializeFilterListeDevis(){
         session()->forget('devis_filters');
         return back();

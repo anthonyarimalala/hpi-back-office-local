@@ -1,6 +1,7 @@
 INSERT INTO dossier_statuss(status, ordre) VALUES
     ('', 0),
     ('C2S', 10),
+    ('non C2S', 10),
     ('ALD', 0),
     ('CM24', 0),
     ('REGIME DE BASE', 0),
@@ -62,7 +63,7 @@ INSERT INTO prothese_travaux_status(travaux_status) VALUES
 
 INSERT INTO devis_accord_pecs_status(status, couleur) VALUES
     ('', ''),
-    ('Non PayÚ', '#FF0000'),
-    ('PayÚ', '#008000');
+    ('rÚglÚ', '#FF0000'),
+    ('non rÚglÚ', '#008000');
 
 

@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Dossier\Prothese;
 use App\Http\Controllers\Controller;
 use App\Models\ca\CaGeneral;
 use App\Models\devis\Devis;
-use App\Models\devis\prothese\ProtheseEmpreinte;
-use App\Models\devis\prothese\ProtheseRetourLabo;
-use App\Models\devis\prothese\ProtheseTravaux;
+use App\Models\devis\prothese\Prothese;
 use App\Models\devis\prothese\ProtheseTravauxStatus;
 use App\Models\dossier\Dossier;
 use App\Models\hist\H_Prothese;
@@ -45,10 +43,25 @@ class ProtheseController extends Controller
         echo '$id_devis = '.$id_devis.'<br>';
 
 
-        $empreinte = ProtheseEmpreinte::createEmpreinte($m_h_prothese, $id_devis, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $montant_acte, $numeroDent, $observations, $withChangeProthese);
-        ProtheseRetourLabo::createOrUpdateEmpreinte($m_h_prothese, $empreinte->id, $dateLivraison, $numeroSuivi, $numeroFactureLabo, $withChangeProthese);
-        ProtheseTravaux::createOrUpdateTravaux($m_h_prothese, $empreinte->id, $datePosePrevue, $id_pose_statut, $datePoseReel, $organismePayeur, $montantEncaisse, $dateControlePaiement, $withChangeProthese);
-
+        $empreinte = Prothese::createEmpreinte($m_h_prothese,
+        $id_devis,
+        $laboratoire,
+        $dateEmpreinte,
+        $dateEnvoiLabo,
+        $travailDemande,
+        $montant_acte,
+        $numeroDent,
+        $observations,$dateLivraison,
+        $numeroSuivi,
+        $numeroFactureLabo,
+        $datePosePrevue,
+        $id_pose_statut,
+        $datePoseReel,
+        $organismePayeur,
+        $montantEncaisse,
+        $dateControlePaiement,
+        $withChangeProthese
+        );
         $m_h_prothese->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;
         $m_h_prothese->dossier = $dossier;
         if($withChangeProthese){
@@ -57,16 +70,17 @@ class ProtheseController extends Controller
 
         return redirect($dossier.'/prothese/'.$id_devis.'/acte'.$empreinte->id.'/detail');
     }
+    // fonction pour afficher le formulaire d'un nouveau Prothese si il y'a déjà 1.
     public function showNouveauActe($dossier, $id_devis, $id_acte){
-        $m_prothese_empreinte = ProtheseEmpreinte::where('id_devis', $id_devis)->first();
-        if($m_prothese_empreinte == null){
+        $m_prothese = Prothese::where('id_devis', $id_devis)->first();
+        if($m_prothese == null){
             return back()->withErrors(['error' => 'Il n\'y a aucun travail demandé dans ce devis. Cliquez d\'abord sur "Modifier" sur modifier et si\'il y\'a encore d\'autres travails à faire vous pouvez cliquer sur "Nouveau Acte".']);
-        }else if($m_prothese_empreinte->travail_demande == ''){
+        }else if($m_prothese->travail_demande == ''){
             return back()->withErrors(['error' => 'Mettez d\'abord un nom dans l\'acte(travail demandé)']);
         }
         $data['id_acte'] = $id_acte;
         $data['m_devis'] = Devis::where('id', $id_devis)->first();
-        $data['m_prothese_empreinte'] = ProtheseEmpreinte::find($id_acte);
+        $data['m_prothese'] = Prothese::find($id_acte);
         $data['status_poses'] = ProtheseTravauxStatus::where('is_deleted', '0')->where('travaux_status', '!=', '')->get();
         return view('dossier/prothese/nouveau/nouveau-acte')->with($data);
     }
@@ -94,9 +108,31 @@ class ProtheseController extends Controller
         $m_h_prothese->code_u = Auth::user()->code_u;
         $m_h_prothese->id_devis = $id_devis;
 
-        ProtheseEmpreinte::createOrUpdateEmpreinte($m_h_prothese, $id_devis, $id_acte, $laboratoire, $dateEmpreinte, $dateEnvoiLabo, $travailDemande, $montant_acte, $numeroDent, $observations, null, $withChangeProthese);
-        ProtheseRetourLabo::createOrUpdateEmpreinte($m_h_prothese, $id_acte, $dateLivraison, $numeroSuivi, $numeroFactureLabo, $withChangeProthese);
-        ProtheseTravaux::createOrUpdateTravaux($m_h_prothese, $id_acte, $datePosePrevue, $id_pose_statut, $datePoseReel, $organismePayeur, $montantEncaisse, $dateControlePaiement, $withChangeProthese);
+        // sauvegarder un prothese par défaut
+        $withChangeProthese = false;
+        Prothese::createOrUpdateProthese(
+            $m_h_prothese,
+            $id_devis,
+            $id_acte,
+            $laboratoire,
+            $dateEmpreinte,
+            $dateEnvoiLabo,
+            $travailDemande,
+            $montant_acte,
+            $numeroDent,
+            $observations,
+            null,
+            $dateLivraison,
+            $numeroSuivi,
+            $numeroFactureLabo,
+            $datePosePrevue,
+            $id_pose_statut,
+            $datePoseReel,
+            $organismePayeur,
+            $montantEncaisse,
+            $dateControlePaiement,
+            $withChangeProthese
+        );
 
         $m_h_prothese->nom = Auth::user()->prenom . ' ' . Auth::user()->nom;
         $m_h_prothese->dossier = $dossier;

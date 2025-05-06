@@ -10,6 +10,7 @@ class ProtheseRetourLabo extends Model
 {
     use HasFactory;
 
+    /*
     protected $table = 'prothese_retour_labos';
     protected $fillable = [
         'id_acte',
@@ -45,4 +46,5 @@ class ProtheseRetourLabo extends Model
         $retour_labo->save();
         return $retour_labo;
     }
+    */
 }

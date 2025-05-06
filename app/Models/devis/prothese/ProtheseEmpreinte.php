@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProtheseEmpreinte extends Model
 {
     use HasFactory;
+    /*
     protected $table = 'prothese_empreintes';
     protected $fillable = [
             'id_devis',
@@ -109,14 +110,18 @@ class ProtheseEmpreinte extends Model
             $empreinte->observations = $observations;
             $withChangeProthese = true;
         }
-        echo 'empreinte: '. $empreinte. '<br>';
+
+
+
         // Sauvegarde (création ou mise à jour)
+        // mettre une date par défaut si c'est null dans le formulaire
         if($date_devis == null){
             $date_devis = Carbon::parse($empreinte->created_at)->format('Y-m-d') ;
         }
-        //L_CaActesReglement::createCaAfterDevis($id_devis, $id_acte, $travail_demande, $montant_acte, $date_devis);
+
 
         $empreinte->save();
         return $empreinte;
     }
+    */
 }

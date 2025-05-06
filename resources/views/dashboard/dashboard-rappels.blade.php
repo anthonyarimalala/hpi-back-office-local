@@ -125,7 +125,7 @@
                                                         $today = \Carbon\Carbon::today()->format('Y-m-d');
                                                         $couleur_today = "";
                                                         if($dev->date_fin_validite_pec == $today){
-                                                            $couleur_today = '#73E55D';
+                                                            $couleur_today = '#F2CED5';//'#73E55D';
                                                         }
                                                         $couleur_font = '';
                                                         if ($id_devis == $dev->id_devis) {
