@@ -63,7 +63,7 @@ INSERT INTO prothese_travaux_status(travaux_status) VALUES
 
 INSERT INTO devis_accord_pecs_status(status, couleur) VALUES
     ('', ''),
-    ('rÚglÚ', '#FF0000'),
-    ('non rÚglÚ', '#008000');
+    ('rÚglÚ', ''),
+    ('non rÚglÚ', 'red');
 
 

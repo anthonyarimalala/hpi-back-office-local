@@ -151,7 +151,7 @@
                         <div class="row col-md-6">
                             <h4 class="text-center mb-4"
                                 style="font-size: 24px; color: #2f8ab9; font-weight: bold;">INFO ACCORD PEC</h4>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <div class="dropdown">
                                     <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
                                             data-bs-toggle="dropdown" aria-expanded="false"
@@ -180,7 +180,7 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <div class="dropdown">
                                     <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
                                             data-bs-toggle="dropdown" aria-expanded="false"
@@ -216,26 +216,15 @@
                                     <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
                                             data-bs-toggle="dropdown" aria-expanded="false"
                                             style="color: whitesmoke; background-color: #2f8ab9;">
-                                        Non réglés
+                                        Part sécu
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <li class="dropdown-item">
                                             <label>
                                                 <input type="checkbox" class="form-check-input"
-                                                       name="non_regle[]" value="non_regle" @if($filters && isset($filters['non_regle'])) checked @endif>
-                                            </label> Afficher que les non-réglés
+                                                       name="part_secu_non_regle[]" value="part_secu_non_regle" @if($filters && isset($filters['part_secu_non_regle'])) checked @endif>
+                                            </label> Non réglés
                                         </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="dropdown">
-                                    <button class="btn dropdown-toggle w-100" type="button" id="dropdownMenuButton"
-                                            data-bs-toggle="dropdown" aria-expanded="false"
-                                            style="color: whitesmoke; background-color: #2f8ab9;">
-                                        Part sécu
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <li class="dropdown-item">
                                             <label for="part_secu_min" class="form-label">Montant min</label>
                                             <input type="number" id="part_secu_min" name="part_secu_min"
@@ -266,6 +255,12 @@
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <li class="dropdown-item">
+                                            <label>
+                                                <input type="checkbox" class="form-check-input"
+                                                       name="part_mutuelle_non_regle[]" value="part_mutuelle_non_regle" @if($filters && isset($filters['part_mutuelle_non_regle'])) checked @endif>
+                                            </label> Non réglés
+                                        </li>
+                                        <li class="dropdown-item">
                                             <label for="part_mutuelle_min" class="form-label">Montant min</label>
                                             <input type="number" id="part_mutuelle_min" name="part_mutuelle_min"
                                                    class="form-control" min="0" step="0.01"
@@ -294,6 +289,12 @@
                                         Part RAC
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li class="dropdown-item">
+                                            <label>
+                                                <input type="checkbox" class="form-check-input"
+                                                       name="part_rac_non_regle[]" value="part_rac_non_regle" @if($filters && isset($filters['part_rac_non_regle'])) checked @endif>
+                                            </label> Non réglés
+                                        </li>
                                         <li class="dropdown-item">
                                             <label for="part_rac_min" class="form-label">Montant min</label>
                                             <input type="number" id="part_rac_min" name="part_rac_min"

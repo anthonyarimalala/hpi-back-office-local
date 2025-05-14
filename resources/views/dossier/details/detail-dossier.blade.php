@@ -217,7 +217,7 @@
                                             }
                                             $couleur_font = '';
                                             if ($id_devis == $devis->id_devis) {
-                                                $couleur_font = "transparent";
+                                                $couleur_font = "gray";
                                             }
                                         @endphp
                                         <tr style="background-color: {{ $devis->couleur }};"

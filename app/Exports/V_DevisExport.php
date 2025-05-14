@@ -33,7 +33,8 @@ class V_DevisExport implements FromView, WithEvents, WithTitle
         return view('orders', [
             'data' => $this->data,
             'dossier_statuss' => DossierStatus::where('is_deleted', 0)->get(), // mes status c'est $dossier_status->status,
-            'praticiens' => Praticien::where('is_deleted', 0)->get()
+            'praticiens' => Praticien::where('is_deleted', 0)->get(),
+            'devis_accord_pecs_status' => DevisAccordPecStatus::where('is_deleted', 0)->get(),
         ]);
     }
     public function title(): string

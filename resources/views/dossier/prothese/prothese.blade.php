@@ -39,9 +39,15 @@
         <div class="col-12 text-center">
             <h1 class="display-4">Prothèse dossier: {{ $v_prothese->dossier }}</h1>
             <div>
-                <a href="{{ asset($v_prothese->dossier.'/prothese/'.$v_prothese->id_devis.'/acte'.$id_acte.'/modifier') }}">
-                    <button class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-pen"></i>Modifier</button>
-                </a>
+                {{-- <a href="{{ asset($v_prothese->dossier.'/prothese/'.$v_prothese->id_devis.'/acte'.$id_acte.'/modifier') }}"> --}}
+                    <button class="btn btn-primary btn-lg text-white mb-0 me-0" onclick="window.location.href='{{ asset($v_prothese->dossier.'/prothese/'.$v_prothese->id_devis.'/acte'.$id_acte.'/modifier') }}'" type="button"><i class="mdi mdi-pen"></i>Modifier</button>
+                {{-- </a> --}}
+
+                {{-- <a href="{{ asset('getCA/'.$id_acte.'/') }}"> --}}
+                    @if(\Illuminate\Support\Facades\Auth::user()->role != 'user')
+                        <button class="btn btn-info btn-lg text-white mb-0 me-0" onclick="window.location.href='{{ asset('getCaFromProthese/'.$id_acte.'/') }}'" type="button"><i class="mdi mdi-eye"></i>CA</button>
+                    @endif
+                {{-- </a> --}}
             </div>
             @if ($errors->has('error'))
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -49,6 +55,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ $errors->first() }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
         </div>
     </div>
     <div class="row">

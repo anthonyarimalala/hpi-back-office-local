@@ -189,8 +189,8 @@
         id_acte INTEGER UNIQUE,
         date_derniere_modif DATE,
         praticien VARCHAR(10) REFERENCES praticiens(praticien),
-        nom_acte VARCHAR(255),
-        cotation DECIMAL(10, 2),
+        nom_acte VARCHAR(255) NOT NULL,
+        cotation DECIMAL(10, 2) NOT NULL,
         controle_securisation VARCHAR(255),
         ro_part_secu DECIMAL(10, 2),
         ro_virement_recu DECIMAL(10, 2),
@@ -215,7 +215,8 @@
     );
 
 
-    CREATE TABLE h_protheses(
+
+    CREATE TABLE h_devis(
         id SERIAL PRIMARY KEY,
         code_u VARCHAR(10),
         nom VARCHAR(255),
@@ -226,12 +227,13 @@
         created_at TIMESTAMP,
         updated_at TIMESTAMP
     );
-    CREATE TABLE h_devis(
+    CREATE TABLE h_protheses(
         id SERIAL PRIMARY KEY,
         code_u VARCHAR(10),
         nom VARCHAR(255),
         id_devis INTEGER,
         dossier VARCHAR(20),
+        id_acte INTEGER,
         action TEXT,
         categorie VARCHAR(255),
         created_at TIMESTAMP,
@@ -252,6 +254,7 @@
         id SERIAL PRIMARY KEY,
         code_u VARCHAR(10),
         nom VARCHAR(255),
+        id_devis INTEGER,
         id_ca_actes_reglement INTEGER,
         dossier VARCHAR(20),
         action TEXT,

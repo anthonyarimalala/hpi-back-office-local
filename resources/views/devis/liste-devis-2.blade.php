@@ -227,13 +227,13 @@
                                         <!-- 20 -->
                                         <th class="infoEmpreinte">Laboratoire</th>
                                         <!-- 21 -->
-                                        <th class="infoEmpreinte">Date D'empreinte</th>
+                                        <th class="infoEmpreinte">Date empreinte</th>
                                         <!-- 22 -->
                                         <th class="infoEmpreinte">Date d'envoi au labo</th>
                                         <!-- 23 -->
                                         <th class="infoEmpreinte">Travail demandé</th>
                                         <!-- 23 -->
-                                        <th class="infoEmpreinte">Montant Acte</th>
+                                        <th class="infoEmpreinte">Montant acte</th>
                                         <!-- 24 -->
                                         <th class="infoEmpreinte">N° dent</th>
                                         <!-- 25 -->
@@ -245,7 +245,7 @@
                                         <th class="retourLabo">numero suivi colis de retour<br>+ société de livraison
                                         </th>
                                         <!-- 27 -->
-                                        <th style="border-right: 2px solid #000;" class="retourLabo">N° Facture Labo
+                                        <th style="border-right: 2px solid #000;" class="retourLabo">N° facture Labo
                                         </th>
                                         <!-- 28 -->
                                         <th class="pose">Date de pose prévue</th>
@@ -265,9 +265,9 @@
                                         <th class="infoCheques">Montant du chèque</th>
                                         <th class="infoCheques">Nom document</th>
                                         <th class="infoCheques">Date d'encaissement chq</th>
-                                        <th class="infoCheques">Date de 1er L'acte</th>
+                                        <th class="infoCheques">Date de 1er acte</th>
                                         <th class="infoCheques">Nature du chèque</th>
-                                        <th class="infoCheques">Tavaux Sur le Devis</th>
+                                        <th class="infoCheques">Travaux sur le devis</th>
                                         <th class="infoCheques">Situation chèque</th>
                                         <th class="infoCheques">Observation</th>
 
@@ -290,10 +290,31 @@
                                             if($devis->montant_acte == 0 || $devis->montant_acte == null || $devis->montant_acte == ''){
                                                 $couleur_reste_a_payer = 'red';
                                             }
-                                            $couleur_info_accord_pec = "";
-                                            if($devis->part_secu == null && $devis->part_mutuelle == null && $devis->part_rac == null){
-                                                $couleur_info_accord_pec = 'red';
+                                            // $couleur_info_accord_pec = "";
+                                            // if($devis->part_secu == null && $devis->part_mutuelle == null && $devis->part_rac == null){
+                                            //     $couleur_info_accord_pec = 'red';
+                                            // }
+                                            // couleur montant pour montrer si c'est déjà payé ou non.
+                                            // pas de couleur au début
+                                            $couleur_montant = "";
+                                            if($devis->part_secu_status == '' && $devis->part_mutuelle_status == '' && $devis->part_rac_status == ''){
+                                                $couleur_montant = "red";
                                             }
+                                            // vérifier un par un les payés et non payés
+                                            if($devis->part_secu && $devis->part_secu != 0 && $devis->part_secu_status != 'réglé'){
+                                                $couleur_montant = "red";
+                                            }
+                                            if($devis->part_mutuelle && $devis->part_mutuelle != 0 && $devis->part_mutuelle_status != 'réglé'){
+                                                $couleur_montant = "red";
+                                            }
+                                            if($devis->part_rac && $devis->part_rac != 0 && $devis->part_rac_status != 'réglé'){
+                                                $couleur_montant = "red";
+                                            }
+                                            if($devis->part_secu + $devis->part_mutuelle + $devis->part_rac != $devis->montant){
+                                                $couleur_montant = "red";
+                                            }
+
+
                                             $couleur_font = '';
                                             if ($id_devis == $devis->id_devis) {
                                                 $couleur_font = "gray";
@@ -330,7 +351,7 @@
                                             </td>
                                             <td class="infoDevis"
                                                 ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                                style="cursor:pointer; background-color: {{ $couleur_info_accord_pec }}; color: {{ $couleur_font }};">
+                                                style="cursor:pointer; background-color: {{ $couleur_montant }}; color: {{ $couleur_font }};">
                                                 {{ $devis->getMontant() }}
                                             </td>
                                             <td class="infoDevis"
@@ -364,23 +385,40 @@
                                                 style="cursor:pointer; color: {{ $couleur_font }};">
                                                 {{ $devis->getDate_fin_validite_pec() }}
                                             </td>
-                                            <td class="infoAccordPec"
-                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                                style="cursor:pointer color: {{ $couleur_font }};; @foreach($devis_accord_pecs_status as $da) @if($da->status == $devis->part_secu_status) background-color: {{ $da->couleur }} @endif @endforeach">
-                                                {{ $devis->getPart_secu() }}
-                                            </td>
-                                            <td class="infoAccordPec"
-                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
-                                                style="cursor:pointer; color: {{ $couleur_font }}; @foreach($devis_accord_pecs_status as $da) @if($da->status == $devis->part_mutuelle_status) background-color: {{ $da->couleur }} @endif @endforeach">
-                                                {{ $devis->getPart_mutuelle() }}
-                                            </td>
-                                            @php
+                                                @php
                                                 foreach ($devis_accord_pecs_status as $da) {
-                                                    if($da->status == $devis->part_rac_status){
+                                                    if($da->status == $devis->part_secu_status){
                                                         $couleur = $da->couleur;
                                                     }
                                                 }
-                                            @endphp
+                                                if($devis->part_secu && $devis->part_secu != 0 && $devis->part_secu_status == '') $couleur = 'red';
+                                                @endphp
+                                            <td class="infoAccordPec"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer color: {{ $couleur_font }}; background-color: {{ $couleur }}">
+                                                {{ $devis->getPart_secu() }}
+                                            </td>
+                                                @php
+                                                    foreach ($devis_accord_pecs_status as $da) {
+                                                        if($da->status == $devis->part_mutuelle_status){
+                                                            $couleur = $da->couleur;
+                                                        }
+                                                    }
+                                                    if($devis->part_mutuelle && $devis->part_mutuelle != 0 && $devis->part_mutuelle_status == '') $couleur = 'red';
+                                                @endphp
+                                            <td class="infoAccordPec"
+                                                ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';"
+                                                style="cursor:pointer; color: {{ $couleur_font }}; background-color: {{ $couleur }}; ">
+                                                {{ $devis->getPart_mutuelle() }}
+                                            </td>
+                                                @php
+                                                    foreach ($devis_accord_pecs_status as $da) {
+                                                        if($da->status == $devis->part_rac_status){
+                                                            $couleur = $da->couleur;
+                                                        }
+                                                    }
+                                                    if($devis->part_rac && $devis->part_rac != 0 && $devis->part_rac_status == '') $couleur = 'red';
+                                                @endphp
                                             <td class="infoAccordPec" style="border-right: 2px solid #000; cursor:pointer; background-color: {{ $couleur }}; color: {{ $couleur_font }};"
                                                 ondblclick="window.location.href='{{ asset($devis->dossier.'/devis/'.$devis->id_devis.'/acte'.$devis->id_acte.'/detail')  }}';">
                                                 {{ $devis->getPart_rac() }}

@@ -94,23 +94,16 @@ class ImportDevis extends Model
     {
         $formattedDate = trim($date);
 
-        // Si la date est une valeur numérique (format Excel)
         if (is_numeric($formattedDate)) {
             return Date::excelToDateTimeObject((float)$formattedDate)->format('Y-m-d');
         }
-
-        // Si la date est au format d/m/Y
         if (preg_match('/^\d{1,2}\/\d{1,2}\/\d{4}$/', $formattedDate)) {
             $dt = \DateTime::createFromFormat('d/m/Y', $formattedDate);
             if ($dt && $dt->format('d/m/Y') === $formattedDate) {
-                // Retourner au format souhaité (ici Y-m-d)
                 return $dt->format('Y-m-d');
-                // Si vous souhaitez conserver le format d/m/Y, utilisez :
-                // return $dt->format('d/m/Y');
             }
         }
 
-        // Sinon, on tente strtotime sur d'autres formats (par ex. YYYY-MM-DD)
         if (strtotime($formattedDate)) {
             return date('Y-m-d', strtotime($formattedDate));
         }

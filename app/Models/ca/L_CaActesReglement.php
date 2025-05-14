@@ -2,11 +2,14 @@
 
 namespace App\Models\ca;
 
+use App\Models\hist\H_CaActesReglement;
+use App\Models\views\V_CaActesReglement;
 use App\Models\views\V_Devis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class L_CaActesReglement extends Model
 {
@@ -100,7 +103,6 @@ class L_CaActesReglement extends Model
     }
 
     public static function updateCaActesReglement(Request $request, $id_ca_actes_reglement){
-
         $date_derniere_modif = $request->input('date_derniere_modif');
         $praticien = $request->input('praticien');
         $nom_acte = $request->input('nom_acte');
@@ -128,32 +130,44 @@ class L_CaActesReglement extends Model
             $date_derniere_modif = Carbon::parse()->format('Y-m-d H:i');
         }
 
+        $m_ca = V_CaActesReglement::where('id_ca_actes_reglement', $id_ca_actes_reglement)->first();
+        $haveChange = false;
+        $m_h_ca = new H_CaActesReglement();
+        $m_h_ca->code_u =Auth::user()->code_u;
+        $m_h_ca->nom = Auth::user()->prenom. ' '. Auth::user()->nom;
+        $m_h_ca->id_ca_actes_reglement = $id_ca_actes_reglement;
+        $m_h_ca->dossier = $m_ca->dossier;
+
         $m_l_ca_actes_reglement = L_CaActesReglement::where('id', $id_ca_actes_reglement)->first();
         $m_l_ca_actes_reglement->date_derniere_modif = $date_derniere_modif;
-        $m_l_ca_actes_reglement->praticien = $praticien;
-        $m_l_ca_actes_reglement->nom_acte = $nom_acte;
-        $m_l_ca_actes_reglement->cotation = $cotation;
-        $m_l_ca_actes_reglement->controle_securisation = $controle_securisation;
-        $m_l_ca_actes_reglement->ro_part_secu = $ro_part_secu;
-        $m_l_ca_actes_reglement->ro_virement_recu = $ro_virement_recu;
-        $m_l_ca_actes_reglement->ro_indus_paye = $ro_indus_paye;
-        $m_l_ca_actes_reglement->ro_indus_en_attente = $ro_indus_en_attente;
-        $m_l_ca_actes_reglement->ro_indus_irrecouvrable = $ro_indus_irrecouvrable;
-        $m_l_ca_actes_reglement->part_mutuelle = $part_mutuelle;
-        $m_l_ca_actes_reglement->rcs_virement = $rcs_virement;
-        $m_l_ca_actes_reglement->rcs_especes = $rcs_especes;
-        $m_l_ca_actes_reglement->rcs_cb = $rcs_cb;
-        $m_l_ca_actes_reglement->rcsd_cheque = $rcsd_cheque;
-        $m_l_ca_actes_reglement->rcsd_especes = $rcsd_especes;
-        $m_l_ca_actes_reglement->rcsd_cb = $rcsd_cb;
-        $m_l_ca_actes_reglement->rac_part_patient = $rac_part_patient;
-        $m_l_ca_actes_reglement->rac_cheque = $rac_cheque;
-        $m_l_ca_actes_reglement->rac_especes = $rac_especes;
-        $m_l_ca_actes_reglement->rac_cb = $rac_cb;
-        $m_l_ca_actes_reglement->commentaire = $commentaire;
+        $m_l_ca_actes_reglement->praticien = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "praticien", $m_l_ca_actes_reglement->praticien, $praticien);
+        $m_l_ca_actes_reglement->nom_acte = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "acte", $m_l_ca_actes_reglement->nom_acte, $nom_acte);
+        $m_l_ca_actes_reglement->cotation = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "cotation", $m_l_ca_actes_reglement->cotation, $cotation);
+        $m_l_ca_actes_reglement->controle_securisation = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "controle_securisation", $m_l_ca_actes_reglement->controle_securisation, $controle_securisation);
+        $m_l_ca_actes_reglement->ro_part_secu = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "ro_part_secu", $m_l_ca_actes_reglement->ro_part_secu, $ro_part_secu);
+        $m_l_ca_actes_reglement->ro_virement_recu = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "ro_virement_recu", $m_l_ca_actes_reglement->ro_virement_recu, $ro_virement_recu);
+        $m_l_ca_actes_reglement->ro_indus_paye = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "ro_indus_paye", $m_l_ca_actes_reglement->ro_indus_paye, $ro_indus_paye);
+        $m_l_ca_actes_reglement->ro_indus_en_attente = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "ro_indus_en_attente", $m_l_ca_actes_reglement->ro_indus_en_attente, $ro_indus_en_attente);
+        $m_l_ca_actes_reglement->ro_indus_irrecouvrable = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "ro_indus_irrecouvrable", $m_l_ca_actes_reglement->ro_indus_irrecouvrable, $ro_indus_irrecouvrable);
+        $m_l_ca_actes_reglement->part_mutuelle = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "part_mutuelle", $m_l_ca_actes_reglement->part_mutuelle, $part_mutuelle);
+        $m_l_ca_actes_reglement->rcs_virement = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rcs_virement", $m_l_ca_actes_reglement->rcs_virement, $rcs_virement);
+        $m_l_ca_actes_reglement->rcs_especes = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rcs_especes", $m_l_ca_actes_reglement->rcs_especes, $rcs_especes);
+        $m_l_ca_actes_reglement->rcs_cb = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rcs_cb", $m_l_ca_actes_reglement->rcs_cb, $rcs_cb);
+        $m_l_ca_actes_reglement->rcsd_cheque = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rcsd_cheque", $m_l_ca_actes_reglement->rcsd_cheque, $rcsd_cheque);
+        $m_l_ca_actes_reglement->rcsd_especes = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rcsd_especes", $m_l_ca_actes_reglement->rcsd_especes, $rcsd_especes);
+        $m_l_ca_actes_reglement->rcsd_cb = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rcsd_cb", $m_l_ca_actes_reglement->rcsd_cb, $rcsd_cb);
+        $m_l_ca_actes_reglement->rac_part_patient = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rac_part_patient", $m_l_ca_actes_reglement->rac_part_patient, $rac_part_patient);
+        $m_l_ca_actes_reglement->rac_cheque = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rac_cheque", $m_l_ca_actes_reglement->rac_cheque, $rac_cheque);
+        $m_l_ca_actes_reglement->rac_especes = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rac_especes", $m_l_ca_actes_reglement->rac_especes, $rac_especes);
+        $m_l_ca_actes_reglement->rac_cb = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rac_cb", $m_l_ca_actes_reglement->rac_cb, $rac_cb);
+        $m_l_ca_actes_reglement->commentaire = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "commentaire", $m_l_ca_actes_reglement->commentaire, $commentaire);
         $m_l_ca_actes_reglement->save();
+        if($haveChange){
+            $m_h_ca->id_ca_actes_reglement = $m_l_ca_actes_reglement->id;
+            $m_h_ca->save();
+        }
+        //echo 'haveChange= '.$haveChange;
         return $m_l_ca_actes_reglement;
-
     }
     public static function insertCaActesReglement(Request $request, $id_ca){
         $date_derniere_modif = $request->input('date_derniere_modif');
@@ -183,31 +197,51 @@ class L_CaActesReglement extends Model
             $date_derniere_modif = Carbon::parse()->format('Y-m-d');
         }
 
+        $v_ca = V_CaActesReglement::where('id_ca', $id_ca)->first();
+
+        $m_h_ca = new H_CaActesReglement();
+        $m_h_ca->code_u = Auth::user()->code_u;
+        $m_h_ca->nom = Auth::user()->prenom. ' '. Auth::user()->nom;
+        $m_h_ca->id_ca_actes_reglement = $id_ca;
+        $m_h_ca->dossier = $v_ca->dossier;
+        $m_h_ca->action .= "<strong>Nouveau Acte</strong><br>";
+        $haveChange = true;
+
         $m_l_ca_actes_reglement = new L_CaActesReglement();
         $m_l_ca_actes_reglement->id_ca = $id_ca;
         $m_l_ca_actes_reglement->date_derniere_modif = $date_derniere_modif;
-        $m_l_ca_actes_reglement->praticien = $praticien;
-        $m_l_ca_actes_reglement->nom_acte = $nom_acte;
-        $m_l_ca_actes_reglement->cotation = $cotation;
-        $m_l_ca_actes_reglement->controle_securisation = $controle_securisation;
-        $m_l_ca_actes_reglement->ro_part_secu = $ro_part_secu;
-        $m_l_ca_actes_reglement->ro_virement_recu = $ro_virement_recu;
-        $m_l_ca_actes_reglement->ro_indus_paye = $ro_indus_paye;
-        $m_l_ca_actes_reglement->ro_indus_en_attente = $ro_indus_en_attente;
-        $m_l_ca_actes_reglement->ro_indus_irrecouvrable = $ro_indus_irrecouvrable;
-        $m_l_ca_actes_reglement->part_mutuelle = $part_mutuelle;
-        $m_l_ca_actes_reglement->rcs_virement = $rcs_virement;
-        $m_l_ca_actes_reglement->rcs_especes = $rcs_especes;
-        $m_l_ca_actes_reglement->rcs_cb = $rcs_cb;
-        $m_l_ca_actes_reglement->rcsd_cheque = $rcsd_cheque;
-        $m_l_ca_actes_reglement->rcsd_especes = $rcsd_especes;
-        $m_l_ca_actes_reglement->rcsd_cb = $rcsd_cb;
-        $m_l_ca_actes_reglement->rac_part_patient = $rac_part_patient;
-        $m_l_ca_actes_reglement->rac_cheque = $rac_cheque;
-        $m_l_ca_actes_reglement->rac_especes = $rac_especes;
-        $m_l_ca_actes_reglement->rac_cb = $rac_cb;
-        $m_l_ca_actes_reglement->commentaire = $commentaire;
+        $m_l_ca_actes_reglement->praticien = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "praticien", $m_l_ca_actes_reglement->praticien, $praticien);
+        $m_l_ca_actes_reglement->nom_acte = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "acte", $m_l_ca_actes_reglement->nom_acte, $nom_acte);
+        $m_l_ca_actes_reglement->cotation = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "cotation", $m_l_ca_actes_reglement->cotation, $cotation);
+        $m_l_ca_actes_reglement->controle_securisation = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "controle_securisation", $m_l_ca_actes_reglement->controle_securisation, $controle_securisation);
+        $m_l_ca_actes_reglement->ro_part_secu = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "ro_part_secu", $m_l_ca_actes_reglement->ro_part_secu, $ro_part_secu);
+        $m_l_ca_actes_reglement->ro_virement_recu = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "ro_virement_recu", $m_l_ca_actes_reglement->ro_virement_recu, $ro_virement_recu);
+        $m_l_ca_actes_reglement->ro_indus_paye = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "ro_indus_paye", $m_l_ca_actes_reglement->ro_indus_paye, $ro_indus_paye);
+        $m_l_ca_actes_reglement->ro_indus_en_attente = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "ro_indus_en_attente", $m_l_ca_actes_reglement->ro_indus_en_attente, $ro_indus_en_attente);
+        $m_l_ca_actes_reglement->ro_indus_irrecouvrable = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "ro_indus_irrecouvrable", $m_l_ca_actes_reglement->ro_indus_irrecouvrable, $ro_indus_irrecouvrable);
+        $m_l_ca_actes_reglement->part_mutuelle = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "part_mutuelle", $m_l_ca_actes_reglement->part_mutuelle, $part_mutuelle);
+        $m_l_ca_actes_reglement->rcs_virement = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rcs_virement", $m_l_ca_actes_reglement->rcs_virement, $rcs_virement);
+        $m_l_ca_actes_reglement->rcs_especes = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rcs_especes", $m_l_ca_actes_reglement->rcs_especes, $rcs_especes);
+        $m_l_ca_actes_reglement->rcs_cb = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rcs_cb", $m_l_ca_actes_reglement->rcs_cb, $rcs_cb);
+        $m_l_ca_actes_reglement->rcsd_cheque = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rcsd_cheque", $m_l_ca_actes_reglement->rcsd_cheque, $rcsd_cheque);
+        $m_l_ca_actes_reglement->rcsd_especes = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rcsd_especes", $m_l_ca_actes_reglement->rcsd_especes, $rcsd_especes);
+        $m_l_ca_actes_reglement->rcsd_cb = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rcsd_cb", $m_l_ca_actes_reglement->rcsd_cb, $rcsd_cb);
+        $m_l_ca_actes_reglement->rac_part_patient = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rac_part_patient", $m_l_ca_actes_reglement->rac_part_patient, $rac_part_patient);
+        $m_l_ca_actes_reglement->rac_cheque = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rac_cheque", $m_l_ca_actes_reglement->rac_cheque, $rac_cheque);
+        $m_l_ca_actes_reglement->rac_especes = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rac_especes", $m_l_ca_actes_reglement->rac_especes, $rac_especes);
+        $m_l_ca_actes_reglement->rac_cb = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "rac_cb", $m_l_ca_actes_reglement->rac_cb, $rac_cb);
+        $m_l_ca_actes_reglement->commentaire = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "commentaire", $m_l_ca_actes_reglement->commentaire, $commentaire);
         $m_l_ca_actes_reglement->save();
+        $m_h_ca->id_ca_actes_reglement = $m_l_ca_actes_reglement->id;
+        $m_h_ca->save();
         return $m_l_ca_actes_reglement;
+    }
+
+    public function makeHistoWhenUpdate(&$m_h_ca, &$haveChange, $desc ,$oldValue, $newValue){
+        if($oldValue != $newValue){
+            $m_h_ca->action .= "<strong>".$desc.": </strong>". $oldValue . " => " .$newValue. "<br>";
+            $haveChange = true;
+        }
+        return $newValue;
     }
 }

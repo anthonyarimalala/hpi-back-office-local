@@ -99,7 +99,7 @@ class ExportsController extends Controller
 
        // dd($query->toSql(), $query->getBindings());
 
-        return Excel::download(new V_DevisExport($v_devis), $date_devis_debut . 'a' . $date_devis_fin . '.xlsx');
+        return Excel::download(new V_DevisExport(data: $v_devis), $date_devis_debut . 'a' . $date_devis_fin . '.xlsx');
     }
     public function showDevisExportView(Request $request)
     {

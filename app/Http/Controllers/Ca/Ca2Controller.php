@@ -47,10 +47,12 @@ class Ca2Controller extends Controller
         if(!$data['v_ca_actes_reglement']) return back();
         return view('ca/modifier/modifier-ca')->with($data);
     }
+
     public function updateCa(Request $request, $id_ca_actes_reglement){
         $m_l_ca_actes_reglement = L_CaActesReglement::updateCaActesReglement($request, $id_ca_actes_reglement);
         return redirect('liste-ca');
     }
+
     //Insertion du CA s'il n'y a pas encore d'acte
     public function insertCa(Request $request){
         $m_ca = CaGeneral::createCa($request);
@@ -125,14 +127,14 @@ class Ca2Controller extends Controller
             ->where('praticien', '!=', '')->get();
         return view('ca/nouveau/nouveau-ca-with-dossier')->with($data);
     }
-    public function showModifierCa($id_ca, $dossier)
+    public function showModifierCa($id_ca_actes_reglement, $dossier)
     {
         $data['status'] = DossierStatus::orderBy('ordre', 'desc')->where('is_deleted', 0)->get();
         $data['praticiens'] = Praticien::where('is_deleted', 0)
             ->where('praticien', '!=', '')->get();
-        $data['v_ca_actes_reglement'] = V_CaActesReglement::where('id_ca_actes_reglement', $id_ca)->where('dossier', $dossier)->first();
+        $data['v_ca_actes_reglement'] = V_CaActesReglement::where('id_ca_actes_reglement', $id_ca_actes_reglement)->where('dossier', $dossier)->first();
         $data['hists'] = H_CaActesReglement::orderBy('created_at', 'desc')
-            ->where('id_ca_actes_reglement', $id_ca)
+            ->where('id_ca_actes_reglement', $id_ca_actes_reglement)
             ->paginate(15);
         if(!$data['v_ca_actes_reglement']) return back();
         return view('ca/modifier/modifier-ca')->with($data);

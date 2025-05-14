@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dossier\Prothese\ProtheseController;
 use App\Http\Controllers\Mail\MailController;
 use Illuminate\Support\Facades\Route;
 
@@ -143,6 +144,7 @@ Route::middleware(['auth', 'role:admin,user,responsableCA'])->group(function () 
 });
 Route::middleware(['auth', 'role:admin,responsableCA'])->group(function () {
     // section: ca2
+    Route::get('getCaFromProthese/{id_acte}', [\App\Http\Controllers\Dossier\Prothese\ProtheseController::class,'getCaFromProthese']);
     Route::get('ca/nouveau', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showNouveauCa']);
     Route::get('liste-ca', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showListeCa'])->name('liste.ca');
     Route::post('ca/nouveau-2', [\App\Http\Controllers\ca\Ca2Controller::class, 'insertCa']);
@@ -153,7 +155,7 @@ Route::middleware(['auth', 'role:admin,responsableCA'])->group(function () {
     Route::get('delete-ca/{id_acte}', [\App\Http\Controllers\Ca\Ca2Controller::class, 'deleteCa']);
     Route::get('getFilterCa', [\App\Http\Controllers\Ca\Ca2Controller::class, 'getFilterCa']);
     Route::get('reinitializeFilterCa', [\App\Http\Controllers\Ca\Ca2Controller::class, 'reinitializeFilterCa']);
-    Route::get('ca/{id_ca}/{dossier}/modifier', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showModifierCa']);
+    Route::get('ca/{id_ca_actes_reglement}/{dossier}/modifier', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showModifierCa']);
     Route::get('ca/nouveau/{dossier}', [\App\Http\Controllers\Ca\Ca2Controller::class, 'showNouveauCaWithDossier']);
     Route::get('/get-patient-details', [\App\Http\Controllers\Ca\Ca2Controller::class, 'getPatientDetails'])->name('get.patient.details');
 });

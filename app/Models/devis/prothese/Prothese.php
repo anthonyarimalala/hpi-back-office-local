@@ -160,7 +160,7 @@ class Prothese extends Model
             $prothese = new Prothese();
             $prothese->id_devis = $id_devis;
         }
-        $m_h_prothese->action .= "<strong>Acte:</strong> " . ($prothese->travail_demande ?: '...') ."\n";
+        $m_h_prothese->action .= "<strong>Travail demandé:</strong> " . ($travail_demande ?: '...') ."\n";
 
         // Mise à jour des attributs
         if ($prothese->laboratoire != $laboratoire) {

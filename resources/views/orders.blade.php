@@ -125,6 +125,9 @@
         <th style="border: 1px solid black; background-color: #EA9999; font-weight: bold; width: 200px;">Observation</th>
     </tr>
     <tbody>
+    @php
+        $id_devis = null;
+    @endphp
     @foreach($data as $order)
         @php
             $couleur_reste_a_payer = '';
@@ -138,38 +141,84 @@
             if($order->montant_acte == 0 || $order->montant_acte == null || $order->montant_acte == ''){
                 $couleur_reste_a_payer = 'red';
             }
+
+            $couleur_montant = "";
+            if($order->part_secu_status == '' && $order->part_mutuelle_status == '' && $order->part_rac_status == ''){
+                $couleur_montant = "red";
+            }
+            // vérifier un par un les payés et non payés
+            if($order->part_secu && $order->part_secu != 0 && $order->part_secu_status != 'réglé'){
+                $couleur_montant = "red";
+            }
+            if($order->part_mutuelle && $order->part_mutuelle != 0 && $order->part_mutuelle_status != 'réglé'){
+                $couleur_montant = "red";
+            }
+            if($order->part_rac && $order->part_rac != 0 && $order->part_rac_status != 'réglé'){
+                $couleur_montant = "red";
+            }
+            if($order->part_secu + $order->part_mutuelle + $order->part_rac != $order->montant){
+                $couleur_montant = "red";
+            }
+            $couleur_font = '';
+            if ($id_devis == $order->id_devis) {
+                $couleur_font = "gray";
+            }
         @endphp
         <tr>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->dossier }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->nom }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->mutuelle }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->status }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date ? \Carbon\Carbon::parse($order->date)->format('d/m/Y') : '' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->montant }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->devis_signe == 'oui' ? 'oui' : 'non' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->praticien }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{!! nl2br($order->devis_observation) !!}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_envoi_pec ? \Carbon\Carbon::parse($order->date_envoi_pec)->format('d/m/Y') : '' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_fin_validite_pec ? \Carbon\Carbon::parse($order->date_fin_validite_pec)->format('d/m/Y') : '' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->part_secu }}</td>
-            <td style="border: 1px solid black;">{{ $order->part_secu_status }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->part_mutuelle }}</td>
-            <td style="border: 1px solid black;">{{ $order->part_mutuelle_status }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->part_rac }}</td>
-            <td style="border: 1px solid black;">{{ $order->part_rac_status }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->reglement_cb }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->reglement_espece }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_paiement_cb_ou_esp ? \Carbon\Carbon::parse($order->date_paiement_cb_ou_esp)->format('d/m/Y') : '' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_depot_chq_pec ? \Carbon\Carbon::parse($order->date_depot_chq_pec)->format('d/m/Y') : '' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_depot_chq_part_mut ? \Carbon\Carbon::parse($order->date_depot_chq_part_mut)->format('d/m/Y') : '' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_depot_chq_rac ? \Carbon\Carbon::parse($order->date_depot_chq_rac)->format('d/m/Y') : '' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_1er_appel ? \Carbon\Carbon::parse($order->date_1er_appel)->format('d/m/Y') : '' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{!! nl2br($order->note_1er_appel) !!}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_2eme_appel ? \Carbon\Carbon::parse($order->date_2eme_appel)->format('d/m/Y') : '' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{!! nl2br($order->note_2eme_appel) !!}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_3eme_appel ? \Carbon\Carbon::parse($order->date_3eme_appel)->format('d/m/Y') : '' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{!! nl2br($order->note_3eme_appel) !!}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_envoi_mail ? \Carbon\Carbon::parse($order->date_envoi_mail)->format('d/m/Y') : '' }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->dossier }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->nom }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->mutuelle }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->status }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date ? \Carbon\Carbon::parse($order->date)->format('d/m/Y') : '' }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $couleur_montant }}">{{ $order->montant }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->devis_signe == 'oui' ? 'oui' : 'non' }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->praticien }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{!! nl2br($order->devis_observation) !!}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_envoi_pec ? \Carbon\Carbon::parse($order->date_envoi_pec)->format('d/m/Y') : '' }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_fin_validite_pec ? \Carbon\Carbon::parse($order->date_fin_validite_pec)->format('d/m/Y') : '' }}</td>
+                @php
+                foreach ($devis_accord_pecs_status as $da) {
+                    if($da->status == $order->part_secu_status){
+                        $couleur = $da->couleur;
+                    }
+                }
+                if($order->part_secu && $order->part_secu != 0 && $order->part_secu_status == '') $couleur = 'red';
+                @endphp
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $couleur }}">{{ $order->part_secu }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $couleur }}">{{ $order->part_secu_status }}</td>
+                @php
+                    foreach ($devis_accord_pecs_status as $da) {
+                        if($da->status == $order->part_mutuelle_status){
+                            $couleur = $da->couleur;
+                        }
+                    }
+                    if($order->part_mutuelle && $order->part_mutuelle != 0 && $order->part_mutuelle_status == '') $couleur = 'red';
+                @endphp
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $couleur }};">{{ $order->part_mutuelle }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $couleur }};">{{ $order->part_mutuelle_status }}</td>
+                @php
+                    foreach ($devis_accord_pecs_status as $da) {
+                        if($da->status == $order->part_rac_status){
+                            $couleur = $da->couleur;
+                        }
+                    }
+                    if($order->part_rac && $order->part_rac != 0 && $order->part_rac_status == '') $couleur = 'red';
+                @endphp
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $couleur }};">{{ $order->part_rac }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $couleur }};">{{ $order->part_rac_status }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->reglement_cb }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->reglement_espece }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_paiement_cb_ou_esp ? \Carbon\Carbon::parse($order->date_paiement_cb_ou_esp)->format('d/m/Y') : '' }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_depot_chq_pec ? \Carbon\Carbon::parse($order->date_depot_chq_pec)->format('d/m/Y') : '' }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_depot_chq_part_mut ? \Carbon\Carbon::parse($order->date_depot_chq_part_mut)->format('d/m/Y') : '' }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_depot_chq_rac ? \Carbon\Carbon::parse($order->date_depot_chq_rac)->format('d/m/Y') : '' }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_1er_appel ? \Carbon\Carbon::parse($order->date_1er_appel)->format('d/m/Y') : '' }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{!! nl2br($order->note_1er_appel) !!}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_2eme_appel ? \Carbon\Carbon::parse($order->date_2eme_appel)->format('d/m/Y') : '' }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{!! nl2br($order->note_2eme_appel) !!}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_3eme_appel ? \Carbon\Carbon::parse($order->date_3eme_appel)->format('d/m/Y') : '' }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{!! nl2br($order->note_3eme_appel) !!}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_envoi_mail ? \Carbon\Carbon::parse($order->date_envoi_mail)->format('d/m/Y') : '' }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->laboratoire }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_empreinte ? \Carbon\Carbon::parse($order->date_empreinte)->format('d/m/Y') : '' }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_envoi_au_labo ? \Carbon\Carbon::parse($order->date_envoi_au_labo)->format('d/m/Y') : '' }}</td>
@@ -186,16 +235,19 @@
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->organisme_payeur }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->montant_encaisse }}</td>
             <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_controle_paiement ? \Carbon\Carbon::parse($order->date_controle_paiement)->format('d/m/Y') : '' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->numero_cheque }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->montant_cheque }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->nom_document }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_encaissement_cheque ? \Carbon\Carbon::parse($order->date_encaissement_cheque)->format('d/m/Y') : '' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_1er_acte ? \Carbon\Carbon::parse($order->date_1er_acte)->format('d/m/Y') : '' }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->nature_cheque }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->travaux_sur_devis }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->situation_cheque }}</td>
-            <td style="border: 1px solid black; background-color: {{ $order->couleur }}">{!! nl2br($order->observation_cheque) !!}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->numero_cheque }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->montant_cheque }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->nom_document }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_encaissement_cheque ? \Carbon\Carbon::parse($order->date_encaissement_cheque)->format('d/m/Y') : '' }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->date_1er_acte ? \Carbon\Carbon::parse($order->date_1er_acte)->format('d/m/Y') : '' }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->nature_cheque }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->travaux_sur_devis }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{{ $order->situation_cheque }}</td>
+            <td style="color: {{ $couleur_font }};border: 1px solid black; background-color: {{ $order->couleur }}">{!! nl2br($order->observation_cheque) !!}</td>
         </tr>
+        @php
+            $id_devis = $order->id_devis;
+        @endphp
     @endforeach
 
     </tbody>

@@ -91,6 +91,16 @@ class V_Devis extends Model
             $filters['stringFilters'][] = 'Date fin validité PEC: sans valeur';
         }
 
+        if ($filters['part_secu_non_regle']) {
+            $query->where(function ($q) {
+                $q->where('part_secu_status', '!=', 'réglé')
+                  ->orWhereNull('part_secu_status');
+            })
+                ->whereNotNull('part_secu')
+                ->where('part_secu', '!=', 0);
+            $filters['stringFilters'][] = 'Part sécu: non réglé';
+        }
+
         // 'part_secu_min' => $request->input('part_secu_min'),
         if ($filters['part_secu_min']) {
             $query->where('part_secu', '>=', $filters['part_secu_min']);
@@ -108,6 +118,15 @@ class V_Devis extends Model
             $filters['stringFilters'][] = 'Part sécu: sans valeur';
         }
 
+        if ($filters['part_mutuelle_non_regle']) {
+            $query->where(function ($q) {
+                $q->where('part_mutuelle_status', '!=', 'réglé')
+                  ->orWhereNull('part_mutuelle_status');
+            })
+                ->whereNotNull('part_mutuelle')
+                ->where('part_mutuelle', '!=', 0);
+            $filters['stringFilters'][] = 'Part mutuelle: non réglé';
+        }
         // 'part_mutuelle_min' => $request->input('part_mutuelle_min'),
         if ($filters['part_mutuelle_min']) {
             $query->where('part_mutuelle', '>=', $filters['part_mutuelle_min']);
@@ -126,6 +145,16 @@ class V_Devis extends Model
         }
 
 
+        if ($filters['part_rac_non_regle']) {
+            $query->where(function ($q) {
+                $q->where('part_rac_status', '!=', 'réglé')
+                  ->orWhereNull('part_rac_status');
+            })
+                ->whereNotNull('part_rac')
+                ->where('part_rac', '!=', 0);
+            $filters['stringFilters'][] = 'Part RAC: non réglé';
+        }
+
 // 'part_rac_min' => $request->input('part_rac_min'),
         if ($filters['part_rac_min']) {
             $query->where('part_rac', '>=', $filters['part_rac_min']);
@@ -143,22 +172,21 @@ class V_Devis extends Model
             $filters['stringFilters'][] = 'Part RAC: sans valeur';
         }
 
-        if ($filters['non_regle']) {
-            $query->where(function($query) {
-                $query->where('part_secu_status', '!=', 'Payé')
-                    ->where('part_secu_status', '!=', '');  // Ajout de l'ET pour la condition part_secu_status
-                $query->orWhere(function($query) {
-                    $query->where('part_mutuelle_status', '!=', 'Payé')
-                        ->where('part_mutuelle_status', '!=', '');  // Ajout de l'ET pour la condition part_mutuelle_status
-                });
-                $query->orWhere(function($query) {
-                    $query->where('part_rac_status', '!=', 'Payé')
-                        ->where('part_rac_status', '!=', '');  // Ajout de l'ET pour la condition part_rac_status
-                });
-            });
-
-            $filters['stringFilters'][] = 'Afficher que les non-réglés';
-        }
+        // if ($filters['non_regle']) {
+        //     $query->where(function($query) {
+        //         $query->where('part_secu_status', '!=', 'Payé')
+        //             ->where('part_secu_status', '!=', '');  // Ajout de l'ET pour la condition part_secu_status
+        //         $query->orWhere(function($query) {
+        //             $query->where('part_mutuelle_status', '!=', 'Payé')
+        //                 ->where('part_mutuelle_status', '!=', '');  // Ajout de l'ET pour la condition part_mutuelle_status
+        //         });
+        //         $query->orWhere(function($query) {
+        //             $query->where('part_rac_status', '!=', 'Payé')
+        //                 ->where('part_rac_status', '!=', '');  // Ajout de l'ET pour la condition part_rac_status
+        //         });
+        //     });
+        //     $filters['stringFilters'][] = 'Afficher que les non-réglés';
+        // }
 
 
 // 'date_1er_appel_debut' => $request->input('date_1er_appel_debut'),

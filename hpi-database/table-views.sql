@@ -137,6 +137,7 @@ SELECT
     cg.statut ,
     cg.mutuelle ,
     lcar.id AS id_ca_actes_reglement,
+    lcar.id_acte,
     lcar.praticien ,
     lcar.date_derniere_modif ,
     lcar.nom_acte ,
