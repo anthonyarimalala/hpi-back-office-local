@@ -91,6 +91,7 @@ class V_Devis extends Model
             $filters['stringFilters'][] = 'Date fin validité PEC: sans valeur';
         }
 
+        /*
         if ($filters['part_secu_non_regle']) {
             $query->where(function ($q) {
                 $q->where('part_secu_status', '!=', 'réglé')
@@ -100,6 +101,7 @@ class V_Devis extends Model
                 ->where('part_secu', '!=', 0);
             $filters['stringFilters'][] = 'Part sécu: non réglé';
         }
+        */
 
         // 'part_secu_min' => $request->input('part_secu_min'),
         if ($filters['part_secu_min']) {
