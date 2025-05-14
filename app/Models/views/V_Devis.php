@@ -120,6 +120,7 @@ class V_Devis extends Model
             $filters['stringFilters'][] = 'Part sécu: sans valeur';
         }
 
+        /*
         if ($filters['part_mutuelle_non_regle']) {
             $query->where(function ($q) {
                 $q->where('part_mutuelle_status', '!=', 'réglé')
@@ -129,6 +130,7 @@ class V_Devis extends Model
                 ->where('part_mutuelle', '!=', 0);
             $filters['stringFilters'][] = 'Part mutuelle: non réglé';
         }
+        */
         // 'part_mutuelle_min' => $request->input('part_mutuelle_min'),
         if ($filters['part_mutuelle_min']) {
             $query->where('part_mutuelle', '>=', $filters['part_mutuelle_min']);
@@ -146,7 +148,7 @@ class V_Devis extends Model
             $filters['stringFilters'][] = 'Part mutuelle: sans valeur';
         }
 
-
+        /*
         if ($filters['part_rac_non_regle']) {
             $query->where(function ($q) {
                 $q->where('part_rac_status', '!=', 'réglé')
@@ -156,6 +158,7 @@ class V_Devis extends Model
                 ->where('part_rac', '!=', 0);
             $filters['stringFilters'][] = 'Part RAC: non réglé';
         }
+            */
 
 // 'part_rac_min' => $request->input('part_rac_min'),
         if ($filters['part_rac_min']) {
