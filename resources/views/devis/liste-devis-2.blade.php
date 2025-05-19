@@ -11,6 +11,16 @@
                                 <div>
                                     <h4 class="card-title card-title-dash">Liste des devis</h4>
                                 </div>
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul class="mb-0">
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+
                                 @php
                                     $dev = session()->get('deviss');
                                     // dump($filters);
@@ -56,7 +66,6 @@
                                         Voir les filtres appliqués <i class="mdi mdi-chevron-down"></i>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
                                         @foreach($filters['stringFilters'] as $sf)
                                             <li class="dropdown-item">
                                                 <label for="date_pose_prevue_debut" class="form-label"
@@ -67,12 +76,11 @@
                                 @endif
                             </div>
                             <div class="col-6">
-                                <form action="{{ asset('reinitializeFilterListeDevis') }}" method="GET">
-                                    <button class="btn btn-primary" style="color: whitesmoke" type="submit">
-                                        Tous
-                                    </button>
-                                </form>
+                                <a class="btn btn-primary" href="{{ asset('reinitializeFilterListeDevis') }}" style="color: whitesmoke" type="submit">
+                                    Tous
+                                </a>
                             </div>
+
 
                             <div class="container">
                                 <div class="row">
@@ -605,6 +613,14 @@
                             <div class="d-flex justify-content-center">
                                 {{ $deviss->links('pagination::bootstrap-4') }}
                             </div>
+                            <div class="col-6">
+                                @if(\Illuminate\Support\Facades\Auth::user()->role == 'admin')
+                                    <a class="btn btn-danger text-white me-0" data-bs-toggle="modal"
+                                    data-bs-target="#reinitialiseModal">
+                                        Supprimer des données
+                                    </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -614,6 +630,7 @@
     @include('modals.devis.liste-devis.selection-xlsx')
     @include('modals.devis.liste-devis.selection-periode-export')
     @include('modals.devis.liste-devis.filtre-devis')
+    @include('modals.devis.reinitialise.reinitialiser-devis')
     <script>
         function toggleColumnVisibility() {
             const columns = [

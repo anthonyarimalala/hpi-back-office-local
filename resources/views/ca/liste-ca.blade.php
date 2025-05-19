@@ -180,12 +180,21 @@
                             <div class="d-flex justify-content-center">
                                 {{ $ca_actes_reglements->links('pagination::bootstrap-4') }}
                             </div>
+                            <div class="col-6">
+                                @if(\Illuminate\Support\Facades\Auth::user()->role == 'admin')
+                                    <a class="btn btn-danger text-white me-0" data-bs-toggle="modal"
+                                    data-bs-target="#reinitialiseCAModal">
+                                        Supprimer des données
+                                    </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @include('modals.ca.reinitialise.reinitialiser-ca')
     <div class="modal fade" id="fileModal" tabindex="-1" aria-labelledby="fileModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -516,6 +525,7 @@
             </div>
         </div>
     </div>
+
 
     <script>
         function deleteItem(dossier, dateCreated) {

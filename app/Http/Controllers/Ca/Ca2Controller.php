@@ -22,8 +22,8 @@ class Ca2Controller extends Controller
 
 
     // debut: insertion d'un acte de CA s'il y'en a déjà
-    public function insertNouveauCaActe(Request $request, $id_ca){
-        $m_l_ca_actes_reglement = L_CaActesReglement::insertCaActesReglement($request, $id_ca);
+    public function insertNouveauCaActe(Request $request, $id_ca_actes_reglement){
+        $m_l_ca_actes_reglement = L_CaActesReglement::insertCaActesReglement($request, $id_ca_actes_reglement);
         return redirect('liste-ca');
     }
     public function showNouveauCaActe($id_ca){

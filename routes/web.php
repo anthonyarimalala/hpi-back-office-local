@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dossier\Prothese\ProtheseController;
 use App\Http\Controllers\Mail\MailController;
+use App\Http\Controllers\ReinitializeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -151,7 +152,7 @@ Route::middleware(['auth', 'role:admin,responsableCA'])->group(function () {
     Route::get('ca/{id_ca_actes_reglement}/{dossier}/modifier', [\App\Http\Controllers\ca\Ca2Controller::class, 'showUpdateCa']);
     Route::post('ca/modifier-2/{id_ca_actes_reglement}', [\App\Http\Controllers\ca\Ca2Controller::class, 'updateCa']);
     Route::get('ca/{id_ca}/nouveau-acte',[\App\Http\Controllers\ca\Ca2Controller::class, 'showNouveauCaActe']);
-    Route::post('ca/{id_ca}/nouveau-acte', [\App\Http\Controllers\ca\Ca2Controller::class, 'insertNouveauCaActe']);
+    Route::post('ca/{id_ca_actes_reglement}/nouveau-acte', [\App\Http\Controllers\ca\Ca2Controller::class, 'insertNouveauCaActe']);
     Route::get('delete-ca/{id_acte}', [\App\Http\Controllers\Ca\Ca2Controller::class, 'deleteCa']);
     Route::get('getFilterCa', [\App\Http\Controllers\Ca\Ca2Controller::class, 'getFilterCa']);
     Route::get('reinitializeFilterCa', [\App\Http\Controllers\Ca\Ca2Controller::class, 'reinitializeFilterCa']);
@@ -166,6 +167,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('creer-utilisateur', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'creerUtilisateur']);
     Route::get('effacer-utilisateur/{code_u}', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'effacerUtilisateur']);
     Route::get('update-utilisateur/{code_u}', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'updateUtilisateur']);
+    Route::get('reinitialiser-devis/{reinitialise}', action: [\App\Http\Controllers\Export\ExportsController::class, 'exportV_Devis']);
+    Route::get('reinitialiser-ca/{reinitialise}', action: [\App\Http\Controllers\Export\ExportsController::class, 'exportV_Ca']);
 });
 
 

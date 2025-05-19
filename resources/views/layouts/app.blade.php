@@ -300,14 +300,7 @@
                 -->
 
                 <li class="nav-item nav-category">Gestion BACK OFFICE</li>
-                @if(\Illuminate\Support\Facades\Auth::user()->role == 'admin')
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ asset('utilisateurs') }}">
-                            <i class="mdi mdi-account-multiple menu-icon"></i>
-                            <span class="menu-title">Utilisateurs</span>
-                        </a>
-                    </li>
-                @endif
+
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="collapse" href="#historiques" aria-expanded="false" aria-controls="ui-basic">
                         <i class="menu-icon mdi mdi-history"></i>
@@ -350,6 +343,21 @@
                         <span class="menu-title">Mot de passe</span>
                     </a>
                 </li>
+                @if(\Illuminate\Support\Facades\Auth::user()->role == 'admin')
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ asset('utilisateurs') }}">
+                            <i class="mdi mdi-account-multiple menu-icon"></i>
+                            <span class="menu-title">Utilisateurs</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ asset('reinitialiser') }}">
+                            <i class="mdi mdi-restore menu-icon"></i>
+                            <span class="menu-title">Reinitialiser</span>
+                        </a>
+                    </li>
+                @endif
+
             </ul>
         </nav>
         <!-- partial -->

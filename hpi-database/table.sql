@@ -174,8 +174,8 @@
 
     CREATE TABLE ca_generales(
         id SERIAL PRIMARY KEY,
-        id_devis INTEGER REFERENCES devis(id),
-        dossier VARCHAR(20) REFERENCES dossiers(dossier),
+        id_devis INTEGER,
+        dossier VARCHAR(20),
         nom_patient VARCHAR(255),
         statut VARCHAR(50),
         mutuelle  VARCHAR(255),

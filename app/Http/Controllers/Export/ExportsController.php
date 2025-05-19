@@ -5,18 +5,21 @@ namespace App\Http\Controllers\Export;
 use App\Exports\V_CaExport;
 use App\Exports\V_DevisExport;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ReinitializeController;
 use App\Models\dossier\DossierStatus;
 use App\Models\views\V_CaActesReglement;
 use App\Models\views\V_Devis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ExportsController extends Controller
 {
     //
-    public function exportV_Ca(Request $request)
+    public function exportV_Ca(Request $request, $reinitialise=0)
     {
         $date_ca_modif_debut = $request->input('date_ca_modif_debut');
         $date_ca_modif_fin = $request->input('date_ca_modif_fin');
@@ -65,6 +68,20 @@ class ExportsController extends Controller
         $praticiens = $queryPraticiens->groupBy('praticien')
             ->get();
 
+        if($reinitialise==1){
+            $request->validate([
+                'password' => ['required'],
+            ]);
+            $password = $request->input('password');
+            $user = Auth::user();
+            if (!Hash::check($password, $user->password)) {
+                return back()->withErrors(['password' => 'Mot de passe incorrect lors de la suppression de données.']);
+            }
+            $l_ca_actes_reglements_ids = $v_ca->pluck('id_ca_actes_reglement');
+            ReinitializeController::effacerCA($l_ca_actes_reglements_ids);
+            echo 'hoho';
+        }
+
 
         /*
         $praticiens = DB::select("SELECT
@@ -75,9 +92,9 @@ class ExportsController extends Controller
         */
 
 
-        return Excel::download(new V_CaExport($v_ca, $praticiens), 'ca'.Carbon::parse($date_ca_modif_debut)->format('d-m-Y').'a'.Carbon::parse($date_ca_modif_fin)->format('d-m-Y').'.xlsx');
+        return Excel::download(new V_CaExport($v_ca, praticiens: $praticiens), 'ca'.Carbon::parse($date_ca_modif_debut)->format('d-m-Y').'a'.Carbon::parse($date_ca_modif_fin)->format('d-m-Y').'.xlsx');
     }
-    public function exportV_Devis(Request $request)
+    public function exportV_Devis(Request $request, $reinitialise=0)
     {
         $withFilters = $request->input('withFilters', []);
         $date_devis_debut = $request->input('date_devis_debut');
@@ -97,8 +114,23 @@ class ExportsController extends Controller
             ->orderBy('date', 'asc')
             ->get();
 
-       // dd($query->toSql(), $query->getBindings());
+        // au cas où on fait une reinitialisation car pour réinitialiser on fait un export
+        if($reinitialise==1){
+            $request->validate([
+                'password' => ['required'],
+            ]);
 
+            $password = $request->input('password');
+            $user = Auth::user();
+
+            if (!Hash::check($password, $user->password)) {
+                return back()->withErrors(['password' => 'Mot de passe incorrect lors de la suppression de données.']);
+            }
+            $devis_ids = $v_devis->pluck('id_devis');
+            ReinitializeController::effacerDevis($devis_ids);
+        }
+
+        // le devis est déjà stocké dans la variable alors on peut quand meme exporter
         return Excel::download(new V_DevisExport(data: $v_devis), $date_devis_debut . 'a' . $date_devis_fin . '.xlsx');
     }
     public function showDevisExportView(Request $request)

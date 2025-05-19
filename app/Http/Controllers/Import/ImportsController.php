@@ -446,6 +446,7 @@ class ImportsController extends Controller
                 $m_prtc = new Praticien();
                 $m_prtc->praticien = strtoupper(trim($mid->praticien));
                 $m_prtc->save();
+                $m_praticienS = Praticien::all()->keyBy('praticien');
             }
             $prtc = $m_prtc->praticien;
 
@@ -951,6 +952,7 @@ class ImportsController extends Controller
                 $m_h_devis->save();
             }
             if ($withErrors){
+                $withErrorsAll = true;
                 $m_error_import->save();
             }
         }
