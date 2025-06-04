@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Gestion;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserToConfirm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,30 @@ use Illuminate\Support\Facades\Hash;
 class GestionUtilisateurController extends Controller
 {
     //
+    public function confirmUserToConfirm($id_user_to_confirm){
+        $userToConfirm = UserToConfirm::find($id_user_to_confirm);
+        if(!$userToConfirm){
+            return back()->withErrors(['alert', 'Cette personne n\'existe plus dans la base de données. Il sera nécessaire qu\'elle s\'enregistre de nouveau.']);
+        }
+        $max_id = DB::select("SELECT COALESCE(MAX(SUBSTRING(code_u FROM '[0-9]+')::INTEGER), 0) AS max_code FROM users WHERE code_u LIKE 'U%'")[0]->max_code;
+        $newCodeU = User::generateCodeNonSeq('U', 4, $max_id+1);
+        $user = new User();
+        $user->code_u = $newCodeU;
+        $user->nom = $userToConfirm->nom;
+        $user->prenom = $userToConfirm->prenom;
+        $user->password = $userToConfirm->password;
+        $user->email = $newCodeU.'@gmail.com';
+        $user->role = 'user';
+        $user->is_deleted = 0;
+        $user->save();
+        DB::delete('DELETE FROM users_to_confirms WHERE id=?', [$id_user_to_confirm]);
+        return back()->with('success', 'Opération effectuée avec succès.');;
+
+    }
+    public function deleteUserToConfirm($id_user_to_confirm){
+        DB::delete('DELETE FROM users_to_confirms WHERE id=?', [$id_user_to_confirm]);
+        return back();
+    }
 
     public function modifierMdp(Request $request){
         // Validation des données
@@ -81,6 +106,7 @@ class GestionUtilisateurController extends Controller
     public function showListeUtilisateurs(){
         $data['utilisateurs'] = User::where('is_deleted', '!=', 1)
             ->get();
+        $data['utilisateurs_to_confirm'] = UserToConfirm::orderBy('id', 'desc')->get();
         return view('gestion/utilisateur/liste-user')->with($data);
     }
 }

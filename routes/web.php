@@ -21,7 +21,7 @@ Route::get('login', function() { return view('authentification/login'); });
 Route::post('login', [ \App\Http\Controllers\Authentification\LoginController::class, 'login'])->name('login');
 Route::post('logout', [\App\Http\Controllers\Authentification\LoginController::class, 'logout'])->name('logout');
 Route::get('register', function() { return view('authentification/register'); });
-Route::post('register', [ \App\Http\Controllers\Authentification\LoginController::class, 'register'])->name('register');
+Route::post('register', [ \App\Http\Controllers\Authentification\LoginController::class, 'registerToConfirm'])->name('register');
 
 Route::middleware('auth')->group(function() {
     Route::get('/', function (){
@@ -169,6 +169,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('update-utilisateur/{code_u}', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'updateUtilisateur']);
     Route::get('reinitialiser-devis/{reinitialise}', action: [\App\Http\Controllers\Export\ExportsController::class, 'exportV_Devis']);
     Route::get('reinitialiser-ca/{reinitialise}', action: [\App\Http\Controllers\Export\ExportsController::class, 'exportV_Ca']);
+    Route::get('delete-user-to-confirm/{id_user_to_confirm}', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'deleteUserToConfirm']);
+    Route::get('confirm-user-to-confirm/{id_user_to_confirm}', [\App\Http\Controllers\Gestion\GestionUtilisateurController::class, 'confirmUserToConfirm']);
 });
 
 

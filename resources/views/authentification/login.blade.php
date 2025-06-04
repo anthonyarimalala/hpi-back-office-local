@@ -36,7 +36,15 @@
                             @enderror
                         </div>
                         <button type="submit" class="btn btn-primary">Connection</button>
+                        <br><a href="{{ asset('register') }}">Inscription</a>
                     </form>
+                    @if (session('warning'))
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            {{ session('warning') }}
+                        </div>
+                    @endif
+
+
                 </div>
             </div>
         </div>

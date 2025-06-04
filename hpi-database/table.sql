@@ -2,6 +2,15 @@
     ALTER TABLE users
         ADD COLUMN is_deleted INTEGER NOT NULL DEFAULT 0;
 
+    CREATE TABLE users_to_confirms(
+        id SERIAL PRIMARY KEY,
+        nom VARCHAR(255),
+        prenom VARCHAR(255),
+        password VARCHAR(255),
+        created_at TIMESTAMP,
+        updated_at TIMESTAMP
+    );
+
 
     -- section: DEVIS
     CREATE TABLE dossier_statuss(

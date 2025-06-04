@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Authentification;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserToConfirm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,20 @@ use Illuminate\Support\Facades\Hash;
 class LoginController extends Controller
 {
     //
+    public function registerToConfirm(Request $request){
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'prenom' => 'required|string|max:255',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+        $user_to_confirm = new UserToConfirm();
+        $user_to_confirm->nom = $validatedData['nom'];
+        $user_to_confirm->prenom = $validatedData['prenom'];
+        $user_to_confirm->password = Hash::make($validatedData['password']);
+        $user_to_confirm->save();
+        return redirect('/login')->with('warning', 'Votre inscription a été prise en compte. Veuillez attendre la confirmation de l\'administrateur pour recevoir votre code utilisateur.');
+
+    }
 
     public function register(Request $request)
     {
@@ -34,8 +49,7 @@ class LoginController extends Controller
         ]);
 
         auth()->login($user);
-
-        return redirect('/');
+        return redirect('/')->with('warning', 'Votre inscription a été prise en compte. Veuillez attendre la confirmation de l\'administrateur pour recevoir votre code utilisateur.');
     }
 
     public function login(Request $request){

@@ -1,3 +1,6 @@
+@php
+use Carbon\Carbon;
+@endphp
 @extends('layouts.app')
 @section('content')
     <div class="row">
@@ -63,7 +66,7 @@
                                                        data-code_u="{{ $u->code_u }}"
                                                        data-role="{{ $u->role }}"
                                                        data-bs-toggle="modal"
-                                                       data-bs-target="#dateModal">
+                                                       data-bs-target="#modifRoleModal">
                                                         <button type="button" class="btn btn-primary">
                                                             <i class="mdi mdi-pen"></i> Modifier
                                                         </button>
@@ -82,6 +85,57 @@
         </div>
 
         <div class="col-lg-6 d-flex flex-column">
+            <div class="row flex-grow">
+                <div class="col-12 grid-margin stretch-card">
+                    <div class="card card-rounded">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h4 class="card-title card-title-dash mb-0">En attente de confirmation</h4>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive mt-1">
+                                <table class="table table-bordered" id="myTable">
+                                    <thead>
+                                    <tr>
+                                        <th class="infoCheques">Utilisateur</th>
+                                        <th>Date</th>
+                                        <th>Action <span id="sort-icon-0" class="mdi mdi-sort"></span></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @php
+                                        $code_u = \Illuminate\Support\Facades\Auth::user()->code_u;
+                                    @endphp
+                                    @foreach($utilisateurs_to_confirm as $u)
+
+                                        <tr>
+                                            <td>{{ $u->prenom }} {{ $u->nom }}</td>
+                                            <td>{{ Carbon::parse($u->created_at)->format('d-m-Y') }} </td>
+
+                                            <td>
+                                                @if($u->code_u != $code_u)
+                                                    <a href="{{ asset('delete-user-to-confirm/'.$u->id) }}" class="btn btn-danger">
+                                                        <i class="mdi mdi-delete"></i> Supprimer
+                                                    </a>
+                                                    <a href="{{ asset('confirm-user-to-confirm/'.$u->id) }}" class="btn btn-success">
+                                                        <i class="mdi mdi-check"></i> Confirmer
+                                                    </a>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- <div class="col-lg-6 d-flex flex-column">
             <div class="row flex-grow">
                 <div class="col-12 grid-margin stretch-card">
                     <div class="card card-rounded">
@@ -121,78 +175,12 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
+
+
     </div>
 
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Supprimer un utilisateur</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="{{ asset('effacer-utilisateur/default') }}" id="deleteForm" method="GET">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <strong>Code utilisateur :</strong> <span id="userCode"></span><br>
-                                <strong>Nom :</strong> <span id="userName"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password_confirmation" class="form-label">Mot de passe de confirmation</label>
-                                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-primary" id="deleteBtn">Valider</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="dateModal" tabindex="-1" aria-labelledby="dateModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="dateModalLabel">Modifier un rôle</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="{{ asset('update-utilisateur/default') }}" id="exportForm" method="GET">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <strong>Code utilisateur :</strong> <span id="userCode"></span><br>
-                                <strong>Nom :</strong> <span id="userName"></span>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label>Rôle de l'utilisateur</label>
-                                <select class="form-select" id="userRole" name="role">
-                                    <option value="admin">Admin</option>
-                                    <option value="user">Utilisateur</option>
-                                    <option value="responsableCA">Responsable CA</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password_confirmation" class="form-label">Mot de passe de confirmation</label>
-                                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-primary" id="exportBtn">Valider</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    @include('modals.gestion.utilisateur.gestion-utilisateur-modal')
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
