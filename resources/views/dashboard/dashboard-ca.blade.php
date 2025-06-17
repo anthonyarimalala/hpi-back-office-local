@@ -131,6 +131,7 @@
                                         <input name="date_ca_debut" value="{{ \Carbon\Carbon::parse($date_ca_debut)->format('d/m/Y') }}" hidden>
                                         <input name="date_ca_fin" value="{{ \Carbon\Carbon::parse($date_ca_fin)->format('d/m/Y') }}" hidden>
                                         <input name="praticiens[]" value="{{ $ca_p->praticien }}" hidden>
+                                        <input name="non_regle_cotation[]" value="non_reglee" hidden>
                                         <button class="btn btn-primary" style="color: whitesmoke">Consulter les restes à payer</button>
                                     </form>
                                 </div>

@@ -368,7 +368,7 @@ class ImportsController extends Controller
         if (!$withErrors)
             return back()->with('success', 'Fichier importé avec succès');
         else
-            return redirect('erreur-import-1');
+            return redirect('erreur-import-2');
             //return back()->with('warning', 'Données importées mais contiennent des erreurs');
     }
 
@@ -961,7 +961,7 @@ class ImportsController extends Controller
         if (!$withErrorsAll)
             return back()->with('success', 'Fichier importé avec succès');
         else
-            return redirect('erreur-import-2');
+            return redirect('erreur-import-1');
             //return back()->with('warning', 'Données importées mais contiennent des erreurs');
 
     }

@@ -14,34 +14,38 @@
                     @csrf
                     <div class="row">
                         <!-- Premier formulaire -->
+                        
                         <div class="col-lg-6">
                             <div class="card shadow-sm p-4">
                                 <div class="col-md-12 grid-margin stretch-card">
                                     <div class="card-body">
                                         <h4 class="card-title">Patient</h4>
+
                                         <div class="form-group">
                                             <label for="nom">Nom</label>
                                             <input type="text" class="form-control" id="nom" name="nom"
-                                                   placeholder="Nom" value="{{ old('nom') }}">
+                                                placeholder="Nom" value="{{ old('nom') }}">
                                             @error('nom')
-                                            <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                                <div class="alert alert-danger mt-2">{{ $message }}</div>
                                             @enderror
                                         </div>
+
                                         <div class="form-group">
                                             <label for="date_naissance">Date naissance</label>
                                             <input type="date" class="form-control" id="date_naissance"
-                                                   name="date_naissance" placeholder="Date de naissance"
-                                                   value="{{ old('date_naissance') }}">
+                                                name="date_naissance" placeholder="Date de naissance"
+                                                value="{{ old('date_naissance') }}">
                                             @error('date_naissance')
-                                            <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                                <div class="alert alert-danger mt-2">{{ $message }}</div>
                                             @enderror
                                         </div>
+
                                         <div class="form-group">
                                             <label for="email">Email</label>
                                             <input type="email" class="form-control" id="email" name="email"
-                                                   placeholder="Email" value="{{ old('email') }}">
+                                                placeholder="Email" value="{{ old('email') }}">
                                             @error('email')
-                                            <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                                <div class="alert alert-danger mt-2">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
@@ -49,18 +53,22 @@
                             </div>
                         </div>
 
-
                         <!-- Deuxième formulaire -->
                         <div class="col-lg-6">
                             <div class="card shadow-sm p-4">
                                 <div class="col-md-12 grid-margin stretch-card">
                                     <div class="card-body">
                                         <h4 class="card-title">Dossier</h4>
+
                                         <div class="form-group">
                                             <label for="dossier">Dossier</label>
                                             <input type="text" class="form-control" id="dossier" name="dossier"
-                                                   placeholder="Dossier">
+                                                placeholder="Dossier" value="{{ old('dossier') }}">
+                                            @error('dossier')
+                                                <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                            @enderror
                                         </div>
+
                                         <div class="form-group">
                                             <div class="row align-items-center">
                                                 <div class="col">
@@ -68,10 +76,15 @@
                                                     <select class="form-select" id="status" name="status">
                                                         <option disabled selected>Choisissez le statut</option>
                                                         @foreach($statuss as $status)
-                                                            <option
-                                                                value="{{ $status->status }}">{{ $status->status }}</option>
+                                                            <option value="{{ $status->status }}"
+                                                                {{ old('status') == $status->status ? 'selected' : '' }}>
+                                                                {{ $status->status }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
+                                                    @error('status')
+                                                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-auto">
                                                     <a href="#" data-bs-toggle="modal" data-bs-target="#statusModal">
@@ -84,12 +97,17 @@
                                         <div class="form-group">
                                             <label for="mutuelle">Mutuelle</label>
                                             <input type="text" class="form-control" id="mutuelle" name="mutuelle"
-                                                   placeholder="Mutuelle">
+                                                placeholder="Mutuelle" value="{{ old('mutuelle') }}">
+                                            @error('mutuelle')
+                                                <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                            @enderror
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                     <!-- Bouton Ajouter -->
                     <div class="row mt-4">

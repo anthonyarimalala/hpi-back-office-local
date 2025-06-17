@@ -60,6 +60,7 @@ class DossierController extends Controller
     {
         $validated = $request->validate([
             'nom' => 'required|string|min:3',
+            'dossier' => 'required|unique:dossiers,dossier',
         ]);
         $nom = $request->input('nom');
         $date_naissance = $request->input('date_naissance');

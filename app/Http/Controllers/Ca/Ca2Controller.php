@@ -55,10 +55,16 @@ class Ca2Controller extends Controller
 
     //Insertion du CA s'il n'y a pas encore d'acte
     public function insertCa(Request $request){
-        $m_ca = CaGeneral::createCa($request);
-        $m_l_ca_actes_reglement = L_CaActesReglement::insertCaActesReglement($request, $m_ca->id);
+        $m_ca_generale = CaGeneral::createCaGenerale($request);
+        $m_l_ca_actes_reglement = L_CaActesReglement::insertCaActesReglement($request, $m_ca_generale);
+        //$m_l_ca_actes_reglement->save();
+        // echo $m_l_ca_actes_reglement;
         return redirect('liste-ca');
     }
+    // public function insertCa(Request $request){
+    //     $m_ca = CaGeneral::createCaGenerale($request);
+    //     echo $m_ca;
+    // }
     public function getFilterCa(Request $request){
         $filters = [
             'date_derniere_modif_debut' => $request->input('date_derniere_modif_debut'),

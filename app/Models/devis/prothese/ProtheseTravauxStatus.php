@@ -10,6 +10,6 @@ class ProtheseTravauxStatus extends Model
     use HasFactory;
     protected $table = 'prothese_travaux_status';
     protected $fillable = [
-        'travaux_status'
+        'travaux_status',
     ];
 }

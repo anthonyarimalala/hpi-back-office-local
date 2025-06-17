@@ -169,7 +169,7 @@ class L_CaActesReglement extends Model
         //echo 'haveChange= '.$haveChange;
         return $m_l_ca_actes_reglement;
     }
-    public static function insertCaActesReglement(Request $request, $id_ca_actes_reglement = null){
+    public static function insertCaActesReglement(Request $request, $ca_generale){
         $date_derniere_modif = $request->input('date_derniere_modif');
         $praticien = $request->input('praticien');
         $nom_acte = $request->input('nom_acte');
@@ -198,29 +198,33 @@ class L_CaActesReglement extends Model
         }
         $haveChange = true;
         $m_l_ca_actes_reglement = new L_CaActesReglement();
-        $m_ca_generale = new CaGeneral();
+        $m_ca_generale = $ca_generale;
 
-        if($id_ca_actes_reglement != null){
-            $v_ca = V_CaActesReglement::where('id_ca_actes_reglement', $id_ca_actes_reglement)->first();
-            $m_h_ca = new H_CaActesReglement();
-            $m_h_ca->code_u = Auth::user()->code_u;
-            $m_h_ca->nom = Auth::user()->prenom. ' '. Auth::user()->nom;
-            $m_h_ca->id_ca_actes_reglement = $id_ca_actes_reglement;
-            $m_h_ca->dossier = $v_ca->dossier;
-            $m_h_ca->action .= "<strong>Nouveau Acte</strong><br>";
-            $m_l_ca_actes_reglement->id_ca = $v_ca->id_ca;
-        }else{
-            $dossier = $request->input('dossier');
-            $m_ca_generale->dossier = $dossier;
-            $m_ca_generale->nom_patient;
-            $m_ca_generale->statut;
-            $m_ca_generale->mutuelle;
-            $m_l_ca_actes_reglement->dossier = $dossier;
-        }
+        // // if($id_ca_actes_reglement != null){
+        //     $v_ca = V_CaActesReglement::where('id_ca_actes_reglement', $id_ca_actes_reglement)->first();
+        //     $m_h_ca = new H_CaActesReglement();
+        //     $m_h_ca->code_u = Auth::user()->code_u;
+        //     $m_h_ca->nom = Auth::user()->prenom. ' '. Auth::user()->nom;
+        //     $m_h_ca->id_ca_actes_reglement = $id_ca_actes_reglement;
+        //     $m_h_ca->dossier = $v_ca->dossier;
+        //     $m_h_ca->action .= "<strong>Nouveau Acte</strong><br>";
+        //     $m_l_ca_actes_reglement->id_ca = $v_ca->id_ca;
+        // // }else{
+        //     $dossier = $request->input('dossier');
+        //     $m_ca_generale->dossier = $dossier;
+        //     $m_ca_generale->nom_patient;
+        //     $m_ca_generale->statut;
+        //     $m_ca_generale->mutuelle;
+        //     $m_l_ca_actes_reglement->dossier = $dossier;
+        // // }
+        $m_h_ca = new H_CaActesReglement();
+        $m_h_ca->code_u = Auth::user()->code_u;
+        $m_h_ca->nom = Auth::user()->prenom. ' '. Auth::user()->nom;
+        $m_h_ca->dossier = $m_ca_generale->dossier;
+        $m_h_ca->action .= "<strong>Nouveau Acte</strong><br>";
 
 
-
-
+        $m_l_ca_actes_reglement->id_ca = $ca_generale->id;
         $m_l_ca_actes_reglement->date_derniere_modif = $date_derniere_modif;
         $m_l_ca_actes_reglement->praticien = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "praticien", $m_l_ca_actes_reglement->praticien, $praticien);
         $m_l_ca_actes_reglement->nom_acte = $m_l_ca_actes_reglement->makeHistoWhenUpdate($m_h_ca, $haveChange, "acte", $m_l_ca_actes_reglement->nom_acte, $nom_acte);
@@ -246,6 +250,7 @@ class L_CaActesReglement extends Model
         $m_l_ca_actes_reglement->save();
         $m_h_ca->id_ca_actes_reglement = $m_l_ca_actes_reglement->id;
         $m_h_ca->save();
+        $m_l_ca_actes_reglement->save();
         return $m_l_ca_actes_reglement;
     }
 
